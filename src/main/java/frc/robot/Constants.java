@@ -1,0 +1,167 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
+import frc.lib.math.SwerveModuleConstants;
+
+/**
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
+ * globally (i.e. public static). Do not put anything functional in this class.
+ *
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
+ * constants are needed, to reduce verbosity.
+ */
+public final class Constants {
+        public static final class SwerveConstants {
+                /*
+                 * The locations for the modules must be relative to the center of the robot.
+                 * Positive x values represent moving toward the front of the robot whereas
+                 * positive y values represent moving toward the left of the robot.
+                 */
+                private static final double ROBOT_WIDTH = Units.inchesToMeters(24.0);
+                private static final double ROBOT_LENGTH = Units.inchesToMeters(24.0);
+                private static final double SWERVE_FROM_CORNER = Units.inchesToMeters(2.61);
+                private static final double MODULE_OFFSET_X = ROBOT_WIDTH / 2 - SWERVE_FROM_CORNER;
+                private static final double MODULE_OFFSET_Y = ROBOT_LENGTH / 2 - SWERVE_FROM_CORNER;
+
+                public static final Translation2d m_backLeftLocation = new Translation2d(-MODULE_OFFSET_X,
+                                MODULE_OFFSET_Y);
+                public static final Translation2d m_backRightLocation = new Translation2d(-MODULE_OFFSET_X,
+                                -MODULE_OFFSET_Y);
+                public static final Translation2d m_frontRightLocation = new Translation2d(MODULE_OFFSET_X,
+                                -MODULE_OFFSET_Y);
+                public static final Translation2d m_frontLeftLocation = new Translation2d(MODULE_OFFSET_X,
+                                MODULE_OFFSET_Y);
+
+                public static final double MOTOR_MAX_RPM = 5676.0 * 1.05; // from testing motors are reaching ~105% max
+                                                                          // rpm
+
+                public static final double MaxMetersPersecond = 4.47;// 3.264903459; //4.47 This is calculated 5676rpm,
+                                                                     // 4in
+                                                                     // wheels, 6.75 gearbox
+                public static final double kWheelRadius = 0.04648915887; // 0.0508;
+                public static final double kModuleMaxAngularVelocity = 27.73816874; // This is calculated 5676rpm,
+                                                                                    // 150/7:1
+                                                                                    // gearbox in radians. 594.380 deg/s
+                                                                                    // in
+                                                                                    // pathplanner
+                public static final double kModuleMaxAngularAcceleration = 18.85;// 4 * Math.PI; // radians per second
+                                                                                 // squared
+                public static final double gearboxRatio = 6.75;
+
+                public static final double kMaxAceceration = 4.0;
+
+                public static final class Mod1 {
+                        public static final int driveMotorID = 10;
+                        public static final int angleMotorID = 11;
+                        public static final int canCoderID = 12;
+                        public static final double angleOffset = -0.14794921875;
+                        public static final double pidP = 2.3; // 2.2 prevous value
+                        public static final double pidI = 0.75;
+                        public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID,
+                                        angleMotorID, canCoderID, angleOffset, pidP, pidI, 0);
+                }
+
+                /** Front Right Module - Module 1 */
+                public static final class Mod2 {
+                        public static final int driveMotorID = 20;
+                        public static final int angleMotorID = 21;
+                        public static final int canCoderID = 22;
+                        public static final double angleOffset = -0.070068359375;
+                        public static final double pidP = 0.85; // 1.0 previous value
+                        public static final double pidI = 0.2;
+                        public static final double speedAdjustmentFactor = 1;// 1.798006206333298/1.891452461749773;
+                        public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID,
+                                        angleMotorID, canCoderID, angleOffset, pidP, pidI, 1);
+                }
+
+                /** Back Left Module - Module 2 */
+                public static final class Mod3 {
+                        public static final int driveMotorID = 30;
+                        public static final int angleMotorID = 31;
+                        public static final int canCoderID = 32;
+                        public static final double angleOffset = 0.21875;
+                        public static final double pidP = 2.3; // 1.8 previous value
+                        public static final double pidI = 0.75;
+                        public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID,
+                                        angleMotorID, canCoderID, angleOffset, pidP, pidI, 2);
+                }
+
+                /** Back Right Module - Module 3 */
+                public static final class Mod4 {
+                        public static final int driveMotorID = 40;
+                        public static final int angleMotorID = 41;
+                        public static final int canCoderID = 42;
+                        public static final double angleOffset = 0.25830078125;
+                        public static final double pidP = 0.6; // 0.8 previous value
+                        public static final double pidI = 0.3; // zach isn't helping me
+                        public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID,
+                                        angleMotorID, canCoderID, angleOffset, pidP, pidI, 3);
+                }
+        }
+
+        public final static class JoystickConstants {
+                public final static int DRIVER_USB = 0;
+                public final static int OPERATOR_USB = 1;
+                public final static int TEST_USB = 2;
+
+                public final static int LEFT_Y_AXIS = 1;
+                public final static int LEFT_X_AXIS = 0;
+                public final static int RIGHT_X_AXIS = 4;
+                public final static int RIGHT_Y_AXIS = 5;
+
+                public final static int GREEN_BUTTON = 1;
+                public final static int RED_BUTTON = 2;
+                public final static int YELLOW_BUTTON = 4;
+                public final static int BLUE_BUTTON = 3;
+
+                public final static int LEFT_TRIGGER = 2;
+                public final static int RIGHT_TRIGGER = 3;
+                public final static int LEFT_BUMPER = 5;
+                public final static int RIGHT_BUMPER = 6;
+
+                public final static int BACK_BUTTON = 7;
+                public final static int START_BUTTON = 8;
+
+                public final static int POV_UP = 0;
+                public final static int POV_RIGHT = 90;
+                public final static int POV_DOWN = 180;
+                public final static int POV_LEFT = 270;
+        }
+
+        public static final class Vision {
+                public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2025ReefscapeWelded
+                                .loadAprilTagLayoutField();
+
+                public static final Transform3d kRobotToCam = new Transform3d(Units.inchesToMeters(1.25),
+                                Units.inchesToMeters(10.5), Units.inchesToMeters(17.75),
+                                new Rotation3d(0, 0, Math.PI / 2));
+
+                public static final Transform3d kRobotToCamColor = new Transform3d(Units.inchesToMeters(1.5),
+                                -Units.inchesToMeters(6.5), Units.inchesToMeters(16),
+                                new Rotation3d(0, 0, -Math.PI / 2));
+                // The standard deviations of our vision estimated poses, which affect
+                // correction rate
+                // (Fake values. Experiment and determine estimation noise on an actual robot.)
+                public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+                public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        }
+
+}
