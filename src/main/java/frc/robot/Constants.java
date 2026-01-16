@@ -164,4 +164,14 @@ public final class Constants {
                 public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
         }
 
+        public static final class ShooterConstants {
+                // Constants
+                public static final int SHOOTER_MOTOR_ID = 1; // Change this to your motor CAN ID
+                public static final double TARGET_VELOCITY_RPS = 98.33; // Rotations per second
+        }
+
+        public static final class AdvancerConstants {
+                public static final int ADVANCER_MOTOR_ID = 1;
+        }
+
 }

@@ -2,8 +2,8 @@ package frc.robot.commands.testing;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
+import frc.robot.subsystems.pathfinding.Vision;
 
 public class PathFindToAprilTag extends Command {
     @SuppressWarnings("unused")

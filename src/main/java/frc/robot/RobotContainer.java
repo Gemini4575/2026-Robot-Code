@@ -33,8 +33,8 @@ import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
-import frc.robot.subsystems.Lidar;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.pathfinding.Lidar;
+import frc.robot.subsystems.pathfinding.Vision;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
@@ -98,14 +98,12 @@ public class RobotContainer {
   public RobotContainer() {
     note_entry.setString("RobotContainer initialized");
     try {
-    V = new Vision();
+      V = new Vision();
     } catch (Exception e) {
-    System.out.println("Vision subsystem failed to initialize: " + e);
+      System.out.println("Vision subsystem failed to initialize: " + e);
     }
 
     lc = initLaserCAN();
-
-
 
     PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
     autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();

@@ -28,7 +28,7 @@ THE
 * SOFTWARE.
 */
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.pathfinding;
 
 import static frc.robot.Constants.Vision.*;
 import edu.wpi.first.math.Matrix;
