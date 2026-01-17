@@ -171,6 +171,8 @@ public final class Constants {
         }
 
         public static final class AdvancerConstants {
+
+                public static final double ADVANCER_SPEED = 0.5;
                 public static final int ADVANCER_MOTOR_ID = 1;
         }
 

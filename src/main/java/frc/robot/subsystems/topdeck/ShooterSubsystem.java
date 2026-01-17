@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck;
+package frc.robot.subsystems.topDeck;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
