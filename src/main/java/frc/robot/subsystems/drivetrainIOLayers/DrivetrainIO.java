@@ -32,6 +32,9 @@ import static frc.robot.Constants.SwerveConstants.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.nio.file.Paths;
+import java.nio.file.Files;
+
 import com.pathplanner.lib.path.PathConstraints;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -85,6 +88,8 @@ public class DrivetrainIO extends SubsystemBase {
   public DrivetrainIO() {
 
     try {
+			// make sure the folders exist
+	  Files.createDirectories(Paths.get("/home/lvuser"));
       logFileWriter = new FileWriter("/home/lvuser/drivelog.txt", false);
       logFileWriter
           .write(

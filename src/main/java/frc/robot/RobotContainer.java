@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -35,6 +37,7 @@ import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.subsystems.pathfinding.Lidar;
 import frc.robot.subsystems.pathfinding.Vision;
+import frc.robot.subsystems.topDeck.ShooterSubsystem;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
@@ -85,10 +88,11 @@ public class RobotContainer {
       .or(new JoystickButton(operator, START_BUTTON));
 
   /* Pathplanner stuff */
-  private final SendableChooser<Command> PathplannerautoChoosers;
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> PathplannerautoChoosers;
+  // private final SendableChooser<Command> autoChooser;
 
   /* Subsystems */
+  private final ShooterSubsystem S = new ShooterSubsystem();
   private final DrivetrainIO D = new DrivetrainIO();
   private Vision V;
   private final Lidar lidar = new Lidar();
@@ -96,6 +100,8 @@ public class RobotContainer {
   private final LaserCan lc;
 
   public RobotContainer() {
+
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     note_entry.setString("RobotContainer initialized");
     try {
       V = new Vision();
@@ -105,9 +111,9 @@ public class RobotContainer {
 
     lc = initLaserCAN();
 
-    PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
-    SmartDashboard.putData("[Robot]Auto Chosers", autoChooser);
+    // PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
+    // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
+    // SmartDashboard.putData("[Robot]Auto Chosers", autoChooser);
 
     SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
@@ -144,16 +150,18 @@ public class RobotContainer {
     new JoystickButton(driver, RED_BUTTON)
         .onTrue(new Spin180(D).asProxy());
 
+    new JoystickButton(driver, GREEN_BUTTON).whileTrue(new InstantCommand(() -> S.runShooter()));
+
     new JoystickButton(driver, YELLOW_BUTTON).onTrue(new TimedTestDrive(D, 2000, 0.5));
     // new JoystickButton(driver, GREEN_BUTTON).onTrue(new TimedTestWheelTurn(D,
     // 5000));
 
-    new JoystickButton(driver, GREEN_BUTTON)
-        .onTrue(new SequentialCommandGroup(new ResetLocationCommand(D, Pose2d.kZero),
-            new WaitCommand(5),
-            new DriveToLocation(D, lc,
-                new PathContainer().addWaypoint(new Pose2d(0.5, 0,
-                    Pose2d.kZero.getRotation())))));
+    // new JoystickButton(driver, GREEN_BUTTON)
+    // .onTrue(new SequentialCommandGroup(new ResetLocationCommand(D, Pose2d.kZero),
+    // new WaitCommand(5),
+    // new DriveToLocation(D, lc,
+    // new PathContainer().addWaypoint(new Pose2d(0.5, 0,
+    // Pose2d.kZero.getRotation())))));
 
     System.out.println("Ended configureBindings()");
   }
@@ -190,6 +198,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return new WaitCommand(1000);
+    // return autoChooser.getSelected();
   }
 }

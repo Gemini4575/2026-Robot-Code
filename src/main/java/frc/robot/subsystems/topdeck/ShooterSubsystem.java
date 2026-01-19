@@ -1,55 +1,78 @@
 package frc.robot.subsystems.topDeck;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
+
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShooterSubsystem extends SubsystemBase {
-    private final TalonFX shooterMotor;
-    private final VelocityVoltage velocityControl;
+    ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+    GenericEntry maxspeedEntry = tab
+            .add("Max Speed", 1)
+            .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
+            .getEntry();
+
+    private final Spark shooterTest;
+    private final SparkMax shooterMotor;
+    private final RelativeEncoder encoder;
+    private final SparkClosedLoopController pidController;
 
     public ShooterSubsystem() {
-        shooterMotor = new TalonFX(SHOOTER_MOTOR_ID);
-        velocityControl = new VelocityVoltage(0);
+        shooterTest = new Spark(0);
+        shooterMotor = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        encoder = shooterMotor.getEncoder();
+        pidController = shooterMotor.getClosedLoopController();
 
         configureMotor();
     }
 
     private void configureMotor() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
+        SparkMaxConfig config = new SparkMaxConfig();
 
-        // PID configuration for velocity control
-        config.Slot0.kP = 0.1; // Tune these values for your mechanism
-        config.Slot0.kI = 0.0;
-        config.Slot0.kD = 0.0;
-        config.Slot0.kV = 0.12; // Feedforward gain
+        // PID configuration for velocity control (Slot 0)
+        config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D, FF
+        config.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
 
         // Motor configuration
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        config.CurrentLimits.SupplyCurrentLimit = 40.0;
-        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.idleMode(SparkMaxConfig.IdleMode.kCoast);
+        config.smartCurrentLimit(40); // Current limit in amps
 
-        shooterMotor.getConfigurator().apply(config);
+        // Optional: Set voltage compensation
+        config.voltageCompensation(12.0);
+
+        // Apply configuration
+        shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     /**
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        shooterMotor.setControl(velocityControl.withVelocity(TARGET_VELOCITY_RPS));
+        shooterTest.set(maxspeedEntry.getDouble(0));
+        pidController.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
     }
 
     /**
      * Spins the shooter at a custom velocity
      * 
-     * @param velocityRPS Target velocity in rotations per second
+     * @param velocityRPM Target velocity in rotations per minute (RPM)
      */
-    public void runShooterAtVelocity(double velocityRPS) {
-        shooterMotor.setControl(velocityControl.withVelocity(velocityRPS));
+    public void runShooterAtVelocity(double velocityRPM) {
+        pidController.setSetpoint(velocityRPM, ControlType.kVelocity);
     }
 
     /**
@@ -62,10 +85,10 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * Gets the current velocity of the shooter
      * 
-     * @return Current velocity in rotations per second
+     * @return Current velocity in rotations per minute (RPM)
      */
     public double getVelocity() {
-        return shooterMotor.getVelocity().getValueAsDouble();
+        return encoder.getVelocity();
     }
 
     /**
@@ -74,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return true if within tolerance
      */
     public boolean atTargetVelocity() {
-        double tolerance = 2.0; // RPS tolerance
+        double tolerance = 100.0; // RPM tolerance
         return Math.abs(getVelocity() - TARGET_VELOCITY_RPS) < tolerance;
     }
 
@@ -84,14 +107,38 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return Temperature in Celsius
      */
     public double getTemperature() {
-        return shooterMotor.getDeviceTemp().getValueAsDouble();
+        return shooterMotor.getMotorTemperature();
+    }
+
+    /**
+     * Gets the motor current draw
+     * 
+     * @return Current in Amps
+     */
+    public double getCurrent() {
+        return shooterMotor.getOutputCurrent();
+    }
+
+    /**
+     * Checks if motor is operating within safe parameters
+     * 
+     * @return true if motor is healthy
+     */
+    public boolean isMotorHealthy() {
+        return getTemperature() < 80.0 && getCurrent() < 35.0;
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        // You can add SmartDashboard updates here
-        // SmartDashboard.putNumber("Shooter Velocity", getVelocity());
-        // SmartDashboard.putBoolean("At Target", atTargetVelocity());
+        // Add SmartDashboard updates here for debugging
+        /*
+         * SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
+         * SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
+         * SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
+         * SmartDashboard.putNumber("Shooter/Temp C", getTemperature());
+         * SmartDashboard.putNumber("Shooter/Current A", getCurrent());
+         * SmartDashboard.putBoolean("Shooter/Healthy", isMotorHealthy());
+         */
     }
 }
