@@ -20,7 +20,7 @@ public class SendNote extends Command {
     @Override
     public void execute() {
         System.out.println("Sending note: " + note);
-        MetricService.publish(MetricName.MESSAGE, "hiihidhfidifhi");
+        MetricService.publish(MetricName.MESSAGE, note);
         System.out.println("after Sending note: " + note);
     }
 
