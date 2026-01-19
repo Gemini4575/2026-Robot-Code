@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.driving.AlineWheels;
 import frc.robot.commands.driving.DriveToLocation;
+import frc.robot.commands.driving.FaceTowardsCoordinates;
 import frc.robot.commands.driving.ResetLocationCommand;
 import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
@@ -150,7 +151,13 @@ public class RobotContainer {
     new JoystickButton(driver, RED_BUTTON)
         .onTrue(new Spin180(D).asProxy());
 
-    new JoystickButton(driver, GREEN_BUTTON).whileTrue(new InstantCommand(() -> S.runShooter()));
+    new JoystickButton(driver, GREEN_BUTTON)
+    .onTrue(new FaceTowardsCoordinates(
+      D,
+      11.914 , 
+      4.051, 
+      () -> -driver.getRawAxis(LEFT_Y_AXIS), 
+      () -> driver.getRawAxis(LEFT_X_AXIS)));
 
     new JoystickButton(driver, YELLOW_BUTTON).onTrue(new TimedTestDrive(D, 2000, 0.5));
     // new JoystickButton(driver, GREEN_BUTTON).onTrue(new TimedTestWheelTurn(D,
