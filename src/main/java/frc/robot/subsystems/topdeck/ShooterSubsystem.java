@@ -20,19 +20,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShooterSubsystem extends SubsystemBase {
-    ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+    ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     GenericEntry maxspeedEntry = tab
-            .add("Max Speed", 1)
+            .add("Max Speed Shooter", 1)
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
 
-    private final Spark shooterTest;
     private final SparkMax shooterMotor;
     private final RelativeEncoder encoder;
     private final SparkClosedLoopController pidController;
 
     public ShooterSubsystem() {
-        shooterTest = new Spark(0);
         shooterMotor = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
         encoder = shooterMotor.getEncoder();
         pidController = shooterMotor.getClosedLoopController();
@@ -62,7 +60,6 @@ public class ShooterSubsystem extends SubsystemBase {
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        shooterTest.set(maxspeedEntry.getDouble(0));
         pidController.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
     }
 

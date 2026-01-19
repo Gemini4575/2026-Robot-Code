@@ -88,8 +88,8 @@ public class DrivetrainIO extends SubsystemBase {
   public DrivetrainIO() {
 
     try {
-			// make sure the folders exist
-	  Files.createDirectories(Paths.get("/home/lvuser"));
+      // make sure the folders exist
+      Files.createDirectories(Paths.get("/home/lvuser"));
       logFileWriter = new FileWriter("/home/lvuser/drivelog.txt", false);
       logFileWriter
           .write(
@@ -197,20 +197,20 @@ public class DrivetrainIO extends SubsystemBase {
     // swerveModuleStates[2].toString());
     // SmartDashboard.putString("[Drivetrain]module 3",
     // swerveModuleStates[3].toString());
-    if (xSpeed + ySpeed + rot == 0) {
-      timeDelay++;
-      if (timeDelay >= 12) {
-        setModuleStates(new SwerveModuleState[] {
-            new SwerveModuleState(0, new Rotation2d(-45)),
-            new SwerveModuleState(0, new Rotation2d(45)),
-            new SwerveModuleState(0, new Rotation2d(-45)),
-            new SwerveModuleState(0, new Rotation2d(45)),
-        });
-      }
-    } else {
-      timeDelay = 0;
-      setModuleStates(swerveModuleStates);
-    }
+    // if (xSpeed + ySpeed + rot == 0) {
+    // timeDelay++;
+    // if (timeDelay >= 25) {
+    // setModuleStates(new SwerveModuleState[] {
+    // new SwerveModuleState(0, new Rotation2d(-45)),
+    // new SwerveModuleState(0, new Rotation2d(45)),
+    // new SwerveModuleState(0, new Rotation2d(-45)),
+    // new SwerveModuleState(0, new Rotation2d(45)),
+    // });
+    // }
+    // } else {
+    // timeDelay = 0;
+    setModuleStates(swerveModuleStates);
+    // }
   }
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
