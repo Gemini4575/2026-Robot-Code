@@ -114,6 +114,7 @@ public class SwerveModule extends SubsystemBase {
     private long angleDivergenceStartTime = -1;
     private long angleCorrectionStartTime = -1;
 
+    @SuppressWarnings("removal")
     public SwerveModule(SwerveModuleConstants s) {
 
         driveMotor = new SparkMax(s.driveMotorID, MotorType.kBrushless);

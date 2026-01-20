@@ -167,8 +167,8 @@ public final class Constants {
 
         public static final class ShooterConstants {
                 // Constants
-                public static final int SHOOTER_MOTOR_ID = 1; // Change this to your motor CAN ID
-                public static final double TARGET_VELOCITY_RPS = 98.33; // Rotations per second
+                public static final int SHOOTER_MOTOR_ID = 1;
+                public static final double TARGET_VELOCITY_RPS = 98.33;
         }
 
         public static final class AdvancerConstants {

@@ -1,7 +1,6 @@
 package frc.robot.commands.smartDashBoard;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.model.MetricData;
 import frc.robot.model.MetricName;
 import frc.robot.service.MetricService;
 

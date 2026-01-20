@@ -9,7 +9,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -20,9 +19,10 @@ import static frc.robot.Constants.AdvancerConstants.*;
 public class AdvancerSubsystem extends SubsystemBase {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     GenericEntry maxspeedEntry = tab
-            .add("Max Speed Advancer", 1)
+            .add("Max Speed Advancer", 1.0)
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
+    private double ADVANCER_SPEED = maxspeedEntry.getDouble(1.0);
     private final SparkMax AdavancerMotor;
 
     public AdvancerSubsystem() {

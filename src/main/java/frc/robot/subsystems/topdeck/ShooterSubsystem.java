@@ -38,11 +38,12 @@ public class ShooterSubsystem extends SubsystemBase {
         configureMotor();
     }
 
+    @SuppressWarnings("removal")
     private void configureMotor() {
         SparkMaxConfig config = new SparkMaxConfig();
 
         // PID configuration for velocity control (Slot 0)
-        config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D, FF
+        config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
         config.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
 
         // Motor configuration

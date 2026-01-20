@@ -24,12 +24,18 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
-        shooter.runShooter();
+        shooter.runShooterAtVelocity(999);
         if (shooter.atTargetVelocity()) {
             advancer.advance();
         } else {
             advancer.stopAdvancer();
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooter.stopShooter();
+        advancer.stopAdvancer();
     }
 
     @Override

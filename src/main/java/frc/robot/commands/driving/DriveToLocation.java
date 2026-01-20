@@ -74,6 +74,7 @@ public class DriveToLocation extends Command {
     // - rotation in place for short angles is not ideal - we need to detect that we
     // are standing and rotate slower
 
+    @SuppressWarnings("unused")
     @Override
     public void execute() {
 
