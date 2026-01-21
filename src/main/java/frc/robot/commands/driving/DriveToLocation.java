@@ -94,7 +94,7 @@ public class DriveToLocation extends Command {
         // to start using it...
         if (laserGuidedDrive || (distanceFromTarget.getFirst() < DRIVE_PRECISION
                 && !isDistanceCloseEnough(distanceFromTarget.getFirst()))) {
-            // we are close enough to be guided by laser distance
+            // we are close enough to be guided by laser distance 
             // TODO we need to parametrize these values but testing for now
             if (!laserGuidedDrive) {
                 laserGuidedDrive = true;
