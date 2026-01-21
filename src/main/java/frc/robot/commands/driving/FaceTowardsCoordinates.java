@@ -26,8 +26,8 @@ public class FaceTowardsCoordinates extends Command {
     // Key: distance in meters, Value: max rotation output (0.0 to 1.0)
     private static final TreeMap<Double, Double> MAX_ROTATION_OUTPUTS = new TreeMap<>(
         Map.of(
-            0.0, 0.2,   // Very close: slow rotation
-            0.5, 0.4,   // Close: moderate rotation
+            0.0, 0.4,   // Very close: slow rotation
+            0.25, 0.8,   // Close: moderate rotation
             1.0, 0.7,   // Medium distance: faster rotation
             2.0, 1.0    // Far: full speed rotation
         )
@@ -60,7 +60,7 @@ public class FaceTowardsCoordinates extends Command {
         
         // Create PID controller with motion profiling
         rotationController = new ProfiledPIDController(
-            0.5,  // kP - tune this value (lower since we're outputting -1 to 1)
+            4.0,  // kP - tune this value (lower since we're outputting -1 to 1)
             0.0,  // kI
             0.05, // kD - tune this value
             new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED, MAX_ANGULAR_ACCELERATION)
@@ -194,7 +194,7 @@ public class FaceTowardsCoordinates extends Command {
     public boolean isFinished() {
         // Don't finish for the first 5 cycles to ensure PID has time to initialize
         // Then finish when at setpoint
-        return Math.abs(Math.toDegrees(targetAngle) - Math.toDegrees(currentAngle)) <= 5;
+        return Math.abs(Math.toDegrees(targetAngle) - Math.toDegrees(currentAngle)) <= 7;
     }
 
     @Override
