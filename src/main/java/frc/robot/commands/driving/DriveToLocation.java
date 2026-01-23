@@ -20,7 +20,7 @@ public class DriveToLocation extends Command {
     private static final double MAX_SPEED_GLOBAL = 1.0;
     private static final double LASER_GUIDED_SPEED = 0.2;
     private static final TreeMap<Double, Double> MAX_SPEEDS = new TreeMap<>(
-            Map.of(0.0, 0.2, 0.2, 0.5, 0.5, 0.8, 1.5, 1.0));
+            Map.of(0.0, 0.2, 0.2, 0.5, 0.5, 0.5, 1.5, 0.5));
 
     private static final double MAX_ANGULAR_SPEED = Math.PI / 2; // radians per second
 

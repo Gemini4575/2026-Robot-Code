@@ -222,11 +222,11 @@ public class SwerveModule extends SubsystemBase {
      *
      * @return The current state of the module.
      */
-    // public SwerveModuleState getState() {
-    // var s = getConvertedVelocity();
-    // return new SwerveModuleState(
-    // s, new Rotation2d(encoderValue()));
-    // }
+    public SwerveModuleState getState() {
+    var s = getConvertedVelocity();
+    return new SwerveModuleState(
+    s, new Rotation2d(encoderValue()));
+    }
 
     private double getConvertedVelocity() {
         return (m_driveEncoder.getVelocity() / (60.0 * SwerveConstants.gearboxRatio))

@@ -36,11 +36,11 @@ public final class Constants {
                  * Positive x values represent moving toward the front of the robot whereas
                  * positive y values represent moving toward the left of the robot.
                  */
-                private static final double ROBOT_WIDTH = Units.inchesToMeters(30.0);
-                private static final double ROBOT_LENGTH = Units.inchesToMeters(24.0);
+                private static final double ROBOT_WIDTH = Units.inchesToMeters(24.0);
+                private static final double ROBOT_LENGTH = Units.inchesToMeters(30.0);
                 private static final double SWERVE_FROM_CORNER = Units.inchesToMeters(2.61);
-                private static final double MODULE_OFFSET_X = ROBOT_WIDTH / 2 - SWERVE_FROM_CORNER;
-                private static final double MODULE_OFFSET_Y = ROBOT_LENGTH / 2 - SWERVE_FROM_CORNER;
+                private static final double MODULE_OFFSET_X = ROBOT_WIDTH / 2 - SWERVE_FROM_CORNER; // 9.39 inches
+                private static final double MODULE_OFFSET_Y = ROBOT_LENGTH / 2 - SWERVE_FROM_CORNER; // 12.39 inches
 
                 public static final Translation2d m_backLeftLocation = new Translation2d(-MODULE_OFFSET_X,
                                 MODULE_OFFSET_Y);

@@ -89,8 +89,8 @@ public class RobotContainer {
       .or(new JoystickButton(operator, START_BUTTON));
 
   /* Pathplanner stuff */
-  // private final SendableChooser<Command> PathplannerautoChoosers;
-  // private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> PathplannerautoChoosers;
+  private final SendableChooser<Command> autoChooser;
 
   /* Subsystems */
   private final ShooterSubsystem S = new ShooterSubsystem();
@@ -112,9 +112,9 @@ public class RobotContainer {
 
     lc = initLaserCAN();
 
-    // PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
-    // SmartDashboard.putData("[Robot]Auto Chosers", autoChooser);
+    PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
+    autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
+    SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
 
     SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
@@ -168,7 +168,7 @@ public class RobotContainer {
         new ResetLocationCommand(D, Pose2d.kZero),
         new WaitCommand(5),
         new DriveToLocation(D, lc,
-            new PathContainer().addWaypoint(new Pose2d(14.182, 6.335,
+            new PathContainer().addWaypoint(new Pose2d(2.196, 1.994,
                 Pose2d.kZero.getRotation()))
         ),
         new FaceTowardsCoordinates(D,
@@ -213,7 +213,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new WaitCommand(1000);
-    // return autoChooser.getSelected();
+    // return new WaitCommand(1000);
+    return PathplannerautoChoosers.getSelected();
   }
 }
