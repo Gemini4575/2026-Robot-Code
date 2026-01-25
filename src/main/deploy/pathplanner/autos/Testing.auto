@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Aline Wheels"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Trench to shoot"
           }
         }
       ]

@@ -151,13 +151,13 @@ public final class Constants {
                 public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2026RebuiltWelded
                                 .loadAprilTagLayoutField();
 
-                public static final Transform3d kRobotToCam = new Transform3d(Units.inchesToMeters(0),
-                                Units.inchesToMeters(16), Units.inchesToMeters(6),
-                                new Rotation3d(Math.PI / -4.0, 0, Units.degreesToRadians(180)));
+                public static final Transform3d kRobotToCam = new Transform3d(Units.inchesToMeters(-14.0),
+                                Units.inchesToMeters(0), Units.inchesToMeters(6),
+                                new Rotation3d(0, Math.PI / -4.0, Units.degreesToRadians(-90)));
 
-                public static final Transform3d kRobotToCam2 = new Transform3d(Units.inchesToMeters(0),
-                                -Units.inchesToMeters(-16), Units.inchesToMeters(6),
-                                new Rotation3d(Math.PI / 4.0, 0, Units.degreesToRadians(0)));
+                public static final Transform3d kRobotToCam2 = new Transform3d(Units.inchesToMeters(14),
+                                -Units.inchesToMeters(0), Units.inchesToMeters(6),
+                                new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(90)));
                 // The standard deviations of our vision estimated poses, which affect
                 // correction rate
                 // (Fake values. Experiment and determine estimation noise on an actual robot.)

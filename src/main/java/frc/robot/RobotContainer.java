@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -44,7 +47,9 @@ import static frc.robot.Constants.JoystickConstants.*;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import au.grapplerobotics.ConfigurationFailedException;
@@ -112,12 +117,27 @@ public class RobotContainer {
 
     lc = initLaserCAN();
 
-    PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
-    SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
+    
 
     SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
+    NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
+    NamedCommands.registerCommand("Stop", new Stop(D));
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      NamedCommands.registerCommand("Reset Location to 0,0,0 Red",
+        new InstantCommand(() -> D.resetPose(new Pose2d(16.54-2.763,8.07-3.306, new Rotation2d(Units.degreesToRadians(-20))))));
+    } else {
+      NamedCommands.registerCommand("Reset Location to 0,0,0 Blue",
+        new InstantCommand(() -> D.resetPose(new Pose2d(2.763,3.306, new Rotation2d(Units.degreesToRadians(20))))));
+    }
+    NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
+            11.914,
+            4.051,
+            () -> 0,
+            () -> 0));
+    PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
+    autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
+    SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
     // Configure the trigger bindings
     configureBindings();
