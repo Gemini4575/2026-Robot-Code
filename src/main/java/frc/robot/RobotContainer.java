@@ -54,6 +54,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+import choreo.auto.AutoFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -103,9 +104,19 @@ public class RobotContainer {
   private Vision V;
   private final Lidar lidar = new Lidar();
 
+  private final AutoFactory autoFactory;
+
+
   private final LaserCan lc;
 
   public RobotContainer() {
+    autoFactory = new AutoFactory(
+            D::getPose, // A function that returns the current robot pose
+            D::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            D::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            D // The drive subsystem
+        );
 
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     note_entry.setString("RobotContainer initialized");

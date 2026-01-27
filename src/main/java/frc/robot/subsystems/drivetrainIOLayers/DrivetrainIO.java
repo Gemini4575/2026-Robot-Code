@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrainIOLayers;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -46,7 +47,13 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.studica.frc.AHRS.NavXUpdateRate;
 
+import choreo.trajectory.SwerveSample;
+
 public class DrivetrainIO extends SubsystemBase {
+
+  private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
 
   private ShuffleboardTab drivetrain_tab = Shuffleboard.getTab("DriveTrain");
 
@@ -93,6 +100,7 @@ public class DrivetrainIO extends SubsystemBase {
 
   public DrivetrainIO() {
 
+     headingController.enableContinuousInput(-Math.PI, Math.PI);
     try {
       // make sure the folders exist
       Files.createDirectories(Paths.get("/home/lvuser"));
@@ -146,6 +154,21 @@ public class DrivetrainIO extends SubsystemBase {
   frontLeft_3.getState(),
   };
   }
+
+   public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        // Apply the generated speeds
+        drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
+    }
 
   public SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
