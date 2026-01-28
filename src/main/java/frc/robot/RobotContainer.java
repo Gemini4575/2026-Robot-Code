@@ -245,6 +245,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return new WaitCommand(1000);
-    return PathplannerautoChoosers.getSelected();
+    return autoFactory.trajectoryCmd("NewPath");
   }
 }
