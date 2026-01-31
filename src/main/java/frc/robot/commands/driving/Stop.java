@@ -27,7 +27,7 @@ public class Stop extends Command {
     @Override
     public void execute() {
         d.drive(0, 0, 0, true);
-        if (timer.advanceIfElapsed(1.5)) {
+        if (timer.advanceIfElapsed(2)) {
             isFinished = true;
         }
     }

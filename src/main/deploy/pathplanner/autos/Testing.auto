@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Aline Wheels"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Trench to shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop"
           }
         }
       ]

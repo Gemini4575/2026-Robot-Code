@@ -171,10 +171,26 @@ public final class Constants {
                 public static final double TARGET_VELOCITY_RPS = 98.33;
         }
 
+        public static final class BeamBreakConstants {
+                public static final int BEAM_BREALK_SENSOR_PORT = 0;       
+        }
+
+        public static final class LimitSwitchConstants {
+                public static final int LIMIT_SWITCH1_PORT = 1;
+                public static final int LIMIT_SWITCH2_PORT = 2;       
+        }
+
         public static final class AdvancerConstants {
 
                 public static final double ADVANCER_SPEED = 0.5;
-                public static final int ADVANCER_MOTOR_ID = 1;
+                public static final int ADVANCER_MOTOR_ID = 2;
+        }
+
+        public static final class IntakeConstants {
+                public static final int INTAKE_MOTOR_ID = 3;
+                public static final int INTAKE_SLIDER1_ID = 4;
+                public static final int INTAKE_SLIDER2_ID = 5;
+                public static final double INTAKE_SPEED = 0.7;
         }
 
 }

@@ -123,13 +123,6 @@ public class RobotContainer {
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
     NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
     NamedCommands.registerCommand("Stop", new Stop(D));
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      NamedCommands.registerCommand("Reset Location to 0,0,0 Red",
-        new InstantCommand(() -> D.resetPose(new Pose2d(16.54-2.763,8.07-3.306, new Rotation2d(Units.degreesToRadians(-20))))));
-    } else {
-      NamedCommands.registerCommand("Reset Location to 0,0,0 Blue",
-        new InstantCommand(() -> D.resetPose(new Pose2d(2.763,3.306, new Rotation2d(Units.degreesToRadians(20))))));
-    }
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
             11.914,
             4.051,
