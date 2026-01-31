@@ -1,5 +1,5 @@
 
-package frc;
+package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,12 +24,12 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj NewPath = new ChoreoTraj(
-	    "NewPath",
+    public static final ChoreoTraj TestPath = new ChoreoTraj(
+	    "TestPath",
 	    OptionalInt.empty(),
-	    1.59798,
-	    new Pose2d(3.939, 0.911, Rotation2d.fromRadians(0)),
-	    new Pose2d(2.453, 3.847, Rotation2d.fromRadians(1.571))
+	    0.66639,
+	    new Pose2d(2, 6, Rotation2d.fromRadians(0)),
+	    new Pose2d(2, 5, Rotation2d.fromRadians(0))
 	);
 
     /**
@@ -37,7 +37,7 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-    	Map.entry("NewPath", NewPath)
+    	Map.entry("TestPath", TestPath)
     );
 
     /**

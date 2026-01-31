@@ -5,6 +5,10 @@
 package frc.robot;
 
 import au.grapplerobotics.CanBridge;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -12,6 +16,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.model.MetricName;
 import frc.robot.service.MetricService;
 
@@ -25,14 +31,38 @@ import frc.robot.service.MetricService;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer = null;
-
+  private RobotContainer r = null;
+    private final AutoChooser autoChooser;
+  public AutoRoutine exampleRoutine() {
+      AutoRoutine routine = r.autoFactory.newRoutine("test");
+      AutoTrajectory startToEnd = routine.trajectory("TestPath");
+      routine.active().onTrue(
+          Commands.sequence(
+              startToEnd.resetOdometry(),
+              startToEnd.cmd()
+          )
+      );
+      return routine;
+    }
   /**
    * This function is run when the robot is first started up and should be used
    * for any
    * initialization code.
    */
   public Robot() {
+    autoChooser = new AutoChooser();
+
+        // Add options to the chooser
+        autoChooser.addRoutine("Example Routine", this::exampleRoutine);
+        // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);
+
+        // Put the auto chooser on the dashboard
+        SmartDashboard.putData("[Robot]Auto Chooser", autoChooser);
+
+        // Schedule the selected auto during the autonomous period
+            RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
+
     CanBridge.runTCP();
   }
 
@@ -43,7 +73,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    r = new RobotContainer();
   }
 
   /**
@@ -58,8 +88,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    if (m_robotContainer != null) {
-      m_robotContainer.Periodic();
+    if (r != null) {
+      r.Periodic();
     }
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
@@ -91,27 +121,27 @@ public class Robot extends TimedRobot {
    * This autonomous runs the autonomous command selected by your
    * {@link RobotContainer} class.
    */
-  @Override
-  public void autonomousInit() {
-    if (m_robotContainer != null) {
-      MetricService.publish(MetricName.AUTO_STATE, 1.0);
-      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  // @Override
+  // public void autonomousInit() {
+  //   if (m_robotContainer != null) {
+  //     MetricService.publish(MetricName.AUTO_STATE, 1.0);
+  //     m_robotContainer.getAutonomousCommand();
 
-      // schedule the autonomous command (example)
-      if (m_autonomousCommand != null) {
-        m_autonomousCommand.schedule();
-      }
-    }
-  }
+  //     // schedule the autonomous command (example)
+  //     if (m_autonomousCommand != null) {
+  //       m_autonomousCommand.schedule();
+  //     }
+  //   }
+  // }
 
-  @Override
-  public void autonomousExit() {
-    MetricService.publish(MetricName.AUTO_STATE, 0.0);
-    super.autonomousExit();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
+  // @Override
+  // public void autonomousExit() {
+  //   MetricService.publish(MetricName.AUTO_STATE, 0.0);
+  //   super.autonomousExit();
+  //   if (m_autonomousCommand != null) {
+  //     m_autonomousCommand.cancel();
+  //   }
+  // }
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -139,8 +169,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (m_robotContainer != null) {
-      m_robotContainer.teleopPeriodic();
+    if (r != null) {
+      r.teleopPeriodic();
     }
   }
 

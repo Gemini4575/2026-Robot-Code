@@ -20,10 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.driving.AlineWheels;
@@ -54,7 +56,10 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -95,8 +100,7 @@ public class RobotContainer {
       .or(new JoystickButton(operator, START_BUTTON));
 
   /* Pathplanner stuff */
-  private final SendableChooser<Command> PathplannerautoChoosers;
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> PathplannerautoChoosers;
 
   /* Subsystems */
   private final ShooterSubsystem S = new ShooterSubsystem();
@@ -104,7 +108,9 @@ public class RobotContainer {
   private Vision V;
   private final Lidar lidar = new Lidar();
 
-  private final AutoFactory autoFactory;
+  public final AutoFactory autoFactory;
+  
+    
 
 
   private final LaserCan lc;
@@ -129,27 +135,26 @@ public class RobotContainer {
     lc = initLaserCAN();
 
     
-
-    SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
-    SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
-    NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
-    NamedCommands.registerCommand("Stop", new Stop(D));
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      NamedCommands.registerCommand("Reset Location to 0,0,0 Red",
-        new InstantCommand(() -> D.resetPose(new Pose2d(16.54-2.763,8.07-3.306, new Rotation2d(Units.degreesToRadians(-20))))));
-    } else {
-      NamedCommands.registerCommand("Reset Location to 0,0,0 Blue",
-        new InstantCommand(() -> D.resetPose(new Pose2d(2.763,3.306, new Rotation2d(Units.degreesToRadians(20))))));
-    }
-    NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
-            11.914,
-            4.051,
-            () -> 0,
-            () -> 0));
-    PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
-    SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
-    PathfindingCommand.warmupCommand().schedule();
+    // SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
+    // SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
+    // NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
+    // NamedCommands.registerCommand("Stop", new Stop(D));
+    // if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //   NamedCommands.registerCommand("Reset Location to 0,0,0 Red",
+    //     new InstantCommand(() -> D.resetPose(new Pose2d(16.54-2.763,8.07-3.306, new Rotation2d(Units.degreesToRadians(-20))))));
+    // } else {
+    //   NamedCommands.registerCommand("Reset Location to 0,0,0 Blue",
+    //     new InstantCommand(() -> D.resetPose(new Pose2d(2.763,3.306, new Rotation2d(Units.degreesToRadians(20))))));
+    // }
+    // NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
+    //         11.914,
+    //         4.051,
+    //         () -> 0,
+    //         () -> 0));
+    // PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
+    // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
+    // SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
+    // PathfindingCommand.warmupCommand().schedule();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -243,8 +248,5 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // return new WaitCommand(1000);
-    return autoFactory.trajectoryCmd("NewPath");
-  }
+
 }
