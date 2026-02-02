@@ -5,11 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -34,12 +31,10 @@ import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
-import frc.robot.commands.driving.TimedTestWheelTurn;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
-import frc.robot.subsystems.pathfinding.Lidar;
 import frc.robot.subsystems.pathfinding.Vision;
 import frc.robot.subsystems.topDeck.ShooterSubsystem;
 
@@ -47,7 +42,6 @@ import static frc.robot.Constants.JoystickConstants.*;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -95,13 +89,15 @@ public class RobotContainer {
 
   /* Pathplanner stuff */
   private final SendableChooser<Command> PathplannerautoChoosers;
+  @SuppressWarnings("unused")
   private final SendableChooser<Command> autoChooser;
 
   /* Subsystems */
+  @SuppressWarnings("unused")
   private final ShooterSubsystem S = new ShooterSubsystem();
   private final DrivetrainIO D = new DrivetrainIO();
   private Vision V;
-  private final Lidar lidar = new Lidar();
+  // private final Lidar lidar = new Lidar();
 
   private final LaserCan lc;
 

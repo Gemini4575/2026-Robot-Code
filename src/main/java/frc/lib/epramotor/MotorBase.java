@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 public class MotorBase {

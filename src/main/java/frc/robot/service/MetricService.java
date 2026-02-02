@@ -3,7 +3,6 @@ package frc.robot.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
