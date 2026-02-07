@@ -3,11 +3,13 @@ package frc.robot.subsystems.topDeck;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -25,42 +27,58 @@ public class ShooterSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
 
-    private final SparkMax shooterMotor;
-    private final RelativeEncoder encoder;
-    private final SparkClosedLoopController pidController;
+    private final SparkMax shooterMotor1;
+    private final SparkMax shooterMotor2;
+    private final RelativeEncoder encoder1;
+    private final RelativeEncoder encoder2;
+    private final SparkClosedLoopController pidController1;
+    private final SparkClosedLoopController pidController2;
 
     public ShooterSubsystem() {
-        shooterMotor = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
-        encoder = shooterMotor.getEncoder();
-        pidController = shooterMotor.getClosedLoopController();
+        shooterMotor1 = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        encoder1 = shooterMotor1.getEncoder();
+        encoder2 = shooterMotor2.getEncoder();
+        pidController1 = shooterMotor1.getClosedLoopController();
+        pidController2 = shooterMotor2.getClosedLoopController();
 
         configureMotor();
     }
 
-    @SuppressWarnings("removal")
     private void configureMotor() {
-        SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig config1 = new SparkMaxConfig();
+        SparkMaxConfig config2 = new SparkMaxConfig();
+
+        config1.disableFollowerMode();
+        config2.disableFollowerMode();
 
         // PID configuration for velocity control (Slot 0)
-        config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
-        config.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
+        config1.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
+        config2.closedLoop.pid(0.0001, 0.0, 0.0);
+        config1.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        config2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         // Motor configuration
-        config.idleMode(SparkMaxConfig.IdleMode.kCoast);
-        config.smartCurrentLimit(40); // Current limit in amps
+        config1.idleMode(IdleMode.kCoast);
+        config2.idleMode(IdleMode.kCoast);
+        config1.smartCurrentLimit(40); // Current limit in amps
+        config2.smartCurrentLimit(40);
 
         // Optional: Set voltage compensation
-        config.voltageCompensation(12.0);
+        config1.voltageCompensation(12.0);
+        config2.voltageCompensation(12.0);
 
         // Apply configuration
-        shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterMotor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterMotor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     /**
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        pidController.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
+        pidController1.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
+        pidController2.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
     }
 
     /**
@@ -69,14 +87,16 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param velocityRPM Target velocity in rotations per minute (RPM)
      */
     public void runShooterAtVelocity(double velocityRPM) {
-        pidController.setSetpoint(velocityRPM, ControlType.kVelocity);
+        pidController1.setSetpoint(velocityRPM, ControlType.kVelocity);
+        pidController2.setSetpoint(velocityRPM, ControlType.kVelocity);
     }
 
     /**
      * Stops the shooter motor
      */
     public void stopShooter() {
-        shooterMotor.stopMotor();
+        shooterMotor1.stopMotor();
+        shooterMotor2.stopMotor();
     }
 
     /**
@@ -84,8 +104,12 @@ public class ShooterSubsystem extends SubsystemBase {
      * 
      * @return Current velocity in rotations per minute (RPM)
      */
-    public double getVelocity() {
-        return encoder.getVelocity();
+    public double getVelocity1() {
+        return encoder1.getVelocity();
+    }
+
+    public double getVelocity2() {
+        return encoder2.getVelocity();
     }
 
     /**
@@ -95,34 +119,8 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public boolean atTargetVelocity() {
         double tolerance = 100.0; // RPM tolerance
-        return Math.abs(getVelocity() - TARGET_VELOCITY_RPS) < tolerance;
-    }
-
-    /**
-     * Gets the motor temperature
-     * 
-     * @return Temperature in Celsius
-     */
-    public double getTemperature() {
-        return shooterMotor.getMotorTemperature();
-    }
-
-    /**
-     * Gets the motor current draw
-     * 
-     * @return Current in Amps
-     */
-    public double getCurrent() {
-        return shooterMotor.getOutputCurrent();
-    }
-
-    /**
-     * Checks if motor is operating within safe parameters
-     * 
-     * @return true if motor is healthy
-     */
-    public boolean isMotorHealthy() {
-        return getTemperature() < 80.0 && getCurrent() < 35.0;
+        return (Math.abs(getVelocity1() - TARGET_VELOCITY_RPS) < tolerance)
+                && (Math.abs(getVelocity2() - TARGET_VELOCITY_RPS) < tolerance);
     }
 
     @Override
