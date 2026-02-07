@@ -17,7 +17,7 @@ public class IntakeSubystem extends SubsystemBase {
     private SparkMax slider2;
 
     public IntakeSubystem() {
-        intakeMotor = new SparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless); // Assuming CAN ID 10 for the intake motor
+        intakeMotor = new SparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
         slider1 = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushed);
         slider2 = new SparkMax(INTAKE_SLIDER2_ID, MotorType.kBrushed);
         configMotors();
@@ -27,7 +27,7 @@ public class IntakeSubystem extends SubsystemBase {
         SparkBaseConfig intakeMotorConfig = new SparkMaxConfig();
         SparkBaseConfig sliderConfig = new SparkMaxConfig();
         intakeMotorConfig.smartCurrentLimit(30, 30);
-        intakeMotorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
+        intakeMotorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kCoast);
         intakeMotorConfig.inverted(false);
         intakeMotorConfig.disableFollowerMode();
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -36,6 +36,7 @@ public class IntakeSubystem extends SubsystemBase {
         sliderConfig.inverted(false);
         sliderConfig.disableFollowerMode();
         slider1.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        sliderConfig.inverted(true);
         slider2.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -64,7 +65,10 @@ public class IntakeSubystem extends SubsystemBase {
     public void stopSliders() {
         slider1.set(0);
         slider2.set(0);
-    }//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   d                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               d                                      TDOD
-
-
+    }
+    
+    public void testSliders(double JoystickValue) {
+        slider1.set(JoystickValue);
+        slider2.set(JoystickValue);
+    }
 }

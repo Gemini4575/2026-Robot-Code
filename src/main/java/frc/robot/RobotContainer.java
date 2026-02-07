@@ -31,15 +31,20 @@ import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
+import frc.robot.commands.intake.Intake;
+import frc.robot.commands.intake.Outake;
+import frc.robot.commands.intake.TestSliders;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.subsystems.pathfinding.Vision;
+import frc.robot.subsystems.topDeck.IntakeSubystem;
 import frc.robot.subsystems.topDeck.ShooterSubsystem;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -95,6 +100,7 @@ public class RobotContainer {
   /* Subsystems */
   @SuppressWarnings("unused")
   private final ShooterSubsystem S = new ShooterSubsystem();
+  private final IntakeSubystem I = new IntakeSubystem();
   private final DrivetrainIO D = new DrivetrainIO();
   private Vision V;
   // private final Lidar lidar = new Lidar();
@@ -157,8 +163,8 @@ public class RobotContainer {
             () -> -driver.getRawAxis(RIGHT_Y_AXIS),
             Slow,
             () -> driver.getPOV()));
-    new JoystickButton(driver, RED_BUTTON)
-        .onTrue(new Spin180(D).asProxy());
+    // new JoystickButton(driver, RED_BUTTON)
+    //     .onTrue(new Spin180(D).asProxy());
 
     // new JoystickButton(driver, GREEN_BUTTON)
     // .onTrue(new FaceTowardsCoordinates(
@@ -168,29 +174,38 @@ public class RobotContainer {
     //   () -> -driver.getRawAxis(LEFT_Y_AXIS), 
     //   () -> driver.getRawAxis(LEFT_X_AXIS)));
 
-    new JoystickButton(driver, YELLOW_BUTTON).onTrue(new TimedTestDrive(D, 2000, 0.5));
+    // new JoystickButton(driver, YELLOW_BUTTON).onTrue(new TimedTestDrive(D, 2000, 0.5));
     // new JoystickButton(driver, GREEN_BUTTON).onTrue(new TimedTestWheelTurn(D,
     // 5000));
 
-    new JoystickButton(driver, GREEN_BUTTON)
-    .onTrue(new SequentialCommandGroup(
-        new ResetLocationCommand(D, Pose2d.kZero),
-        new WaitCommand(5),
-        new DriveToLocation(D, lc,
-            new PathContainer().addWaypoint(new Pose2d(2.196, 1.994,
-                Pose2d.kZero.getRotation()))
-        ),
-        new FaceTowardsCoordinates(D,
-            11.914,
-            4.051,
-            () -> 0,
-            () -> 0)
-    ));
+    // new JoystickButton(driver, GREEN_BUTTON)
+    // .onTrue(new SequentialCommandGroup(
+    //     new ResetLocationCommand(D, Pose2d.kZero),
+    //     new WaitCommand(5),
+    //     new DriveToLocation(D, lc,
+    //         new PathContainer().addWaypoint(new Pose2d(2.196, 1.994,
+    //             Pose2d.kZero.getRotation()))
+    //     ),
+    //     new FaceTowardsCoordinates(D,
+    //         11.914,
+    //         4.051,
+    //         () -> 0,
+    //         () -> 0)
+    // ));
+
+    new JoystickButton(driver, RIGHT_BUMPER)
+        .whileTrue(new Intake(I));
+    
+        new JoystickButton(driver, LEFT_BUMPER)
+            .onTrue(new Outake(I));
+
+    I.setDefaultCommand(new TestSliders(I, () -> operator.getRawAxis(LEFT_X_AXIS)));
 
     System.out.println("Ended configureBindings()");
   }
 
   public void teleopPeriodic() {
+    I.testSliders(operator.getAxisType(LEFT_X_AXIS));
   }
 
   public void Periodic() {
