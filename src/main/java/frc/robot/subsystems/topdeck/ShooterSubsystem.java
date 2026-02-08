@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ShooterConstants.*;
@@ -58,13 +59,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
         // PID configuration for velocity control (Slot 0)
-        config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
-        config2.closedLoop.pid(0.0001, 0.0, 0.0);
+        config.closedLoop.pid(0.003, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
+        config2.closedLoop.pid(0.003, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
         config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         config2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-        config2.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
-        config2.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
 
         // Motor configuration
         config.idleMode(IdleMode.kCoast);
@@ -135,13 +134,13 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         // Add SmartDashboard updates here for debugging
-        /*
-         * SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
-         * SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
-         * SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
-         * SmartDashboard.putNumber("Shooter/Temp C", getTemperature());
-         * SmartDashboard.putNumber("Shooter/Current A", getCurrent());
-         * SmartDashboard.putBoolean("Shooter/Healthy", isMotorHealthy());
-         */
+        
+         SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
+        //  SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
+        //  SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
+        //  SmartDashboard.putNumber("Shooter/Temp C", getTemperature());
+        //  SmartDashboard.putNumber("Shooter/Current A", getCurrent());
+        //  SmartDashboard.putBoolean("Shooter/Healthy", isMotorHealthy());
+         
     }
 }

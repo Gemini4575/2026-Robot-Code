@@ -19,7 +19,7 @@ public class Shoot extends Command {
 
     @Override
     public void initialize() {
-        shooter.runShooter();
+        shooter.runShooterAtVelocity(3000);
     }
 
     @Override
