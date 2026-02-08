@@ -172,12 +172,13 @@ public final class Constants {
         }
 
         public static final class BeamBreakConstants {
-                public static final int BEAM_BREALK_SENSOR_PORT = 0;       
+                public static final int BEAM_BREAK1 = 0;
+                public static final int BEAM_BREAK2 = 1;
         }
 
         public static final class LimitSwitchConstants {
                 public static final int LIMIT_SWITCH1_PORT = 1;
-                public static final int LIMIT_SWITCH2_PORT = 2;       
+                public static final int LIMIT_SWITCH2_PORT = 2;
         }
 
         public static final class AdvancerConstants {

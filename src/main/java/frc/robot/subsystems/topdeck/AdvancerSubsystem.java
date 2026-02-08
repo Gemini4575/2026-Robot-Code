@@ -26,7 +26,7 @@ public class AdvancerSubsystem extends SubsystemBase {
     private final SparkMax AdavancerMotor;
 
     public AdvancerSubsystem() {
-        AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushless);
+        AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushed);
         SparkBaseConfig AdvancerMotorConfig = new SparkMaxConfig();
         AdvancerMotorConfig.smartCurrentLimit(40, 40);
         AdvancerMotorConfig.disableFollowerMode();
@@ -48,7 +48,6 @@ public class AdvancerSubsystem extends SubsystemBase {
     }
 
     public void advance() {
-        AdavancerMotor.set(ADVANCER_SPEED);
         AdavancerMotor.set(ADVANCER_SPEED);
     }
 }

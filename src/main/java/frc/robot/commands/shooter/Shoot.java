@@ -40,6 +40,6 @@ public class Shoot extends Command {
 
     @Override
     public boolean isFinished() {
-        return beamBreak.get() == false;
+        return beamBreak.getShooter() == false;
     }
 }
