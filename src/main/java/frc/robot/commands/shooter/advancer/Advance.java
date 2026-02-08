@@ -18,6 +18,7 @@ public class Advance extends Command {
 
     @Override
     public boolean isFinished() {
+        advancer.stopAdvancer();
         return false;
     }
 

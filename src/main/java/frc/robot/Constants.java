@@ -188,7 +188,7 @@ public final class Constants {
         }
 
         public static final class IntakeConstants {
-                public static final int INTAKE_MOTOR_ID = 3;
+                public static final int INTAKE_MOTOR_ID = 7;
                 public static final int INTAKE_SLIDER1_ID = 5;
                 public static final int INTAKE_SLIDER2_ID = 6;
                 public static final double INTAKE_SPEED = 1.0;

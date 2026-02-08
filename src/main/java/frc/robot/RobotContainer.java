@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.advancer.Advance;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.driving.AlineWheels;
 import frc.robot.commands.driving.DriveToLocation;
@@ -30,11 +31,14 @@ import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.subsystems.pathfinding.Vision;
+import frc.robot.subsystems.topDeck.AdvancerSubsystem;
+import frc.robot.subsystems.topDeck.BeamBreak;
 import frc.robot.subsystems.topDeck.IntakeSubystem;
 import frc.robot.subsystems.topDeck.ShooterSubsystem;
 
@@ -97,6 +101,8 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final ShooterSubsystem S = new ShooterSubsystem();
   private final IntakeSubystem I = new IntakeSubystem();
+  private final BeamBreak beamBreak = new BeamBreak();
+  private final AdvancerSubsystem A = new AdvancerSubsystem();
   private final DrivetrainIO D = new DrivetrainIO();
   private Vision V;
   // private final Lidar lidar = new Lidar();
@@ -189,8 +195,13 @@ public class RobotContainer {
     //         () -> 0)
     // ));
 
-    I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getRawButton(GREEN_BUTTON), () -> operator.getRawButton(YELLOW_BUTTON)));
+    I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
     
+    new JoystickButton(operator, GREEN_BUTTON)
+      .whileTrue(new Shoot(S, beamBreak));
+
+    new JoystickButton(operator, RED_BUTTON)
+          .whileTrue(new Advance(A));
 
     System.out.println("Ended configureBindings()");
   }

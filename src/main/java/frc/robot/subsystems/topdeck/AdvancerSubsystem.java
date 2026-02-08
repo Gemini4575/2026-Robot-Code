@@ -40,14 +40,14 @@ public class AdvancerSubsystem extends SubsystemBase {
     }
 
     public void reverse() {
-        AdavancerMotor.set(-ADVANCER_SPEED);
+        AdavancerMotor.set(ADVANCER_SPEED);
     }
 
     public void stopAdvancer() {
-        AdavancerMotor.stopMotor();
+        AdavancerMotor.set(0);
     }
 
     public void advance() {
-        AdavancerMotor.set(ADVANCER_SPEED);
+        AdavancerMotor.set(-ADVANCER_SPEED);
     }
 }

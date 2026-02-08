@@ -1,8 +1,28 @@
 package frc.robot.commands.advancer;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.topDeck.Advancer;
+import frc.robot.subsystems.topDeck.AdvancerSubsystem;
 
 public class Advance extends Command {
-    final Advancer advancer;
+    private AdvancerSubsystem advancer;
+
+    public Advance(AdvancerSubsystem advancer) {
+        this.advancer = advancer;
+        addRequirements(advancer);
+    }
+
+    @Override
+    public void initialize() {
+        advancer.advance();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        advancer.stopAdvancer();
+    }
 }
