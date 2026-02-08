@@ -166,7 +166,8 @@ public final class Constants {
 
         public static final class ShooterConstants {
                 // Constants
-                public static final int SHOOTER_MOTOR_ID = 1;
+                public static final int SHOOTER_MOTOR_ID_RIGHT = 1;
+                public static final int SHOOTER_MOTOR_ID_LEFT = 2;
                 public static final double TARGET_VELOCITY_RPS = 98.33;
         }
 
@@ -182,14 +183,14 @@ public final class Constants {
         public static final class AdvancerConstants {
 
                 public static final double ADVANCER_SPEED = 0.5;
-                public static final int ADVANCER_MOTOR_ID = 2;
+                public static final int ADVANCER_MOTOR_ID = 3;
         }
 
         public static final class IntakeConstants {
                 public static final int INTAKE_MOTOR_ID = 3;
-                public static final int INTAKE_SLIDER1_ID = 4;
-                public static final int INTAKE_SLIDER2_ID = 5;
-                public static final double INTAKE_SPEED = 1;
+                public static final int INTAKE_SLIDER1_ID = 5;
+                public static final int INTAKE_SLIDER2_ID = 6;
+                public static final double INTAKE_SPEED = 1.0;
         }
 
 }

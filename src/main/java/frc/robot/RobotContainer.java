@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoCommandFactory;
@@ -32,8 +30,6 @@ import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.intake.Outake;
-import frc.robot.commands.intake.TestSliders;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.service.MetricService;
@@ -193,19 +189,14 @@ public class RobotContainer {
     //         () -> 0)
     // ));
 
-    new JoystickButton(driver, RIGHT_BUMPER)
-        .whileTrue(new Intake(I));
+    I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getRawButton(GREEN_BUTTON), () -> operator.getRawButton(YELLOW_BUTTON)));
     
-        new JoystickButton(driver, LEFT_BUMPER)
-            .onTrue(new Outake(I));
-
-    I.setDefaultCommand(new TestSliders(I, () -> operator.getRawAxis(LEFT_X_AXIS)));
 
     System.out.println("Ended configureBindings()");
   }
 
   public void teleopPeriodic() {
-    I.testSliders(operator.getAxisType(LEFT_X_AXIS));
+    // I.testSliders(operator.getAxisType(LEFT_X_AXIS));
   }
 
   public void Periodic() {

@@ -11,6 +11,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -26,13 +27,19 @@ public class ShooterSubsystem extends SubsystemBase {
             .getEntry();
 
     private final SparkMax shooterMotor;
+    private final SparkMax shooterMotor2;
     private final RelativeEncoder encoder;
+    private final RelativeEncoder encoder2;
     private final SparkClosedLoopController pidController;
+    private final SparkClosedLoopController pidController2;
 
     public ShooterSubsystem() {
-        shooterMotor = new SparkMax(SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        shooterMotor = new SparkMax(SHOOTER_MOTOR_ID_RIGHT, MotorType.kBrushless);
+        shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID_LEFT, MotorType.kBrushless);
         encoder = shooterMotor.getEncoder();
+        encoder2 = shooterMotor2.getEncoder();
         pidController = shooterMotor.getClosedLoopController();
+        pidController2 = shooterMotor2.getClosedLoopController();
 
         configureMotor();
     }
@@ -40,27 +47,46 @@ public class ShooterSubsystem extends SubsystemBase {
     @SuppressWarnings("removal")
     private void configureMotor() {
         SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig config2 = new SparkMaxConfig();
+
+        config.disableFollowerMode();
+        config2.disableFollowerMode();
+
+        config2.inverted(true);
+        config.inverted(false);
+
 
         // PID configuration for velocity control (Slot 0)
         config.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
         config.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
 
+        config2.closedLoop.pid(0.0001, 0.0, 0.0, ClosedLoopSlot.kSlot0); // P, I, D
+        config2.closedLoop.feedbackSensor(com.revrobotics.spark.FeedbackSensor.kPrimaryEncoder);
+
         // Motor configuration
         config.idleMode(SparkMaxConfig.IdleMode.kCoast);
         config.smartCurrentLimit(40); // Current limit in amps
 
+        config2.idleMode(SparkMaxConfig.IdleMode.kCoast);
+        config2.smartCurrentLimit(40); // Current limit in amps
+
         // Optional: Set voltage compensation
         config.voltageCompensation(12.0);
+        config2.voltageCompensation(12.0);
 
         // Apply configuration
         shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterMotor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     /**
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        pidController.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
+        // pidController.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
+        // pidController2.setSetpoint(TARGET_VELOCITY_RPS, ControlType.kVelocity);
+        shooterMotor.set(maxspeedEntry.getDouble(1.0));
+        shooterMotor2.set(maxspeedEntry.getDouble(1.0));
     }
 
     /**
@@ -70,6 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void runShooterAtVelocity(double velocityRPM) {
         pidController.setSetpoint(velocityRPM, ControlType.kVelocity);
+        pidController2.setSetpoint(velocityRPM, ControlType.kVelocity);
     }
 
     /**
@@ -77,6 +104,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void stopShooter() {
         shooterMotor.stopMotor();
+        shooterMotor2.stopMotor();
     }
 
     /**
@@ -85,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return Current velocity in rotations per minute (RPM)
      */
     public double getVelocity() {
-        return encoder.getVelocity();
+        return encoder.getVelocity() + encoder2.getVelocity() / 2.0; // Average velocity of both motors
     }
 
     /**

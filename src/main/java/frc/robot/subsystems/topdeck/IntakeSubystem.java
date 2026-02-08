@@ -32,7 +32,7 @@ public class IntakeSubystem extends SubsystemBase {
         intakeMotorConfig.disableFollowerMode();
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         sliderConfig.smartCurrentLimit(30, 30);
-        sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
+        sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kCoast);
         sliderConfig.inverted(false);
         sliderConfig.disableFollowerMode();
         slider1.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -40,11 +40,11 @@ public class IntakeSubystem extends SubsystemBase {
         slider2.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void runIntake() {
+    public void Outake() {
         intakeMotor.set(INTAKE_SPEED);
     }
 
-    public void Outake() {
+    public void Intake() {
         intakeMotor.set(-INTAKE_SPEED);
     }
 
@@ -53,12 +53,12 @@ public class IntakeSubystem extends SubsystemBase {
     }
 
     public void extendIntake() {
-        slider1.set(0.5);
+        slider1.set(0.4);
         slider2.set(0.5);
     }
 
     public void retractIntake() {
-        slider1.set(-0.5);
+        slider1.set(-0.4);
         slider2.set(-0.5);
     }
 
