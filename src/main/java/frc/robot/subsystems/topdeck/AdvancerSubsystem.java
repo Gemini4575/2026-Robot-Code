@@ -24,10 +24,13 @@ public class AdvancerSubsystem extends SubsystemBase {
             .getEntry();
     private double ADVANCER_SPEED = maxspeedEntry.getDouble(1.0);
     private final SparkMax AdavancerMotor;
+    private final SparkMax AdvancerRoller;
 
     public AdvancerSubsystem() {
-        AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushed);
+        AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushless);
+        AdvancerRoller = new SparkMax(ADVANCER_ROLLER_ID, MotorType.kBrushless);  
         SparkBaseConfig AdvancerMotorConfig = new SparkMaxConfig();
+        
         AdvancerMotorConfig.smartCurrentLimit(40, 40);
         AdvancerMotorConfig.disableFollowerMode();
 
@@ -37,17 +40,30 @@ public class AdvancerSubsystem extends SubsystemBase {
         AdvancerMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
 
         AdavancerMotor.configure(AdvancerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        SparkBaseConfig AdvancerRollerConfig = new SparkMaxConfig();
+        AdvancerRollerConfig.smartCurrentLimit(10, 10);
+        AdvancerRollerConfig.disableFollowerMode();
+
+        AdvancerRollerConfig.idleMode(IdleMode.kBrake);
+
+        AdvancerRollerConfig.signals.primaryEncoderPositionAlwaysOn(true);
+        AdvancerRollerConfig.signals.primaryEncoderPositionPeriodMs(5);
+
+        AdvancerRoller.configure(AdvancerRollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void reverse() {
-        AdavancerMotor.set(ADVANCER_SPEED);
+        AdavancerMotor.set(1);
+        // AdvancerRoller.set(ADVANCER_ROLLER_SPEED);
     }
 
     public void stopAdvancer() {
         AdavancerMotor.set(0);
+        AdvancerRoller.set(0);
     }
 
     public void advance() {
-        AdavancerMotor.set(-ADVANCER_SPEED);
+        AdavancerMotor.set(-1);
+        // AdvancerRoller.set(-ADVANCER_ROLLER_SPEED);
     }
 }

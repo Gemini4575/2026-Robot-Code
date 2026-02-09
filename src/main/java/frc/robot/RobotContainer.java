@@ -198,10 +198,10 @@ public class RobotContainer {
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
     
     new JoystickButton(operator, GREEN_BUTTON)
-      .whileTrue(new Shoot(S, beamBreak));
+      .whileTrue(new Shoot(S, A, beamBreak));
 
-    new JoystickButton(operator, RED_BUTTON)
-          .whileTrue(new Advance(A));
+    // new JoystickButton(operator, RED_BUTTON)
+    //       .whileTrue(new Advance(A));
 
     System.out.println("Ended configureBindings()");
   }

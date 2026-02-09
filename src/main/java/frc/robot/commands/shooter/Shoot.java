@@ -7,36 +7,44 @@ import frc.robot.subsystems.topDeck.ShooterSubsystem;
 
 public class Shoot extends Command {
     private final ShooterSubsystem shooter;
-    // private final AdvancerSubsystem advancer;
+    private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
 
-    public Shoot(ShooterSubsystem shooterSubsystem, /*AdvancerSubsystem advancerSubsystem*/ BeamBreak beamBreak) {
+    public Shoot(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem, BeamBreak beamBreak) {
         this.shooter = shooterSubsystem;
-        // this.advancer = advancerSubsystem;
+        this.advancer = advancerSubsystem;
         this.beamBreak = beamBreak;
-        addRequirements(shooterSubsystem, beamBreak);
+        addRequirements(shooterSubsystem, advancerSubsystem, beamBreak);
     }
+
+    private boolean firstRun = true;
+
 
     @Override
     public void initialize() {
-        shooter.runShooterAtVelocity(3000);
+        firstRun = true;
     }
 
     @Override
     public void execute() {
-        // shooter.runShooterAtVelocity(999);
-        // if (shooter.atTargetVelocity()) {
-        //     advancer.advance();
-        // } else {
-        //     advancer.stopAdvancer();
-        // }
         shooter.runShooter();
+        if (shooter.getVelocity() > 6000 && firstRun) {
+            advancer.advance();
+            firstRun = false;
+        } else {
+            advancer.stopAdvancer();
+        }
+
+        if(!firstRun){
+            advancer.advance();
+        }
+        
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.stopShooter();
-        // advancer.stopAdvancer();
+        advancer.stopAdvancer();
     }
 
     @Override

@@ -168,7 +168,8 @@ public final class Constants {
                 // Constants
                 public static final int SHOOTER_MOTOR_ID_RIGHT = 1;
                 public static final int SHOOTER_MOTOR_ID_LEFT = 2;
-                public static final double TARGET_VELOCITY_RPS = 98.33;
+                public static final double TARGET_VELOCITY_RPM = 100; 
+                public static final double MOTOR_MAX_RPM = 6300.0;
         }
 
         public static final class BeamBreakConstants {
@@ -183,13 +184,17 @@ public final class Constants {
 
         public static final class AdvancerConstants {
 
-                public static final double ADVANCER_SPEED = 0.5;
+                public static final double ADVANCER_SPEED = 1.0;
+                public static final double ADVANCER_ROLLER_SPEED = -0.5;
                 public static final int ADVANCER_MOTOR_ID = 3;
+                public static final int ADVANCER_ROLLER_ID = 8;
         }
 
         public static final class IntakeConstants {
                 public static final int INTAKE_MOTOR_ID = 7;
+                /**Left */
                 public static final int INTAKE_SLIDER1_ID = 5;
+                /**Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
                 public static final double INTAKE_SPEED = 1.0;
         }
