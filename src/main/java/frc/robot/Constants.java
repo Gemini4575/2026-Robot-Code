@@ -196,7 +196,12 @@ public final class Constants {
                 public static final int INTAKE_SLIDER1_ID = 5;
                 /**Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
-                public static final double INTAKE_SPEED = 1.0;
+                public static final double INTAKE_SPEED = 0.325;
+        }
+
+        public static final class HoodConstants {
+                public static final int HOOD_MOTOR_ID = 9;
+                                
         }
 
 }
