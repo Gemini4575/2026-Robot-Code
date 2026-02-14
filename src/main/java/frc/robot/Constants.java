@@ -201,7 +201,17 @@ public final class Constants {
 
         public static final class HoodConstants {
                 public static final int HOOD_MOTOR_ID = 9;
-                                
+                public static final boolean HOOD_INVERTED = false;
+                public static final double HUB_X_METERS = 11.914;
+                public static final double HUB_Y_METERS = 4.051;
+                public static final double HOOD_MIN_DISTANCE_METERS = 1.0;
+                public static final double HOOD_MAX_DISTANCE_METERS = 6.0;
+                public static final double HOOD_MIN_ROTATIONS = 0.0;
+                public static final double HOOD_MAX_ROTATIONS = 20.0;
+                public static final double HOOD_HOME_ROTATIONS = 0.0;
+                public static final double HOOD_KP = 0.08;
+                public static final double HOOD_MAX_OUTPUT = 0.35;
+                public static final double HOOD_POSITION_TOLERANCE_ROTATIONS = 0.25;
         }
 
 }

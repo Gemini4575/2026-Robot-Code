@@ -1,20 +1,15 @@
-package frc.robot.subsystems.topDeck;
+package frc.robot.subsystems.topdeck;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -25,15 +20,15 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShooterSubsystem extends SubsystemBase {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-    GenericEntry maxspeedEntry = tab
-            .add("Max Speed Shooter", 1)
-            .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
+    GenericEntry targetVelocityEntry = tab
+            .add("Target Velocity RPM", TARGET_VELOCITY_RPM)
+            .withWidget(BuiltInWidgets.kNumberSlider)
             .getEntry();
-    GenericEntry Vortex1Entry = tab
-            .add("Target Velocity Shooter", 0)
+    GenericEntry motor1VelocityEntry = tab
+            .add("Motor 1 Velocity", 0)
             .getEntry();
-    GenericEntry Vortex2Entry = tab
-            .add("Target Velocity Shooter 2", 0)
+    GenericEntry motor2VelocityEntry = tab
+            .add("Motor 2 Velocity", 0)
             .getEntry();
 
     private final SparkMax shooterMotor;
@@ -43,11 +38,19 @@ public class ShooterSubsystem extends SubsystemBase {
     private PIDController pidController;
     private PIDController pidController2;
 
+    // PID Constants - tune these!
+    private static final double kP = 0.0001;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+
     public ShooterSubsystem() {
         shooterMotor = new SparkMax(SHOOTER_MOTOR_ID_RIGHT, MotorType.kBrushless);
         shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID_LEFT, MotorType.kBrushless);
         encoder = shooterMotor.getEncoder();
         encoder2 = shooterMotor2.getEncoder();
+
+        pidController = new PIDController(kP, kI, kD);
+        pidController2 = new PIDController(kP, kI, kD);
 
         configureMotor();
     }
@@ -62,24 +65,14 @@ public class ShooterSubsystem extends SubsystemBase {
         config2.inverted(true);
         config.inverted(false);
 
-        pidController = new PIDController(0.00005, 0, 0);
-        pidController2 = new PIDController(0.00005, 0, 0);
-
-        pidController.setIZone(0.06);
-        pidController2.setIZone(0.06);
-
-        // Motor configuration
         config.idleMode(IdleMode.kCoast);
         config2.idleMode(IdleMode.kCoast);
-        config.smartCurrentLimit(40); // Current limit in amps
+        config.smartCurrentLimit(40);
         config2.smartCurrentLimit(40);
 
-
-        // Optional: Set voltage compensation
         config.voltageCompensation(12.0);
         config2.voltageCompensation(12.0);
 
-        // Apply configuration
         shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         shooterMotor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -88,18 +81,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        // pidController.calculate(TARGET_VELOCITY_RPS, ControlType.kVelocity);
-        // pidController2.calculate(TARGET_VELOCITY_RPS, ControlType.kVelocity);
-        shooterMotor.set(maxspeedEntry.getDouble(1.0));
-        shooterMotor2.set(maxspeedEntry.getDouble(1.0));
-    }
-
-      private double getCurrentSpeedAsPercentage1() {
-        return encoder.getVelocity() / MOTOR_MAX_RPM;
-    }
-
-      private double getCurrentSpeedAsPercentage2() {
-        return encoder2.getVelocity() / MOTOR_MAX_RPM;
+        runShooterAtVelocity(TARGET_VELOCITY_RPM);
     }
 
     /**
@@ -108,10 +90,13 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param velocityRPM Target velocity in rotations per minute (RPM)
      */
     public void runShooterAtVelocity(double velocityRPM) {
-        // shooterMotor.set(getCurrentSpeedAsPercentage1() + pidController.calculate(getCurrentSpeedAsPercentage1(), velocityRPM));
-        // shooterMotor2.set(getCurrentSpeedAsPercentage2() + pidController2.calculate(getCurrentSpeedAsPercentage2(), velocityRPM));
-            shooterMotor.set(maxspeedEntry.getDouble(1.0));
-            shooterMotor2.set(maxspeedEntry.getDouble(1.0));
+        // Calculate PID output for each motor
+        double output1 = pidController.calculate(encoder.getVelocity(), velocityRPM);
+        double output2 = pidController2.calculate(encoder2.getVelocity(), velocityRPM);
+        
+        // Set motor outputs
+        shooterMotor.set(output1);
+        shooterMotor2.set(output2);
     }
 
     /**
@@ -128,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return Current velocity in rotations per minute (RPM)
      */
     public double getVelocity() {
-        return encoder.getVelocity() + encoder2.getVelocity() / 2.0; // Average velocity of both motors
+        return (encoder.getVelocity() + encoder2.getVelocity()) / 2.0;
     }
 
     /**
@@ -143,18 +128,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
-        // Add SmartDashboard updates here for debugging
-        
-         SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
-        Vortex1Entry.setDouble(shooterMotor.get());
-        Vortex2Entry.setDouble(shooterMotor2.get());
-        
-        //  SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
-        //  SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
-        //  SmartDashboard.putNumber("Shooter/Temp C", getTemperature());
-        //  SmartDashboard.putNumber("Shooter/Current A", getCurrent());
-        //  SmartDashboard.putBoolean("Shooter/Healthy", isMotorHealthy());
-         
+        SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
+        motor1VelocityEntry.setDouble(encoder.getVelocity());
+        motor2VelocityEntry.setDouble(encoder2.getVelocity());
+        SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
+        SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
     }
 }

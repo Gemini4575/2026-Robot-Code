@@ -166,6 +166,13 @@ public class DrivetrainIO extends SubsystemBase {
         (c.vyMetersPerSecond / MaxMetersPersecond), (c.omegaRadiansPerSecond / kModuleMaxAngularVelocity), false);
   }
 
+  public void driveRobotRelativeMetersPerSecond(ChassisSpeeds speeds) {
+    var discretizedSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+    var swerveModuleStates = m_kinematics.toSwerveModuleStates(discretizedSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, MaxMetersPersecond);
+    setModuleStates(swerveModuleStates);
+  }
+
   int timeDelay = 0;
 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -261,7 +268,7 @@ public class DrivetrainIO extends SubsystemBase {
   this::getPose, // Robot pose supplier
   this::resetPose, // Method to reset odometry (will be called if your auto hasa starting pose)
   this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-  (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will  drive the robot given ROBOT
+  (speeds, feedforwards) -> driveRobotRelativeMetersPerSecond(speeds), // Method that will  drive the robot given ROBOT
   // RELATIVE
   // ChassisSpeeds. Also optionally outputs
   // individual
@@ -289,6 +296,10 @@ public class DrivetrainIO extends SubsystemBase {
   }
 
   public PathConstraints getChassisConstrains() {
+    return getChassisConstraints();
+  }
+
+  public PathConstraints getChassisConstraints() {
     return new PathConstraints(
         3.000,
         3.000,

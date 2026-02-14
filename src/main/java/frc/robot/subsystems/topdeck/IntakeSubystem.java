@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topDeck;
+package frc.robot.subsystems.topdeck;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;

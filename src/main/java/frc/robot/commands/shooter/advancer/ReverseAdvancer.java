@@ -1,7 +1,7 @@
 package frc.robot.commands.shooter.advancer;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.topDeck.AdvancerSubsystem;
+import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 
 public class ReverseAdvancer extends Command {
     private final AdvancerSubsystem advancer;
