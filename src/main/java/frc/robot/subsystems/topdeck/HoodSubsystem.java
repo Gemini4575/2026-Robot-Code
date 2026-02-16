@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck;
+package frc.robot.subsystems.topDeck;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -79,4 +79,5 @@ public class HoodSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Hood/PositionRotations", getPositionRotations());
         SmartDashboard.putNumber("Hood/TargetRotations", getTargetRotations());
     }
+
 }

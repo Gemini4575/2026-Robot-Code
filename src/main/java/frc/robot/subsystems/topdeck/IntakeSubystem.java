@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.IntakeConstants.*;
 
@@ -53,12 +54,12 @@ public class IntakeSubystem extends SubsystemBase {
     }
 
     public void extendIntake() {
-        slider1.set(0.4);
+        slider1.set(0.5);
         slider2.set(0.5);
     }
 
     public void retractIntake() {
-        slider1.set(-0.4);
+        slider1.set(-0.5);
         slider2.set(-0.5);
     }
 
@@ -70,5 +71,11 @@ public class IntakeSubystem extends SubsystemBase {
     public void testSliders(double JoystickValue) {
         slider1.set(JoystickValue);
         slider2.set(JoystickValue);
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Intake Motor Current", intakeMotor.getEncoder().getVelocity());
     }
 }
