@@ -22,8 +22,7 @@ public class AdvancerSubsystem extends SubsystemBase {
             .add("Max Speed Advancer", 1.0)
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
-    private double ADVANCER_SPEED = maxspeedEntry.getDouble(1.0);
-    private final SparkMax AdavancerMotor;
+            private final SparkMax AdavancerMotor;
     private final SparkMax AdvancerRoller;
 
     public AdvancerSubsystem() {
@@ -53,7 +52,7 @@ public class AdvancerSubsystem extends SubsystemBase {
     }
 
     public void reverse() {
-        AdavancerMotor.set(1);
+        AdavancerMotor.set(ADVANCER_SPEED);
         // AdvancerRoller.set(ADVANCER_ROLLER_SPEED);
     }
 
@@ -63,7 +62,7 @@ public class AdvancerSubsystem extends SubsystemBase {
     }
 
     public void advance() {
-        AdavancerMotor.set(-1);
+        AdavancerMotor.set(-ADVANCER_SPEED);
         // AdvancerRoller.set(-ADVANCER_ROLLER_SPEED);
     }
 }
