@@ -292,10 +292,13 @@ public class SwerveModule extends SubsystemBase {
 
         final double turnOutput = turningPidController.calculate(currentAngle, state.angle.getRadians());
 
+        double targetSpeedPercentage = state.speedMetersPerSecond / SwerveConstants.MaxMetersPersecond;
+        targetSpeedPercentage = Math.max(-1.0, Math.min(1.0, targetSpeedPercentage));
+
         final double driveOutput = (currentSpeedPercentage
                 + m_drivePIDController.calculate(
                         currentSpeedPercentage,
-                        state.speedMetersPerSecond))
+                        targetSpeedPercentage))
                 * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
 
         // No FlipSpeed needed - inversion is handled in motor configuration

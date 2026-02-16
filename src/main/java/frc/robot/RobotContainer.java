@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.advancer.Advance;
@@ -34,17 +35,18 @@ import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
-import frc.robot.service.MetricService;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
+import frc.robot.service.MetricService;
 import frc.robot.subsystems.pathfinding.Vision;
-import frc.robot.subsystems.topDeck.AdvancerSubsystem;
-import frc.robot.subsystems.topDeck.BeamBreak;
-import frc.robot.subsystems.topDeck.IntakeSubystem;
-import frc.robot.subsystems.topDeck.ShooterSubsystem;
+import frc.robot.subsystems.topdeck.AdvancerSubsystem;
+import frc.robot.subsystems.topdeck.BeamBreak;
+import frc.robot.subsystems.topdeck.HoodSubsystem;
+import frc.robot.subsystems.topdeck.IntakeSubystem;
+import frc.robot.subsystems.topdeck.ShooterSubsystem;
 
 import static frc.robot.Constants.JoystickConstants.*;
+import static frc.robot.Constants.HoodConstants.*;
 
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -103,6 +105,7 @@ public class RobotContainer {
   private final IntakeSubystem I = new IntakeSubystem();
   private final BeamBreak beamBreak = new BeamBreak();
   private final AdvancerSubsystem A = new AdvancerSubsystem();
+  private final HoodSubsystem H = new HoodSubsystem();
   private final DrivetrainIO D = new DrivetrainIO();
   private Vision V;
   // private final Lidar lidar = new Lidar();
@@ -196,6 +199,8 @@ public class RobotContainer {
     // ));
 
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
+
+    H.setDefaultCommand(new RunCommand(() -> H.adjustForDistance(getDistanceToHubMeters()), H));
     
     new JoystickButton(operator, GREEN_BUTTON)
       .whileTrue(new Shoot(S, A, beamBreak));
@@ -231,6 +236,13 @@ public class RobotContainer {
           estimateContainer.estimatedPose().timestampSeconds, estimateContainer.stdDev());
       visionPoseEstimate.setRobotPose(estimateContainer.estimatedPose().estimatedPose.toPose2d());
     });
+  }
+
+  private double getDistanceToHubMeters() {
+    Pose2d pose = D.getPose();
+    double deltaX = HUB_X_METERS - pose.getX();
+    double deltaY = HUB_Y_METERS - pose.getY();
+    return Math.hypot(deltaX, deltaY);
   }
 
   /**

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topDeck;
+package frc.robot.subsystems.topdeck;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -22,7 +22,7 @@ public class AdvancerSubsystem extends SubsystemBase {
             .add("Max Speed Advancer", 1.0)
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
-            private final SparkMax AdavancerMotor;
+    private final SparkMax AdavancerMotor;
     private final SparkMax AdvancerRoller;
 
     public AdvancerSubsystem() {

@@ -3,7 +3,7 @@ package frc.robot.commands.intake;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.topDeck.IntakeSubystem;
+import frc.robot.subsystems.topdeck.IntakeSubystem;
 
 public class Intake extends Command{
     private IntakeSubystem i;

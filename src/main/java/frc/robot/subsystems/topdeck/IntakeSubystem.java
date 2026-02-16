@@ -1,5 +1,9 @@
-package frc.robot.subsystems.topDeck;
+package frc.robot.subsystems.topdeck;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
@@ -13,25 +17,27 @@ import static frc.robot.Constants.IntakeConstants.*;
 
 public class IntakeSubystem extends SubsystemBase {
 
-    private SparkMax intakeMotor;
+    private TalonFX intakeMotor;
     private SparkMax slider1;
     private SparkMax slider2;
 
     public IntakeSubystem() {
-        intakeMotor = new SparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
+        intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
         slider1 = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushed);
         slider2 = new SparkMax(INTAKE_SLIDER2_ID, MotorType.kBrushed);
         configMotors();
     }
 
     private void configMotors() {
-        SparkBaseConfig intakeMotorConfig = new SparkMaxConfig();
+        TalonFXConfiguration intakeMotorConfig = new TalonFXConfiguration();
         SparkBaseConfig sliderConfig = new SparkMaxConfig();
-        intakeMotorConfig.smartCurrentLimit(30, 30);
-        intakeMotorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kCoast);
-        intakeMotorConfig.inverted(false);
-        intakeMotorConfig.disableFollowerMode();
-        intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+        intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        intakeMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        intakeMotor.getConfigurator().apply(intakeMotorConfig);
+
         sliderConfig.smartCurrentLimit(30, 30);
         sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kCoast);
         sliderConfig.inverted(false);
@@ -76,6 +82,6 @@ public class IntakeSubystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Intake Motor Current", intakeMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Intake Motor Velocity RPS", intakeMotor.getVelocity().getValueAsDouble());
     }
 }

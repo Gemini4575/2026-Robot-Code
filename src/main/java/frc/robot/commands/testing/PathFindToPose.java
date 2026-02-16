@@ -17,6 +17,7 @@ public class PathFindToPose extends Command {
     public PathFindToPose(DrivetrainIO driveSubsystem, Supplier<Pose2d> targetPoseSuppler) {
         this.driveSubsystem = driveSubsystem;
         this.targetPoseSuppler = targetPoseSuppler;
+        addRequirements(driveSubsystem);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class PathFindToPose extends Command {
         System.out.println("Initializing PathFindToPose command");
         cmd = AutoBuilder.pathfindToPose(
                 targetPoseSuppler.get(),
-                driveSubsystem.getChassisConstrains());
+                driveSubsystem.getChassisConstraints());
         cmd.schedule();
         System.out.println("Initializing PathFindToPose command - DONE");
     }

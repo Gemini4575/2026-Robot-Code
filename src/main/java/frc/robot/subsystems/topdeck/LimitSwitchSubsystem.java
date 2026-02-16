@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topDeck;
+package frc.robot.subsystems.topdeck;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
