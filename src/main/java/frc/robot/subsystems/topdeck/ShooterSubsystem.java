@@ -67,8 +67,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         config.idleMode(IdleMode.kCoast);
         config2.idleMode(IdleMode.kCoast);
-        config.smartCurrentLimit(40);
-        config2.smartCurrentLimit(40);
+        config.smartCurrentLimit(40, 40);
+        config2.smartCurrentLimit(40, 40);
 
         config.voltageCompensation(12.0);
         config2.voltageCompensation(12.0);
