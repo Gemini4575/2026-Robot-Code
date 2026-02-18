@@ -262,13 +262,13 @@ public class DrivetrainIO extends SubsystemBase {
     poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), aPose2d);
   }
 
-  public void configureAutoBuilder() {
+public void configureAutoBuilder() {
   // Configure AutoBuilder last
   AutoBuilder.configure(
   this::getPose, // Robot pose supplier
   this::resetPose, // Method to reset odometry (will be called if your auto hasa starting pose)
   this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-  (speeds, feedforwards) -> driveRobotRelativeMetersPerSecond(speeds), // Method that will  drive the robot given ROBOT
+  (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will  drive the robot given ROBOT
   // RELATIVE
   // ChassisSpeeds. Also optionally outputs
   // individual
@@ -276,7 +276,7 @@ public class DrivetrainIO extends SubsystemBase {
   new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
   // holonomic
   // drive trains
-  new PIDConstants(0.1, 0, 0.0), // Translation PID constants
+  new PIDConstants(1.4, 0, 0.0), // Translation PID constants
   new PIDConstants(6, 0, 0.0) // Rotation PID constants
   ),
   config, // The robot configuration

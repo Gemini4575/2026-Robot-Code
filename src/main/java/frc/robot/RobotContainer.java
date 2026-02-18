@@ -85,7 +85,6 @@ public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
-  @SuppressWarnings("unused")
   private final Joystick testing = new Joystick(3);
 
   /* Driver Buttons */
@@ -200,13 +199,11 @@ public class RobotContainer {
 
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
 
-    H.setDefaultCommand(new RunCommand(() -> H.adjustForDistance(getDistanceToHubMeters()), H));
-    
     new JoystickButton(operator, GREEN_BUTTON)
-      .whileTrue(new Shoot(S, A, beamBreak));
+      .whileTrue(new Shoot(S, beamBreak));
 
-    // new JoystickButton(operator, RED_BUTTON)
-    //       .whileTrue(new Advance(A));
+    new JoystickButton(operator, RED_BUTTON)
+          .whileTrue(new Advance(A));
 
     System.out.println("Ended configureBindings()");
   }

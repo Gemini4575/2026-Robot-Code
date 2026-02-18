@@ -60,13 +60,13 @@ public class IntakeSubystem extends SubsystemBase {
     }
 
     public void extendIntake() {
-        slider1.set(0.5);
-        slider2.set(0.5);
+        slider1.set(1);
+        slider2.set(1);
     }
 
     public void retractIntake() {
-        slider1.set(-0.5);
-        slider2.set(-0.5);
+        slider1.set(-1);
+        slider2.set(-1);
     }
 
     public void stopSliders() {

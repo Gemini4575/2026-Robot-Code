@@ -25,11 +25,12 @@ public class ShooterSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberSlider)
             .getEntry();
     GenericEntry motor1VelocityEntry = tab
-            .add("Motor 1 Velocity", 0)
+            .add("Motor 1 Velocity", 1)
             .getEntry();
     GenericEntry motor2VelocityEntry = tab
             .add("Motor 2 Velocity", 0)
             .getEntry();
+
 
     private final SparkMax shooterMotor;
     private final SparkMax shooterMotor2;
@@ -95,8 +96,10 @@ public class ShooterSubsystem extends SubsystemBase {
         double output2 = pidController2.calculate(encoder2.getVelocity(), velocityRPM);
         
         // Set motor outputs
-        shooterMotor.set(output1);
-        shooterMotor2.set(output2);
+        // shooterMotor.set(output1);
+        // shooterMotor2.set(output2);
+        shooterMotor.set(targetVelocityEntry.getDouble(1));
+        shooterMotor2.set(targetVelocityEntry.getDouble(1));
     }
 
     /**
@@ -129,8 +132,8 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
-        motor1VelocityEntry.setDouble(encoder.getVelocity());
-        motor2VelocityEntry.setDouble(encoder2.getVelocity());
+        // motor1VelocityEntry.setDouble(encoder.getVelocity());
+        // motor2VelocityEntry.setDouble(encoder2.getVelocity());
         SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
         SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
     }
