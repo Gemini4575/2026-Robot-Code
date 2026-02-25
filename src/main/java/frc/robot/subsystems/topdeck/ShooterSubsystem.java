@@ -4,6 +4,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -32,10 +35,10 @@ public class ShooterSubsystem extends SubsystemBase {
             .getEntry();
 
 
-    private final SparkMax shooterMotor;
-    private final SparkMax shooterMotor2;
-    private final RelativeEncoder encoder;
-    private final RelativeEncoder encoder2;
+    private final TalonFX shooterMotor;
+    private final TalonFX shooterMotor2;
+    // private final RelativeEncoder encoder;
+    // private final RelativeEncoder encoder2;
     private PIDController pidController;
     private PIDController pidController2;
 
@@ -45,10 +48,10 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double kD = 0.0;
 
     public ShooterSubsystem() {
-        shooterMotor = new SparkMax(SHOOTER_MOTOR_ID_RIGHT, MotorType.kBrushless);
-        shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID_LEFT, MotorType.kBrushless);
-        encoder = shooterMotor.getEncoder();
-        encoder2 = shooterMotor2.getEncoder();
+        shooterMotor = new TalonFX(SHOOTER_MOTOR_ID_RIGHT);
+        shooterMotor2 = new TalonFX(SHOOTER_MOTOR_ID_LEFT);
+        // encoder = shooterMotor.getEncoder();
+        // encoder2 = shooterMotor2.getEncoder();
 
         pidController = new PIDController(kP, kI, kD);
         pidController2 = new PIDController(kP, kI, kD);
@@ -57,25 +60,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private void configureMotor() {
-        SparkMaxConfig config = new SparkMaxConfig();
-        SparkMaxConfig config2 = new SparkMaxConfig();
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-        config.disableFollowerMode();
-        config2.disableFollowerMode();
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        config2.inverted(true);
-        config.inverted(false);
+        // config.idleMode(IdleMode.kCoast);
+        // config2.idleMode(IdleMode.kCoast);
+        // config.smartCurrentLimit(40, 40);
+        // config2.smartCurrentLimit(40, 40);
+        // config.
 
-        config.idleMode(IdleMode.kCoast);
-        config2.idleMode(IdleMode.kCoast);
-        config.smartCurrentLimit(40, 40);
-        config2.smartCurrentLimit(40, 40);
+        // config.voltageCompensation(12.0);
+        // config2.voltageCompensation(12.0);
 
-        config.voltageCompensation(12.0);
-        config2.voltageCompensation(12.0);
-
-        shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        shooterMotor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // shooterMotor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     /**
@@ -92,14 +93,14 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void runShooterAtVelocity(double velocityRPM) {
         // Calculate PID output for each motor
-        double output1 = pidController.calculate(encoder.getVelocity(), velocityRPM);
-        double output2 = pidController2.calculate(encoder2.getVelocity(), velocityRPM);
+        // double output1 = pidController.calculate(encoder.getVelocity(), velocityRPM);
+        // double output2 = pidController2.calculate(encoder2.getVelocity(), velocityRPM);
         
         // Set motor outputs
         // shooterMotor.set(output1);
         // shooterMotor2.set(output2);
         shooterMotor.set(targetVelocityEntry.getDouble(1));
-        shooterMotor2.set(targetVelocityEntry.getDouble(1));
+        shooterMotor2.set(-targetVelocityEntry.getDouble(1));
     }
 
     /**
@@ -115,26 +116,26 @@ public class ShooterSubsystem extends SubsystemBase {
      * 
      * @return Current velocity in rotations per minute (RPM)
      */
-    public double getVelocity() {
-        return (encoder.getVelocity() + encoder2.getVelocity()) / 2.0;
-    }
+    // public double getVelocity() {
+    //     return (encoder.getVelocity() + encoder2.getVelocity()) / 2.0;
+    // }
 
-    /**
-     * Checks if the shooter is at target velocity
-     * 
-     * @return true if within tolerance
-     */
-    public boolean atTargetVelocity() {
-        double tolerance = 100.0; // RPM tolerance
-        return (Math.abs(getVelocity() - TARGET_VELOCITY_RPM) < tolerance);
-    }
+    // /**
+    //  * Checks if the shooter is at target velocity
+    //  * 
+    //  * @return true if within tolerance
+    //  */
+    // public boolean atTargetVelocity() {
+    //     double tolerance = 100.0; // RPM tolerance
+    //     return (Math.abs(getVelocity() - TARGET_VELOCITY_RPM) < tolerance);
+    // }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
+        // SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
         // motor1VelocityEntry.setDouble(encoder.getVelocity());
         // motor2VelocityEntry.setDouble(encoder2.getVelocity());
         SmartDashboard.putNumber("Shooter/Target RPM", TARGET_VELOCITY_RPM);
-        SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
+        // SmartDashboard.putBoolean("Shooter/At Target", atTargetVelocity());
     }
 }

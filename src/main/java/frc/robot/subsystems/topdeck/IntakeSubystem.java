@@ -39,7 +39,7 @@ public class IntakeSubystem extends SubsystemBase {
         intakeMotor.getConfigurator().apply(intakeMotorConfig);
 
         sliderConfig.smartCurrentLimit(30, 30);
-        sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kCoast);
+        sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
         sliderConfig.inverted(false);
         sliderConfig.disableFollowerMode();
         slider1.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

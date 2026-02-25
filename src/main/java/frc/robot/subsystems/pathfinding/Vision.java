@@ -66,15 +66,15 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
         super();
-        var tagCamera = new PhotonCamera("Arducam2");
+        var tagCamera = new PhotonCamera("Left Cam");
         var tagCameraColor = new PhotonCamera("Arducam4");
 
         var photonEstimator = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, LeftCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         var photonEstimatorColor = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, RightCam);
         photonEstimatorColor.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         photonDataContainers = List.of(new PhotonDataContainer(tagCamera, photonEstimator),
@@ -103,7 +103,7 @@ public class Vision extends SubsystemBase {
             // targets.
             cameraSim = new PhotonCameraSim(tagCamera, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(cameraSim, kRobotToCam);
+            visionSim.addCamera(cameraSim, LeftCam);
 
             cameraSim.enableDrawWireframe(true);
         }

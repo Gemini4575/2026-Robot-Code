@@ -150,11 +150,11 @@ public final class Constants {
                 public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2026RebuiltWelded
                                 .loadAprilTagLayoutField();
 
-                public static final Transform3d kRobotToCam = new Transform3d(Units.inchesToMeters(-14.0),
-                                Units.inchesToMeters(0), Units.inchesToMeters(6),
-                                new Rotation3d(0, Math.PI / -4.0, Units.degreesToRadians(-90)));
+                public static final Transform3d LeftCam = new Transform3d(Units.inchesToMeters(.75),
+                                Units.inchesToMeters(15), Units.inchesToMeters(8.75),
+                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(-90)));
 
-                public static final Transform3d kRobotToCam2 = new Transform3d(Units.inchesToMeters(14),
+                public static final Transform3d RightCam = new Transform3d(Units.inchesToMeters(14),
                                 -Units.inchesToMeters(0), Units.inchesToMeters(6),
                                 new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(90)));
                 // The standard deviations of our vision estimated poses, which affect
@@ -178,7 +178,7 @@ public final class Constants {
         }
 
         public static final class LimitSwitchConstants {
-                public static final int LIMIT_SWITCH1_PORT = 1;
+                public static final int LIMIT_SWITCH1_PORT = 3;
                 public static final int LIMIT_SWITCH2_PORT = 2;
         }
 
@@ -196,7 +196,7 @@ public final class Constants {
                 public static final int INTAKE_SLIDER1_ID = 5;
                 /**Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
-                public static final double INTAKE_SPEED = 0.5;
+                public static final double INTAKE_SPEED = 7470.5;
         }
 
         public static final class HoodConstants {

@@ -42,6 +42,7 @@ import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 import frc.robot.subsystems.topdeck.BeamBreak;
 import frc.robot.subsystems.topdeck.HoodSubsystem;
 import frc.robot.subsystems.topdeck.IntakeSubystem;
+import frc.robot.subsystems.topdeck.LimitSwitchSubsystem;
 import frc.robot.subsystems.topdeck.ShooterSubsystem;
 
 import static frc.robot.Constants.JoystickConstants.*;
@@ -67,10 +68,32 @@ import au.grapplerobotics.LaserCan;
  */
 public class RobotContainer {
 
+  ShuffleboardTab DIO_tab = Shuffleboard.getTab("DIO");
+
   ShuffleboardTab note_tab = Shuffleboard.getTab("Notes");
 
   GenericEntry note_entry = note_tab.add("Note", "")
       .withPosition(0, 0)
+      .withSize(2, 1)
+      .getEntry();
+
+  GenericEntry DIO_entry = DIO_tab.add("DIO 0", false)
+      .withPosition(0, 0)
+      .withSize(2, 1)
+      .getEntry();
+
+  GenericEntry DIO_entry1 = DIO_tab.add("DIO 1", false)
+      .withPosition(2, 0)
+      .withSize(2, 1)
+      .getEntry();
+
+  GenericEntry DIO_entry2 = DIO_tab.add("DIO 2", false)
+      .withPosition(4, 0)
+      .withSize(2, 1)
+      .getEntry();
+  
+  GenericEntry DIO_entry3 = DIO_tab.add("DIO 3", false)
+      .withPosition(6, 0)
       .withSize(2, 1)
       .getEntry();
 
@@ -103,6 +126,7 @@ public class RobotContainer {
   private final ShooterSubsystem S = new ShooterSubsystem();
   private final IntakeSubystem I = new IntakeSubystem();
   private final BeamBreak beamBreak = new BeamBreak();
+  private final LimitSwitchSubsystem limitSwitches = new LimitSwitchSubsystem(); 
   private final AdvancerSubsystem A = new AdvancerSubsystem();
   private final HoodSubsystem H = new HoodSubsystem();
   private final DrivetrainIO D = new DrivetrainIO();
@@ -223,6 +247,11 @@ public class RobotContainer {
       SmartDashboard.putNumber("LaserCan Distance", laserMeasure.distance_mm / 1000.0);
     }
     MetricService.periodic();
+
+    DIO_entry.setBoolean(beamBreak.getHopper());
+    DIO_entry1.setBoolean(beamBreak.getShooter());
+    DIO_entry2.setBoolean(limitSwitches.getLimit1());
+    DIO_entry3.setBoolean(limitSwitches.getLimit2());
   }
 
   private void updateVisionEst() {
