@@ -67,7 +67,7 @@ public class Vision extends SubsystemBase {
     public Vision() {
         super();
         var tagCamera = new PhotonCamera("Left Cam");
-        var tagCameraColor = new PhotonCamera("Arducam4");
+        var tagCameraColor = new PhotonCamera("Right Cam");
 
         var photonEstimator = new PhotonPoseEstimator(kTagLayout,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, LeftCam);

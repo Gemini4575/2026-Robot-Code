@@ -116,9 +116,9 @@ public class ShooterSubsystem extends SubsystemBase {
      * 
      * @return Current velocity in rotations per minute (RPM)
      */
-    // public double getVelocity() {
-    //     return (encoder.getVelocity() + encoder2.getVelocity()) / 2.0;
-    // }
+    public double getVelocity() {
+        return (shooterMotor.getRotorVelocity().getValueAsDouble() + shooterMotor2.getRotorVelocity().getValueAsDouble()) / 2.0;
+    }
 
     // /**
     //  * Checks if the shooter is at target velocity

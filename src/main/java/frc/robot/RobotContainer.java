@@ -32,7 +32,7 @@ import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.PathContainer;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
@@ -224,7 +224,7 @@ public class RobotContainer {
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER), () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
 
     new JoystickButton(operator, GREEN_BUTTON)
-      .whileTrue(new Shoot(S, beamBreak));
+      .whileTrue(new Testing_Shoot(S, beamBreak));
 
     new JoystickButton(operator, RED_BUTTON)
           .whileTrue(new Advance(A));

@@ -152,11 +152,19 @@ public final class Constants {
 
                 public static final Transform3d LeftCam = new Transform3d(Units.inchesToMeters(.75),
                                 Units.inchesToMeters(15), Units.inchesToMeters(8.75),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(-90)));
+                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(90)));
 
-                public static final Transform3d RightCam = new Transform3d(Units.inchesToMeters(14),
-                                -Units.inchesToMeters(0), Units.inchesToMeters(6),
-                                new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(90)));
+                public static final Transform3d RightCam = new Transform3d(Units.inchesToMeters(0.75),
+                                -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
+                                new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
+
+                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(.75),
+                                Units.inchesToMeters(15), Units.inchesToMeters(8.75),
+                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(90)));
+
+                public static final Transform3d BackCam = new Transform3d(Units.inchesToMeters(0.75),
+                                -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
+                                new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
                 // The standard deviations of our vision estimated poses, which affect
                 // correction rate
                 // (Fake values. Experiment and determine estimation noise on an actual robot.)
