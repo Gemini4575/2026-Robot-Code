@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.305535714285714,
-        "y": -0.09508928571428621
+        "x": 1.2288157894736833,
+        "y": -1.0967105263157901
       },
       "isLocked": false,
       "linkedName": "Trench Start"
     },
     {
       "anchor": {
-        "x": 1.0625892857142853,
-        "y": 5.265928571428572
+        "x": 1.094555921052631,
+        "y": 5.019572368421052
       },
       "prevControl": {
-        "x": 4.010339285714285,
-        "y": 5.411696428571429
+        "x": 4.04230592105263,
+        "y": 5.165340225563909
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,7 +35,7 @@
     },
     {
       "waypointRelativePos": 0.7,
-      "rotationDegrees": 140.0
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
@@ -69,7 +69,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -77,8 +77,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 160.0
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

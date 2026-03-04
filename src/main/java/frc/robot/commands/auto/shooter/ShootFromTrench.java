@@ -12,6 +12,7 @@ public class ShootFromTrench extends Command{
     private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
     private final Timer timer = new Timer();
+    
 
     public ShootFromTrench(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem, BeamBreak beamBreakSubsystem) {
         this.shooter = shooterSubsystem;
@@ -40,8 +41,17 @@ public class ShootFromTrench extends Command{
 
     @Override
     public boolean isFinished() {
-        return beamBreak.getHopper() && timer.hasElapsed(4.0); // Finish when the beam break detects a ball in the hopper and 1 second has passed
-    }
+        if(beamBreak.getHopper()){
+            timer.start();
+            if(timer.hasElapsed(1.0)){
+                return true;
+            }
+        }else {
+            timer.stop();
+            timer.reset();
+        }
+        return false;
+        }
 
     @Override
     public void end(boolean interrupted) {

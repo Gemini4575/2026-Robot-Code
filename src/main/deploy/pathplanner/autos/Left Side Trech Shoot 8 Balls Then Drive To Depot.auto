@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Shoot From Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Aline Wheels"
           }
         },
@@ -17,35 +23,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RTrench to shoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spin Up Shooter"
+                  "pathName": "LTrench To Shoot"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Stop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot From Depot"
-                }
-              }
-            ]
+            "name": "Stop"
           }
         }
       ]

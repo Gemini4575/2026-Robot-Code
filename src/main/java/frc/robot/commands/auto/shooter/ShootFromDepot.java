@@ -40,7 +40,7 @@ public class ShootFromDepot extends Command{
 
     @Override
     public boolean isFinished() {
-        return beamBreak.getHopper() && timer.hasElapsed(4.0); // Finish when the beam break detects a ball in the hopper and 1 second has passed
+        return beamBreak.getHopper() && timer.hasElapsed(1.0); // Finish when the beam break detects a ball in the hopper and 1 second has passed
     }
 
     @Override

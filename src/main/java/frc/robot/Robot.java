@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousExit() {
+    m_robotContainer.autonomousExit();
     MetricService.publish(MetricName.AUTO_STATE, 0.0);
     super.autonomousExit();
     if (m_autonomousCommand != null) {

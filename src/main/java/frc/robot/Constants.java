@@ -195,7 +195,6 @@ public final class Constants {
                 public static final double ADVANCER_SPEED = -1.0;
                 public static final double ADVANCER_ROLLER_SPEED = -0.5;
                 public static final int ADVANCER_MOTOR_ID = 3;
-                public static final int ADVANCER_ROLLER_ID = 8;
         }
 
         public static final class IntakeConstants {
@@ -220,6 +219,11 @@ public final class Constants {
                 public static final double HOOD_KP = 0.08;
                 public static final double HOOD_MAX_OUTPUT = 0.35;
                 public static final double HOOD_POSITION_TOLERANCE_ROTATIONS = 0.25;
+        }
+
+        public static final class CimberConstants {
+                public static final int CLIMBER_MOTOR_CANID = 8;
+                public static final double Climber_Down_SetPoint = 330.5;
         }
 
         public static final class ShooterRPMConstants {

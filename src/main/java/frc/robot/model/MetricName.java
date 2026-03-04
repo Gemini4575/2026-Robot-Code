@@ -2,6 +2,9 @@ package frc.robot.model;
 
 public enum MetricName {
 
+    // Auto Timer
+    AUTO_TIMER,
+
     // message for data capture start
     MESSAGE,
 

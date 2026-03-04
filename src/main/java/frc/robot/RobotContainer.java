@@ -9,6 +9,7 @@ import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -26,6 +27,7 @@ import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
+import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.driving.AlineWheels;
 import frc.robot.commands.driving.DriveToLocation;
 import frc.robot.commands.driving.FaceTowardsCoordinates;
@@ -37,12 +39,15 @@ import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
+import frc.robot.model.MetricName;
 import frc.robot.model.PathContainer;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.pathfinding.Vision;
 import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 import frc.robot.subsystems.topdeck.BeamBreak;
+import frc.robot.subsystems.topdeck.ClimberSubsystem;
+import frc.robot.subsystems.topdeck.ClimberSubsystem;
 // import frc.robot.subsystems.topdeck.HoodSubsystem;
 import frc.robot.subsystems.topdeck.IntakeSubystem;
 import frc.robot.subsystems.topdeck.LimitSwitchSubsystem;
@@ -109,6 +114,8 @@ public class RobotContainer {
   Field2d visionPoseEstimate = new Field2d();
   Field2d overallPoseEstimate = new Field2d();
 
+  Timer autoTimer = new Timer();
+
   /* Controllers */
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
@@ -128,6 +135,7 @@ public class RobotContainer {
   /* Subsystems */
   @SuppressWarnings("unused")
   private final ShooterSubsystem S = new ShooterSubsystem();
+  private final ClimberSubsystem C = new ClimberSubsystem();
   private final IntakeSubystem I = new IntakeSubystem();
   private final BeamBreak beamBreak = new BeamBreak();
   private final LimitSwitchSubsystem limitSwitches = new LimitSwitchSubsystem();
@@ -154,9 +162,10 @@ public class RobotContainer {
     SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
     NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
-    NamedCommands.registerCommand("Shoot From Depot", new ShootFromDepot(S, A, beamBreak));
-    NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, beamBreak));
+    NamedCommands.registerCommand("Shoot From Depot", new ShootFromDepot(S, A, beamBreak).withTimeout(5));
+    NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, beamBreak).withTimeout(5));
     NamedCommands.registerCommand("Spin Up Shooter", new SpinUpShooter(S));
+    NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Stop", new Stop(D));
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
         11.914,
@@ -193,7 +202,7 @@ public class RobotContainer {
             D,
             () -> -driver.getRawAxis(LEFT_Y_AXIS),
             () -> driver.getRawAxis(LEFT_X_AXIS),
-            () -> -driver.getRawAxis(RIGHT_Y_AXIS),
+            () -> -driver.getRawAxis(RIGHT_X_AXIS),
             Slow,
             () -> driver.getPOV()));
     // new JoystickButton(driver, RED_BUTTON)
@@ -227,6 +236,8 @@ public class RobotContainer {
     // () -> 0)
     // ));
 
+    new JoystickButton(testing, GREEN_BUTTON)
+    .onTrue(new DownToClimb(C));
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER),
         () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
 
@@ -240,20 +251,21 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    A.climber(operator.getRawAxis(LEFT_Y_AXIS));
+    C.JoystickControl(operator.getRawAxis(LEFT_Y_AXIS));
     // I.testSliders(operator.getAxisType(LEFT_X_AXIS));
   }
 
+  public void autonomousExit() {
+    autoTimer.stop();
+  }
+
   public void Periodic() {
+    MetricService.publish(MetricName.AUTO_TIMER, autoTimer.get());
     note_entry.getString("");
     updateVisionEst();
     Pose2d poseEstimate = D.getPose();
     overallPoseEstimate.setRobotPose(poseEstimate);
     MetricService.publishRobotLocation(poseEstimate);
-    // var laserMeasure = lc.getMeasurement();
-    // if (laserMeasure != null) {
-    //   SmartDashboard.putNumber("LaserCan Distance", laserMeasure.distance_mm / 1000.0);
-    // }
     MetricService.periodic();
 
     DIO_entry.setBoolean(beamBreak.getHopper());
@@ -286,6 +298,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return new WaitCommand(1000);
+    autoTimer.reset();
+    autoTimer.start();
+    MetricService.publish(MetricName.AUTO_TIMER, autoTimer.get());
     return PathplannerautoChoosers.getSelected();
   }
 }

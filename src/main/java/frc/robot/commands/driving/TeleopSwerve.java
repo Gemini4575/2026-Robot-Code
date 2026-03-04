@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 
 public class TeleopSwerve extends Command {
-    private final static double deadBand = 0.05;
+    private final static double deadBand = 0.02;
+
     private final DrivetrainIO m_drivetrain;
     private final DoubleSupplier m_xSpeedSupplier;
     private final DoubleSupplier m_ySpeedSupplier;
@@ -59,12 +60,12 @@ public class TeleopSwerve extends Command {
             if (m_SlowMode.getAsBoolean()) {
                 double xSpeed = MathUtil.applyDeadband(m_xSpeedSupplier.getAsDouble(), deadBand) * .5;
                 double ySpeed = -MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand) * .5;
-                double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), deadBand) * .5;
+                double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), 0.05) * .5;
                 m_drivetrain.drive(xSpeed, ySpeed, rot, false);
             } else {
                 double xSpeed = MathUtil.applyDeadband(m_xSpeedSupplier.getAsDouble(), deadBand);
                 double ySpeed = -MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand);
-                double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), deadBand);
+                double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), 0.05);
                 m_drivetrain.drive(xSpeed * 1, ySpeed * 1, rot * 2, false);
             }
         } else {

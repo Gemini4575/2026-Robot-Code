@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 //import com.ctre.phoenix6.controls.DutyCycleOut;
 //import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -15,6 +16,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -45,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
     private final TalonFX shooterMotor;
-   private final TalonFX shooterMotor2;
+   private final TalonFX shooterMotorFollower;
     // private final RelativeEncoder encoder;
     // private final RelativeEncoder encoder2;
     private PIDController pidController;
@@ -58,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem() {
         shooterMotor = new TalonFX(SHOOTER_MOTOR_ID_RIGHT);
-       shooterMotor2 = new TalonFX(SHOOTER_MOTOR_ID_LEFT);
+       shooterMotorFollower = new TalonFX(SHOOTER_MOTOR_ID_LEFT);
         // encoder = shooterMotor.getEncoder();
         // encoder2 = shooterMotor2.getEncoder();
 
@@ -69,19 +71,19 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private void configureMotor() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    TalonFXConfiguration config2 = new TalonFXConfiguration();
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config2.CurrentLimits.StatorCurrentLimit = 80;
-    config2.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config2.CurrentLimits.StatorCurrentLimit = 80;
+        config2.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-config.CurrentLimits.StatorCurrentLimit = 80; // default is often 40A
-config.CurrentLimits.StatorCurrentLimitEnable = true;
-            StatusCode status = shooterMotor.getConfigurator().apply(config);
-            System.out.println("Motor config status: " + status);
+        config.CurrentLimits.StatorCurrentLimit = 80; // default is often 40A
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        StatusCode status = shooterMotor.getConfigurator().apply(config);
+        System.out.println("Motor config status: " + status);
 
-            StatusCode status2 = shooterMotor2.getConfigurator().apply(config2);
-            System.out.println("Motor 2 config status: " + status2);
+        StatusCode status2 = shooterMotorFollower.getConfigurator().apply(config2);
+        System.out.println("Motor 2 config status: " + status2);
         // Tune these gains for your mechanism
 //        Slot0Configs slot0 = config.Slot0;
         Slot0Configs slot01 = new Slot0Configs();
@@ -110,19 +112,21 @@ config.CurrentLimits.StatorCurrentLimitEnable = true;
         // config.MotionMagic.MotionMagicCruiseVelocity = 80;
         // config.MotionMagic.MotionMagicAcceleration = 160;
 
-            status = shooterMotor.getConfigurator().apply(slot01);
-            System.out.println("Motor 1 slot 0 config status: " + status);
-            Slot0Configs verify = new Slot0Configs();
-            shooterMotor.getConfigurator().refresh(verify);
-            System.out.println("kP: " + verify.kP);
-            System.out.println("kV: " + verify.kV);
+        status = shooterMotor.getConfigurator().apply(slot01);
+        System.out.println("Motor 1 slot 0 config status: " + status);
+        Slot0Configs verify = new Slot0Configs();
+        shooterMotor.getConfigurator().refresh(verify);
+        System.out.println("kP: " + verify.kP);
+        System.out.println("kV: " + verify.kV);
 
-            status2 = shooterMotor2.getConfigurator().apply(slot0);
-            System.out.println("Motor 2 slot 0 config status: " + status2);
-             Slot0Configs verify2 = new Slot0Configs();
-             shooterMotor2.getConfigurator().refresh(verify2);
-             System.out.println("kP: " + verify2.kP);
-             System.out.println("kV: " + verify2.kV);
+        status2 = shooterMotorFollower.getConfigurator().apply(slot0);
+        System.out.println("Motor 2 slot 0 config status: " + status2);
+        Slot0Configs verify2 = new Slot0Configs();
+        shooterMotorFollower.getConfigurator().refresh(verify2);
+        System.out.println("kP: " + verify2.kP);
+        System.out.println("kV: " + verify2.kV);
+
+        shooterMotorFollower.setControl(new Follower(SHOOTER_MOTOR_ID_RIGHT, MotorAlignmentValue.Opposed));
     }
 
     /**
@@ -148,10 +152,10 @@ config.CurrentLimits.StatorCurrentLimitEnable = true;
         // shooterMotor.set(0.73);
         
         //shooterMotor.setControl(velocityRequest.withVelocity(velocityRPM));
-        shooterMotor.setControl(new VelocityVoltage(velocityRPM));
-        shooterMotor2.setControl(new VelocityVoltage(velocityRPM));
 
-        return shooterMotor.getVelocity().getValueAsDouble() >= velocityRPM - 5 && shooterMotor.getVelocity().getValueAsDouble() <= velocityRPM + 5; /*&& shooterMotor2.getVelocity().getValueAsDouble() >= velocityRPM - 5 && shooterMotor2.getVelocity().getValueAsDouble() <= velocityRPM + 5;*/ // Check if within 5 RPM of target
+        shooterMotor.setControl(new VelocityVoltage(velocityRPM));
+
+        return shooterMotor.getVelocity().getValueAsDouble() >= velocityRPM - 5 && shooterMotor.getVelocity().getValueAsDouble() <= velocityRPM + 5 && shooterMotorFollower.getVelocity().getValueAsDouble() >= velocityRPM - 5 && shooterMotorFollower.getVelocity().getValueAsDouble() <= velocityRPM + 5; // Check if within 5 RPM of target
 
     }
 
@@ -160,11 +164,12 @@ config.CurrentLimits.StatorCurrentLimitEnable = true;
      */
     public void stopShooter() {
         shooterMotor.stopMotor();
-       shooterMotor2.stopMotor();
+        // this will break follower mode so don't use it if we're following
+//       shooterMotorFollower.stopMotor();
     }
 
     public void spinUpShooter() {
-        shooterMotor2.setControl(new VelocityVoltage(30));
+        shooterMotorFollower.setControl(new VelocityVoltage(30));
     }
 
     /**
@@ -189,6 +194,8 @@ config.CurrentLimits.StatorCurrentLimitEnable = true;
 
     @Override
     public void periodic() {
+//        shooterMotorFollower.setControl(new Follower(SHOOTER_MOTOR_ID_RIGHT, MotorAlignmentValue.Opposed));
+
         // SmartDashboard.putNumber("Shooter/Velocity RPM", getVelocity());
         // motor1VelocityEntry.setDouble(encoder.getVelocity());
         // motor2VelocityEntry.setDouble(encoder2.getVelocity());
