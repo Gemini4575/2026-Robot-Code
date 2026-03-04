@@ -223,7 +223,7 @@ public final class Constants {
 
         public static final class CimberConstants {
                 public static final int CLIMBER_MOTOR_CANID = 8;
-                public static final double Climber_Down_SetPoint = 330.5;
+                public static final double Climber_Down_SetPoint = 380;
         }
 
         public static final class ShooterRPMConstants {

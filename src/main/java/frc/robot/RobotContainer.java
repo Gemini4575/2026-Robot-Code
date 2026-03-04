@@ -29,6 +29,7 @@ import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
 import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.driving.AlineWheels;
+import frc.robot.commands.driving.DriveForSeconds;
 import frc.robot.commands.driving.DriveToLocation;
 import frc.robot.commands.driving.FaceTowardsCoordinates;
 import frc.robot.commands.driving.ResetLocationCommand;
@@ -173,6 +174,7 @@ public class RobotContainer {
         () -> 0,
         () -> 0));
     PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
+    PathplannerautoChoosers.addOption("Climb", new AlineWheels(D).andThen(new DriveForSeconds(D, 2.75).alongWith(new DownToClimb(C))));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
