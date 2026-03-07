@@ -12,6 +12,7 @@ public class ShootFromTrench extends Command{
     private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
     private final Timer timer = new Timer();
+    private final Timer other = new Timer();
     
 
     public ShootFromTrench(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem, BeamBreak beamBreakSubsystem) {
@@ -28,11 +29,14 @@ public class ShootFromTrench extends Command{
         shooter.runShooterAtVelocity(ShooterRPMConstants.INSIDE_TRENCH);
         timer.reset();
         timer.start();
+        other.reset();
+        other.start();
     }
 
     @Override
     public void execute() {
-        if (shooter.runShooterAtVelocity(ShooterRPMConstants.INSIDE_TRENCH)) {
+        shooter.runShooterAtVelocity(ShooterRPMConstants.INSIDE_TRENCH);
+        if (other.advanceIfElapsed(3)) {
             advancer.advance();
         }else {
             advancer.stopAdvancer();
@@ -41,18 +45,8 @@ public class ShootFromTrench extends Command{
 
     @Override
     public boolean isFinished() {
-        if(beamBreak.getHopper()){
-            timer.start();
-            if(timer.hasElapsed(1.0)){
-                return true;
-            }
-        }else {
-            timer.stop();
-            timer.reset();
-        }
-        return false;
-        }
-
+          return beamBreak.getHopper() && timer.hasElapsed(10);
+    }
     @Override
     public void end(boolean interrupted) {
         shooter.stopShooter();

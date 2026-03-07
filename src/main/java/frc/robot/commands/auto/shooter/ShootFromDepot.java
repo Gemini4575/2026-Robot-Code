@@ -12,6 +12,7 @@ public class ShootFromDepot extends Command{
     private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
     private final Timer timer = new Timer();
+    private final Timer other = new Timer();
 
     public ShootFromDepot(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem, BeamBreak beamBreakSubsystem) {
         this.shooter = shooterSubsystem;
@@ -27,11 +28,14 @@ public class ShootFromDepot extends Command{
         shooter.runShooterAtVelocity(ShooterRPMConstants.DEPOT_SHOOT);
         timer.reset();
         timer.start();
+        other.reset();
+        other.start();
     }
 
     @Override
     public void execute() {
-        if (shooter.runShooterAtVelocity(ShooterRPMConstants.DEPOT_SHOOT)) {
+        shooter.runShooterAtVelocity(ShooterRPMConstants.DEPOT_SHOOT);
+        if (other.advanceIfElapsed(3)) {
             advancer.advance();
         }else {
             advancer.stopAdvancer();
@@ -40,7 +44,7 @@ public class ShootFromDepot extends Command{
 
     @Override
     public boolean isFinished() {
-        return beamBreak.getHopper() && timer.hasElapsed(1.0); // Finish when the beam break detects a ball in the hopper and 1 second has passed
+        return beamBreak.getHopper() && timer.hasElapsed(10); // Finish when the beam break detects a ball in the hopper and 1 second has passed
     }
 
     @Override

@@ -228,9 +228,9 @@ public final class Constants {
         }
 
         public static final class ShooterRPMConstants {
-                public static final int DEPOT_SHOOT = 75;
-                public static final int OUTSIDE_TRENCH = 67;
-                public static final int INSIDE_TRENCH = 60;
+                public static final double DEPOT_SHOOT = 0.85;
+                public static final double OUTSIDE_TRENCH = 0.85;
+                public static final double INSIDE_TRENCH = 1;
         }
 
 }
