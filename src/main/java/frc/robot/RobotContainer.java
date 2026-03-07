@@ -27,6 +27,7 @@ import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
+import frc.robot.commands.climber.ClimbTo0;
 import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.climber.UpToClimb;
 import frc.robot.commands.driving.AlineWheels;
@@ -243,23 +244,26 @@ public class RobotContainer {
     new JoystickButton(climber, GREEN_BUTTON)
     .onTrue(new DownToClimb(C));
 
+    new JoystickButton(climber, BLUE_BUTTON)
+    .onTrue(new ClimbTo0(C));
+
     new JoystickButton(climber, RED_BUTTON)
     .onTrue(new UpToClimb(C));
 
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER),
         () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
 
-    new JoystickButton(operator, GREEN_BUTTON)
+    new JoystickButton(driver, GREEN_BUTTON)
         .whileTrue(new Testing_Shoot(S, beamBreak));
 
-    new JoystickButton(operator, RED_BUTTON)
+    new JoystickButton(driver, RED_BUTTON)
         .whileTrue(new Advance(A));
 
     System.out.println("Ended configureBindings()");
   }
 
   public void teleopPeriodic() {
-    // C.JoystickControl(operator.getRawAxis(LEFT_Y_AXIS));
+    C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
     // I.testSliders(operator.getAxisType(LEFT_X_AXIS));
   }
 

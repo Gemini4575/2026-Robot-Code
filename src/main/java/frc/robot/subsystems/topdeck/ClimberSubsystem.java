@@ -24,17 +24,17 @@ public class ClimberSubsystem extends SubsystemBase{
     private final SparkMax climberMotor;
     public ClimberSubsystem() {
         climberMotor = new SparkMax(CLIMBER_MOTOR_CANID, MotorType.kBrushless);
-        climberMotor.getEncoder().setPosition(0);
+        // climberMotor.getEncoder().setPosition(0);
         SparkBaseConfig ClimberMotorConfig = new SparkMaxConfig();
         ClimberMotorConfig.smartCurrentLimit(40, 40);
         ClimberMotorConfig.disableFollowerMode();
 
         ClimberMotorConfig.idleMode(IdleMode.kBrake);
 
-        ClimberMotorConfig.softLimit.forwardSoftLimitEnabled(true);
-        ClimberMotorConfig.softLimit.forwardSoftLimit(Climber_Down_SetPoint + 50);
-        ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
-        ClimberMotorConfig.softLimit.reverseSoftLimit(0);
+        // ClimberMotorConfig.softLimit.forwardSoftLimitEnabled(true);
+        // ClimberMotorConfig.softLimit.forwardSoftLimit(Climber_Down_SetPoint + 50);
+        // ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
+        // ClimberMotorConfig.softLimit.reverseSoftLimit(0);
 
         ClimberMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
         ClimberMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
@@ -56,6 +56,16 @@ public class ClimberSubsystem extends SubsystemBase{
         climberMotor.set(-1);
 
         return climberMotor.getEncoder().getPosition() <= Climber_Up_SetPoint;
+    }
+
+    private boolean IMoveUpTo0I(){
+        climberMotor.set(-1);
+
+        return climberMotor.getEncoder().getPosition() <= 1;
+    }
+
+    public boolean MoveTo0(){
+        return IMoveUpTo0I();
     }
 
     public boolean MoveDownToClimb(){
