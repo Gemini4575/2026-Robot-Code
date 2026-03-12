@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.advancer.Advance;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
@@ -178,7 +179,13 @@ public class RobotContainer {
         () -> 0,
         () -> 0));
     PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    PathplannerautoChoosers.addOption("Climb", new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).alongWith(new DownToClimb(C))).andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C)));
+    PathplannerautoChoosers.addOption("quazisestatic fowerd", D.sysIdQuasistatic(Direction.kForward));
+    PathplannerautoChoosers.addOption("quazisestatic reverse", D.sysIdQuasistatic(Direction.kReverse));
+    PathplannerautoChoosers.addOption("dynamic fowerd", D.sysIdDynamic(Direction.kForward));
+    PathplannerautoChoosers.addOption("dynamic reverse", D.sysIdDynamic(Direction.kReverse));
+    PathplannerautoChoosers.addOption("Climb",
+        new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).alongWith(new DownToClimb(C)))
+            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C)));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
@@ -243,13 +250,13 @@ public class RobotContainer {
     // ));
 
     new JoystickButton(climber, GREEN_BUTTON)
-    .onTrue(new DownToClimb(C));
+        .onTrue(new DownToClimb(C));
 
     new JoystickButton(climber, BLUE_BUTTON)
-    .onTrue(new ClimbTo0(C));
+        .onTrue(new ClimbTo0(C));
 
     new JoystickButton(climber, RED_BUTTON)
-    .onTrue(new UpToClimb(C));
+        .onTrue(new UpToClimb(C));
 
     I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER),
         () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));

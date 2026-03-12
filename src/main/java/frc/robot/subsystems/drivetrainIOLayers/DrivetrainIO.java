@@ -14,11 +14,13 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.util.CoordinateConverter;
@@ -78,6 +80,10 @@ public class DrivetrainIO extends SubsystemBase {
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(m_backLeftLocation,
       m_backRightLocation,
       m_frontRightLocation, m_frontLeftLocation);
+
+  SysIdRoutine routine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(this::SysidTest, null, this));
 
   private final SwerveDrivePoseEstimator poseEstimator;
   private long lastVisionUpdateTime = 0;
@@ -139,6 +145,14 @@ public class DrivetrainIO extends SubsystemBase {
     // );
     // previousSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates(),
     // DriveFeedforwards.zeros(config.numModules));
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return routine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return routine.dynamic(direction);
   }
 
   private SwerveModuleState[] getModuleStates() {
@@ -317,6 +331,13 @@ public class DrivetrainIO extends SubsystemBase {
 
   public PathConstraints getChassisConstrains() {
     return getChassisConstraints();
+  }
+
+  public void SysidTest(Voltage voltage) {
+    backLeft_0.runVoltage(voltage);
+    backRight_1.runVoltage(voltage);
+    frontRight_2.runVoltage(voltage);
+    frontLeft_3.runVoltage(voltage);
   }
 
   public PathConstraints getChassisConstraints() {
