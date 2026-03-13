@@ -35,7 +35,6 @@ public class Robot extends TimedRobot {
     CanBridge.runTCP();
     // If publishing to NetworkTables and DataLog
     DataLogManager.start();
-    URCL.start();
 
     // If logging only to DataLog
     URCL.start(DataLogManager.getLog());

@@ -224,7 +224,7 @@ public class SwerveModule extends SubsystemBase {
                 s, new Rotation2d(encoderValue()));
     }
 
-    private double getConvertedVelocity() {
+    public double getConvertedVelocity() {
         return (m_driveEncoder.getVelocity() / (60.0 * SwerveConstants.gearboxRatio))
                 * ((SwerveConstants.kWheelRadius * 2) * Math.PI);
     }
@@ -465,11 +465,23 @@ public class SwerveModule extends SubsystemBase {
 
     public void runVoltage(Voltage voltage) {
         driveMotor.setVoltage(voltage);
-            /* Log data for SysId */
+        /* Log data for SysId */
         SmartDashboard.putNumber("[SysId]drive_position_" + moduleNumber, getPosition().distanceMeters);
         SmartDashboard.putNumber("[SysId]drive_velocity_" + moduleNumber, getConvertedVelocity());
-            /* end sysId log */
+        /* end sysId log */
         keepWheelsStrait();
+    }
+
+    public double getDriveVoltage() {
+        return driveMotor.getBusVoltage() * driveMotor.getAppliedOutput();
+    }
+
+    public double getDrivePosition() {
+        return getPosition().distanceMeters;
+    }
+
+    public double getDriveVelocity() {
+        return getConvertedVelocity();
     }
 
     private void captureConfig() {

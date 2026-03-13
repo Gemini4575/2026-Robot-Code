@@ -70,25 +70,35 @@ public class DrivetrainIO extends SubsystemBase {
   private SwerveModule frontRight_2 = new SwerveModule(Mod1.constants);
   private SwerveModule frontLeft_3 = new SwerveModule(Mod2.constants);
 
-		/* adding sysId */
-private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-    new SysIdRoutine.Config(
-        null,                        // Default ramp rate (1 V/s)
-        edu.wpi.first.units.Units.Volts.of(4), // Limit to 4V for safety
-        null,                        // Default timeout
-        null                         // Default state logger
-    ),
-    new SysIdRoutine.Mechanism(
-        (voltage) -> {
+  /* adding sysId */
+  private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(
+          null, // Default ramp rate (1 V/s)
+          edu.wpi.first.units.Units.Volts.of(4), // Limit to 4V for safety
+          null, // Default timeout
+          null // Default state logger
+      ),
+      new SysIdRoutine.Mechanism(
+          (voltage) -> {
             backLeft_0.runVoltage(voltage);
             backRight_1.runVoltage(voltage);
             frontRight_2.runVoltage(voltage);
             frontLeft_3.runVoltage(voltage);
-        },
-        null, // No extra log consumer needed
-        this
-    )
-);
+          },
+          (log) -> {
+            // Average all 4 modules together for a single drivetrain characterization
+            log.motor("drive-motors")
+                .voltage(edu.wpi.first.units.Units.Volts.of(
+                    (backLeft_0.getDriveVoltage() + backRight_1.getDriveVoltage() +
+                        frontRight_2.getDriveVoltage() + frontLeft_3.getDriveVoltage()) / 4.0))
+                .linearPosition(edu.wpi.first.units.Units.Meters.of(
+                    (backLeft_0.getDrivePosition() + backRight_1.getDrivePosition() +
+                        frontRight_2.getDrivePosition() + frontLeft_3.getDrivePosition()) / 4.0))
+                .linearVelocity(edu.wpi.first.units.Units.MetersPerSecond.of(
+                    (backLeft_0.getDriveVelocity() + backRight_1.getDriveVelocity() +
+                        frontRight_2.getDriveVelocity() + frontLeft_3.getDriveVelocity()) / 4.0));
+          },
+          this));
 
   private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k100Hz);
 
@@ -101,9 +111,9 @@ private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
       m_backRightLocation,
       m_frontRightLocation, m_frontLeftLocation);
 
-  SysIdRoutine routine = new SysIdRoutine(
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(this::SysidTest, null, this));
+  // SysIdRoutine routine = new SysIdRoutine(
+  // new SysIdRoutine.Config(),
+  // new SysIdRoutine.Mechanism(this::SysidTest, null, this));
 
   private final SwerveDrivePoseEstimator poseEstimator;
   private long lastVisionUpdateTime = 0;
@@ -168,11 +178,11 @@ private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return routine.quasistatic(direction);
+    return sysIdRoutine.quasistatic(direction);
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return routine.dynamic(direction);
+    return sysIdRoutine.dynamic(direction);
   }
 
   private SwerveModuleState[] getModuleStates() {
@@ -418,12 +428,12 @@ private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
   }
 
   /* methods for sysId */
-public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.quasistatic(direction);
-}
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  // return sysIdRoutine.quasistatic(direction);
+  // }
 
-public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.dynamic(direction);
-}
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  // return sysIdRoutine.dynamic(direction);
+  // }
 
 }
