@@ -59,12 +59,12 @@ public class TeleopSwerve extends Command {
         if (dpad.getAsInt() == -1) {
             if (m_SlowMode.getAsBoolean()) {
                 double xSpeed = MathUtil.applyDeadband(m_xSpeedSupplier.getAsDouble(), deadBand) * .5;
-                double ySpeed = -MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand) * .5;
+                double ySpeed = MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand) * .5;
                 double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), 0.05) * .5;
                 m_drivetrain.drive(xSpeed, ySpeed, rot, true);
             } else {
                 double xSpeed = MathUtil.applyDeadband(m_xSpeedSupplier.getAsDouble(), deadBand);
-                double ySpeed = -MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand);
+                double ySpeed = MathUtil.applyDeadband(m_ySpeedSupplier.getAsDouble(), deadBand);
                 double rot = MathUtil.applyDeadband(m_rotSupplier.getAsDouble(), 0.05);
                 m_drivetrain.drive(xSpeed * 1, ySpeed * 1, rot * 2, true);
             }

@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -85,19 +86,7 @@ public class DrivetrainIO extends SubsystemBase {
             frontRight_2.runVoltage(voltage);
             frontLeft_3.runVoltage(voltage);
           },
-          (log) -> {
-            // Average all 4 modules together for a single drivetrain characterization
-            log.motor("drive-motors")
-                .voltage(edu.wpi.first.units.Units.Volts.of(
-                    (backLeft_0.getDriveVoltage() + backRight_1.getDriveVoltage() +
-                        frontRight_2.getDriveVoltage() + frontLeft_3.getDriveVoltage()) / 4.0))
-                .linearPosition(edu.wpi.first.units.Units.Meters.of(
-                    (backLeft_0.getDrivePosition() + backRight_1.getDrivePosition() +
-                        frontRight_2.getDrivePosition() + frontLeft_3.getDrivePosition()) / 4.0))
-                .linearVelocity(edu.wpi.first.units.Units.MetersPerSecond.of(
-                    (backLeft_0.getDriveVelocity() + backRight_1.getDriveVelocity() +
-                        frontRight_2.getDriveVelocity() + frontLeft_3.getDriveVelocity()) / 4.0));
-          },
+          null,
           this));
 
   private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k100Hz);
@@ -161,9 +150,11 @@ public class DrivetrainIO extends SubsystemBase {
         stateStdDevs,
         visionStdDevs);
 
-    poseEstimator.resetPosition(CoordinateConverter.convertToAllianceRotation(new Rotation2d(-90)),
-        getModulePositions(),
-        CoordinateConverter.convertToAllianceCoordinates(new Pose2d(7.558, 4.010, new Rotation2d(-90))));
+    // poseEstimator.resetPosition(CoordinateConverter.convertToAllianceRotation(new
+    // Rotation2d(-90)),
+    // getModulePositions(),
+    // CoordinateConverter.convertToAllianceCoordinates(new Pose2d(7.558, 4.010, new
+    // Rotation2d(-90))));
 
     configureAutoBuilder();
 
@@ -298,11 +289,11 @@ public class DrivetrainIO extends SubsystemBase {
   public void ResetGyro() {
     gyro.reset();
     // we need to start at this offset otherwise our axis are reversed
-    // note: docs say gyro should increase counterclockwise. ours decreases. may
-    // need to look into this.
+    // note: docs say gyro should increase counterclockwise. ours does.
     // gyro.setAngleAdjustment(CoordinateConverter.convertToAllianceRotation(Rotation2d.fromDegrees(-90)).getDegrees());
-    gyro.setAngleAdjustment(DriverStation.getAlliance().get() == Alliance.Red ? Rotation2d.fromDegrees(-90).getDegrees()
-        : Rotation2d.fromDegrees(-90).getDegrees());
+    gyro.setAngleAdjustment(
+        DriverStation.getAlliance().get() == Alliance.Red ? Rotation2d.fromDegrees(0).getDegrees()
+            : Rotation2d.fromDegrees(180).getDegrees());
     SmartDashboard.putString("[Drivetrain]Gyro has been reset", java.time.LocalTime.now().toString());
     System.out.println("Gyro has been reset");
   }
@@ -340,7 +331,7 @@ public class DrivetrainIO extends SubsystemBase {
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
             // holonomic
             // drive trains
-            new PIDConstants(2, 0, 0.1), // Translation PID constants
+            new PIDConstants(2, 0, 0.0), // Translation PID constants
             new PIDConstants(0.2, 0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration

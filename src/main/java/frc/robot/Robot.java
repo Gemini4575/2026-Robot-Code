@@ -33,18 +33,16 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     CanBridge.runTCP();
-    // If publishing to NetworkTables and DataLog
-    // DataLogManager.start("/home/lvuser"); // ftp://10.45.75.2/home/lvuser/logs/
-    // System.out.println("Logging to: " + DataLogManager.getLogDir());
-    // If logging only to DataLog
-    URCL.start(DataLogManager.getLog());
+    DataLogManager.start("/home/lvuser");
+    URCL.start(); // ← no argument, publishes to NT
+    // DataLogManager will automatically capture NT including URCL data
   }
 
   @Override
   public void driverStationConnected() {
     // moved from robot()
-    DataLogManager.start("/home/lvuser"); // ftp://10.45.75.2/home/lvuser/logs/
-    System.out.println("Logging to: " + DataLogManager.getLogDir());
+    // DataLogManager.start("/home/lvuser"); // ftp://10.45.75.2/home/lvuser/logs/
+    // System.out.println("Logging to: " + DataLogManager.getLogDir());
 
     super.driverStationConnected();
     MetricService.init();

@@ -158,7 +158,7 @@ public class SwerveModule extends SubsystemBase {
 
         m_drivePIDController = new PIDController(s.pidP, s.pidI, 0);
 
-        m_driveFeedforward = new SimpleMotorFeedforward(0.1, 2.4, 0.0); // kS, kV, kA
+        m_driveFeedforward = new SimpleMotorFeedforward(0.19341, 2.9015, 0.35496); // kS, kV, kA
 
         m_drivePIDController.setIZone(0.06);
         m_drivePIDController.setIntegratorRange(-0.06, 0.06);
