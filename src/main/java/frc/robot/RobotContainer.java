@@ -66,6 +66,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import au.grapplerobotics.ConfigurationFailedException;
@@ -173,16 +174,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spin Up Shooter", new SpinUpShooter(S));
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Stop", new Stop(D));
+    NamedCommands.registerCommand("Spin 180", new Spin180(D));
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
         11.914,
         4.051,
         () -> 0,
         () -> 0));
     PathplannerautoChoosers = AutoBuilder.buildAutoChooser();
-    PathplannerautoChoosers.addOption("quazisestatic fowerd", D.sysIdQuasistatic(Direction.kForward));
-    PathplannerautoChoosers.addOption("quazisestatic reverse", D.sysIdQuasistatic(Direction.kReverse));
-    PathplannerautoChoosers.addOption("dynamic fowerd", D.sysIdDynamic(Direction.kForward));
-    PathplannerautoChoosers.addOption("dynamic reverse", D.sysIdDynamic(Direction.kReverse));
+    // PathplannerautoChoosers.addOption("quazisestatic fowerd",
+    // D.sysIdQuasistatic(Direction.kForward));
+    // PathplannerautoChoosers.addOption("quazisestatic reverse",
+    // D.sysIdQuasistatic(Direction.kReverse));
+    // PathplannerautoChoosers.addOption("dynamic fowerd",
+    // D.sysIdDynamic(Direction.kForward));
+    // PathplannerautoChoosers.addOption("dynamic reverse",
+    // D.sysIdDynamic(Direction.kReverse));
     PathplannerautoChoosers.addOption("Climb",
         new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).alongWith(new DownToClimb(C)))
             .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C)));
@@ -267,6 +273,9 @@ public class RobotContainer {
     new JoystickButton(driver, RED_BUTTON)
         .whileTrue(new Advance(A));
 
+    new JoystickButton(driver, BLUE_BUTTON)
+        .onTrue(new Spin180(D));
+
     /* for sysId */
     new JoystickButton(testing, 1) // Button 1 = quasistatic forward
         .whileTrue(D.sysIdQuasistatic(Direction.kForward));
@@ -279,6 +288,16 @@ public class RobotContainer {
     /* end of sysId buttons */
 
     System.out.println("Ended configureBindings()");
+  }
+
+  public void resetGyroForAuto() {
+    Command selected = PathplannerautoChoosers.getSelected();
+    if (selected instanceof PathPlannerAuto) {
+      Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();
+      if (startingPose != null) {
+        D.resetGyroToAngle(startingPose.getRotation().getDegrees());
+      }
+    }
   }
 
   public void teleopPeriodic() {

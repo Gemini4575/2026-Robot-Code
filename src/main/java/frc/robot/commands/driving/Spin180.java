@@ -12,7 +12,7 @@ public class Spin180 extends Command {
     boolean isFinished;
 
     private ProfiledPIDController rotation = new ProfiledPIDController(
-            0.007,
+            0.1,
             0,
             0,
             new TrapezoidProfile.Constraints(2, 2));
@@ -48,23 +48,30 @@ public class Spin180 extends Command {
     // gave the PID loop
     public boolean rotate(Rotation2d targetAngle) {
         first();
-        @SuppressWarnings("static-access")
-        Rotation2d currentAngle = new Rotation2d().fromDegrees(d.getAngle());
-        @SuppressWarnings("static-access")
-        double distance_to_target = targetAngle.minus(new Rotation2d().fromDegrees(startAngle).minus(currentAngle))
-                .getDegrees();
-        SmartDashboard.putNumber("[DriveTrain]Angle", targetAngle.getDegrees());
-        SmartDashboard.putNumber("[DriveTrain]Start Angle", startAngle);
-        SmartDashboard.putNumber("[DriveTrain]currentAngle", currentAngle.getDegrees());
-        SmartDashboard.putNumber("[DriveTrain]distance_to_target", distance_to_target);
-        if (Math.abs(distance_to_target) < 10.0) {
-            Rotate_Rot = 0.0;
+        double currentAngle = d.getAngle();
+        double targetDegrees = startAngle + targetAngle.getDegrees();
+
+        // Normalize error to [-180, 180] so we always take the shortest path
+        double error = targetDegrees - currentAngle;
+        while (error > 180)
+            error -= 360;
+        while (error < -180)
+            error += 360;
+
+        SmartDashboard.putNumber("[DriveTrain]currentAngle", currentAngle);
+        SmartDashboard.putNumber("[DriveTrain]targetDegrees", targetDegrees);
+        SmartDashboard.putNumber("[DriveTrain]error", error);
+
+        if (Math.abs(error) < 5.0) {
+            d.Rotate_Rot(0);
             first = true;
+            return true;
         }
-        Rotate_Rot = Math.signum(distance_to_target)
-                * rotation.calculate((d.getAngle() - 180) - d.getAngle(), targetAngle.getDegrees());
-        d.Rotate_Rot(Rotate_Rot);
-        return Math.abs(distance_to_target) < 10.0;
+
+        Rotate_Rot = 0.5;
+        // d.Rotate_Rot(Rotate_Rot);
+        d.drive(0, 0, Rotate_Rot, false);
+        return false;
     }
 
     @SuppressWarnings("static-access")

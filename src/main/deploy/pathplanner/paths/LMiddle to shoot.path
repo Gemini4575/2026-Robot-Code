@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.206956141311189,
-        "y": 4.262681388844617
+        "x": 2.709958164364869,
+        "y": 4.241222758714131
       },
       "isLocked": false,
       "linkedName": "Left Climb Start"
     },
     {
       "anchor": {
-        "x": 2.153717105263157,
+        "x": 2.4819078947368416,
         "y": 4.243848684210526
       },
       "prevControl": {
-        "x": 1.568640478237172,
-        "y": 4.23531067803785
+        "x": 2.7319000073226607,
+        "y": 4.245834545454188
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Climb Shoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

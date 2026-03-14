@@ -3,43 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4819078947368416,
+        "x": 3.6753289473684205,
         "y": 4.243848684210526
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.064210526315789,
-        "y": 4.228930921052632
+        "x": 2.709958164364869,
+        "y": 4.241222758714131
       },
       "isLocked": false,
-      "linkedName": "Left Climb Shoot"
+      "linkedName": "Left Climb Start"
     },
     {
       "anchor": {
-        "x": 1.422746710526315,
+        "x": 2.4819078947368416,
         "y": 4.243848684210526
       },
       "prevControl": {
-        "x": 1.7360197368421044,
-        "y": 4.228930921052632
+        "x": 2.7319000073226607,
+        "y": 4.245834545454188
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5246548323471404,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.3,
-    "maxAcceleration": 0.3,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

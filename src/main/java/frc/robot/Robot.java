@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     CanBridge.runTCP();
-    DataLogManager.start("/home/lvuser");
-    URCL.start(); // ← no argument, publishes to NT
+    // DataLogManager.start("/home/lvuser");
+    // URCL.start(); // ← no argument, publishes to NT
     // DataLogManager will automatically capture NT including URCL data
   }
 
@@ -99,6 +99,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    m_robotContainer.resetGyroForAuto();
+    // ... rest of your existing autonomousInit
+
     if (m_robotContainer != null) {
       MetricService.publish(MetricName.AUTO_STATE, 1.0);
       m_autonomousCommand = m_robotContainer.getAutonomousCommand();

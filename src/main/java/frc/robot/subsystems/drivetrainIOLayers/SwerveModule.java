@@ -397,9 +397,7 @@ public class SwerveModule extends SubsystemBase {
         double targetSpeedPercentage = targetSpeedMetersPerSecond / SwerveConstants.MaxMetersPersecond;
 
         final double driveOutput = (currentSpeedPercentage
-                + m_drivePIDController.calculate(
-                        currentSpeedPercentage,
-                        state.speedMetersPerSecond))
+                + m_drivePIDController.calculate(currentSpeedPercentage, targetSpeedPercentage))
                 * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
 
         // No FlipSpeed needed - inversion is handled in motor configuration
@@ -446,7 +444,7 @@ public class SwerveModule extends SubsystemBase {
 
         // Convert force (N) -> acceleration (m/s²) -> feedforward voltage -> percent
         // F = ma, so a = F/mass. Approximation: use kA from feedforward
-        double ffVolts = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+        double ffVolts = m_drivePIDController.calculate(currentSpeedPercentage, targetSpeedPercentage);
         double ffPercent = ffVolts / 12.0;
 
         double pidOutput = m_drivePIDController.calculate(currentSpeedPercentage, targetSpeedPercentage);

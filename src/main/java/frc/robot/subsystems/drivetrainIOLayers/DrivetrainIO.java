@@ -116,7 +116,7 @@ public class DrivetrainIO extends SubsystemBase {
   private final FileWriter logFileWriter;
 
   public double getAngle() {
-    return gyro.getAngle();
+    return gyro.getRotation2d().getDegrees();
   }
 
   public DrivetrainIO() {
@@ -286,6 +286,11 @@ public class DrivetrainIO extends SubsystemBase {
     frontLeft_3.SetDesiredState(swerveModuleStates[3]);
   }
 
+  public void resetGyroToAngle(double degrees) {
+    gyro.reset();
+    gyro.setAngleAdjustment(degrees);
+  }
+
   public void ResetGyro() {
     gyro.reset();
     // we need to start at this offset otherwise our axis are reversed
@@ -332,7 +337,7 @@ public class DrivetrainIO extends SubsystemBase {
             // holonomic
             // drive trains
             new PIDConstants(2, 0, 0.0), // Translation PID constants
-            new PIDConstants(0.2, 0, 0.0) // Rotation PID constants
+            new PIDConstants(.2, 0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {

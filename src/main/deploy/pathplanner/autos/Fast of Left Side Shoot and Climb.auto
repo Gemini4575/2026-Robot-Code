@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LMiddle to shoot"
+            "pathName": "Fast of LMiddle to shoot"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LShoot to LClimb"
+            "pathName": "Fast of LShoot to LClimb"
           }
         },
         {
