@@ -34,14 +34,18 @@ public class Robot extends TimedRobot {
   public Robot() {
     CanBridge.runTCP();
     // If publishing to NetworkTables and DataLog
-    DataLogManager.start();
-
+    // DataLogManager.start("/home/lvuser"); // ftp://10.45.75.2/home/lvuser/logs/
+    // System.out.println("Logging to: " + DataLogManager.getLogDir());
     // If logging only to DataLog
     URCL.start(DataLogManager.getLog());
   }
 
   @Override
   public void driverStationConnected() {
+    // moved from robot()
+    DataLogManager.start("/home/lvuser"); // ftp://10.45.75.2/home/lvuser/logs/
+    System.out.println("Logging to: " + DataLogManager.getLogDir());
+
     super.driverStationConnected();
     MetricService.init();
     // Instantiate our RobotContainer. This will perform all our button bindings,
