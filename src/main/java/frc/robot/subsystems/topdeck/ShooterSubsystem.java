@@ -67,18 +67,44 @@ public class ShooterSubsystem extends SubsystemBase {
             ),
             new SysIdRoutine.Mechanism(
                     (voltage) -> {
+                        // Drive all 4 motors
                         shooterMotor.setVoltage(voltage);
+                        shooterMotor2.setVoltage(voltage);
+                        shooterMotor3.setVoltage(voltage);
+                        shooterMotor4.setVoltage(voltage);
                     },
                     (log) -> {
-                        log.motor("shooter")
+                        // Log all 4 motors separately so you get results for each
+                        log.motor("shooter-1")
                                 .voltage(edu.wpi.first.units.Units.Volts.of(
                                         shooterMotor.getBusVoltage() * shooterMotor.getAppliedOutput()))
                                 .angularPosition(edu.wpi.first.units.Units.Rotations.of(
                                         shooterMotor.getEncoder().getPosition()))
                                 .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
-                                        shooterMotor.getEncoder().getVelocity() / 60.0)); // RPM to RPS
+                                        shooterMotor.getEncoder().getVelocity() / 60.0));
+                        log.motor("shooter-2")
+                                .voltage(edu.wpi.first.units.Units.Volts.of(
+                                        shooterMotor2.getBusVoltage() * shooterMotor2.getAppliedOutput()))
+                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
+                                        shooterMotor2.getEncoder().getPosition()))
+                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
+                                        shooterMotor2.getEncoder().getVelocity() / 60.0));
+                        log.motor("shooter-3")
+                                .voltage(edu.wpi.first.units.Units.Volts.of(
+                                        shooterMotor3.getBusVoltage() * shooterMotor3.getAppliedOutput()))
+                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
+                                        shooterMotor3.getEncoder().getPosition()))
+                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
+                                        shooterMotor3.getEncoder().getVelocity() / 60.0));
+                        log.motor("shooter-4")
+                                .voltage(edu.wpi.first.units.Units.Volts.of(
+                                        shooterMotor4.getBusVoltage() * shooterMotor4.getAppliedOutput()))
+                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
+                                        shooterMotor4.getEncoder().getPosition()))
+                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
+                                        shooterMotor4.getEncoder().getVelocity() / 60.0));
                     },
-                    this));;
+                    this));
 
     // PID Constants - tune these!
     private static final double kP = 0.0001;
