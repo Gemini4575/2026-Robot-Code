@@ -67,18 +67,31 @@ public class Vision extends SubsystemBase {
     public Vision() {
         super();
         var tagCamera = new PhotonCamera("Left Cam");
-        var tagCameraColor = new PhotonCamera("Right Cam");
+        var tagCamera2 = new PhotonCamera("Right Cam");
+
+        var tagCamera3 = new PhotonCamera("Back Cam");
+        var tagCamera4 = new PhotonCamera("Front Cam");
 
         var photonEstimator = new PhotonPoseEstimator(kTagLayout,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, LeftCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-        var photonEstimatorColor = new PhotonPoseEstimator(kTagLayout,
+        var photonEstimator2 = new PhotonPoseEstimator(kTagLayout,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, RightCam);
-        photonEstimatorColor.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+        var photonEstimator3 = new PhotonPoseEstimator(kTagLayout,
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, BackCam);
+        photonEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+        var photonEstimator4 = new PhotonPoseEstimator(kTagLayout,
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, FrontCam);
+        photonEstimator4.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         photonDataContainers = List.of(new PhotonDataContainer(tagCamera, photonEstimator),
-                new PhotonDataContainer(tagCameraColor, photonEstimatorColor));
+                new PhotonDataContainer(tagCamera4, photonEstimator2),
+                new PhotonDataContainer(tagCamera3, photonEstimator3),
+                new PhotonDataContainer(tagCamera4, photonEstimator4));
 
         // ----- Simulation
         if (Robot.isSimulation()) {

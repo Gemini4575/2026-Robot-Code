@@ -81,7 +81,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void configureMotor() {
         SparkMaxConfig s1 = new SparkMaxConfig();
-
         s1.disableFollowerMode();
         s1.smartCurrentLimit(40, 40);
         s1.idleMode(IdleMode.kCoast);
@@ -99,11 +98,11 @@ public class ShooterSubsystem extends SubsystemBase {
         runShooterAtVelocity(targetVelocityEntry.getDouble(1));
     }
 
-    private void SysidTesting(Voltage voltage) {
-        shooterMotor.setVoltage(voltage);
-        shooterMotor2.setVoltage(voltage);
-        shooterMotor3.setVoltage(voltage);
-        shooterMotor4.setVoltage(voltage);
+    private void setRPM(Double rpm) {
+        shooterMotor.setVoltage(feedforward.calculate(rpm));
+        shooterMotor2.setVoltage(feedforward2.calculate(rpm));
+        shooterMotor3.setVoltage(feedforward3.calculate(rpm));
+        shooterMotor4.setVoltage(feedforward4.calculate(rpm));
     }
 
     /**

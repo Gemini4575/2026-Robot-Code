@@ -158,9 +158,9 @@ public final class Constants {
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
                                 new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
 
-                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(.75),
-                                Units.inchesToMeters(15), Units.inchesToMeters(8.75),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(90)));
+                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(10),
+                                Units.inchesToMeters(8.5), Units.inchesToMeters(7.5),
+                                new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)));
 
                 public static final Transform3d BackCam = new Transform3d(Units.inchesToMeters(0.75),
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
