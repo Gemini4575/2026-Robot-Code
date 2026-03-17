@@ -9,15 +9,14 @@ public class Testing_Shoot extends Command {
     private final ShooterSubsystem shooter;
     private final BeamBreak beamBreak;
 
-    public Testing_Shoot(ShooterSubsystem shooterSubsystem,  BeamBreak beamBreak) {
+    public Testing_Shoot(ShooterSubsystem shooterSubsystem, BeamBreak beamBreak) {
         this.shooter = shooterSubsystem;
         // this.advancer = advancerSubsystem;
         this.beamBreak = beamBreak;
-        addRequirements(shooterSubsystem,  beamBreak);
+        addRequirements(shooterSubsystem, beamBreak);
     }
 
     private boolean firstRun = true;
-
 
     @Override
     public void initialize() {
@@ -26,18 +25,18 @@ public class Testing_Shoot extends Command {
 
     @Override
     public void execute() {
-        shooter.runShooterAtVelocity(1);
+        shooter.runShooter();
         // if (shooter.getVelocity() > 5000 && firstRun) {
-        //     advancer.advance();
-        //     firstRun = false;
+        // advancer.advance();
+        // firstRun = false;
         // } else {
-        //     advancer.stopAdvancer();
+        // advancer.stopAdvancer();
         // }
 
         // if(!firstRun){
-        //     advancer.advance();
+        // advancer.advance();
         // }
-        
+
     }
 
     @Override
@@ -48,6 +47,6 @@ public class Testing_Shoot extends Command {
 
     @Override
     public boolean isFinished() {
-        return /*beamBreak.getShooter() ==*/ false;
+        return /* beamBreak.getShooter() == */ false;
     }
 }

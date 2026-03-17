@@ -23,13 +23,17 @@ public class AdvancerSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
     private final SparkMax AdavancerMotor;
+    private final SparkMax RollerMotor;
 
     public AdvancerSubsystem() {
+        RollerMotor = new SparkMax(ROLLER_MOTOR_ID, MotorType.kBrushless);
         AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushless);
         SparkBaseConfig AdvancerMotorConfig = new SparkMaxConfig();
 
         AdvancerMotorConfig.smartCurrentLimit(40, 40);
         AdvancerMotorConfig.disableFollowerMode();
+
+        AdvancerMotorConfig.inverted(true);
 
         AdvancerMotorConfig.idleMode(IdleMode.kBrake);
 
@@ -37,7 +41,9 @@ public class AdvancerSubsystem extends SubsystemBase {
         AdvancerMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
 
         AdavancerMotor.configure(AdvancerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+        AdvancerMotorConfig.follow(ADVANCER_MOTOR_ID);
+        RollerMotor.configure(AdvancerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }
 
     public void reverse() {
@@ -46,6 +52,7 @@ public class AdvancerSubsystem extends SubsystemBase {
 
     public void stopAdvancer() {
         AdavancerMotor.set(0);
+
     }
 
     public void advance() {

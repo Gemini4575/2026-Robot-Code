@@ -23,8 +23,8 @@ public class IntakeSubystem extends SubsystemBase {
 
     public IntakeSubystem() {
         intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
-        slider1 = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushed);
-        slider2 = new SparkMax(INTAKE_SLIDER2_ID, MotorType.kBrushed);
+        slider1 = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushless);
+        slider2 = new SparkMax(INTAKE_SLIDER2_ID, MotorType.kBrushless);
         configMotors();
     }
 
@@ -73,7 +73,7 @@ public class IntakeSubystem extends SubsystemBase {
         slider1.set(0);
         slider2.set(0);
     }
-    
+
     public void testSliders(double JoystickValue) {
         slider1.set(JoystickValue);
         slider2.set(JoystickValue);

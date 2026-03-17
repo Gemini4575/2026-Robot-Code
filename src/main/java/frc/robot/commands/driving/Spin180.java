@@ -53,9 +53,9 @@ public class Spin180 extends Command {
 
         // Normalize error to [-180, 180] so we always take the shortest path
         double error = targetDegrees - currentAngle;
-        while (error > 180)
+        while (error > 360)
             error -= 360;
-        while (error < -180)
+        while (error < 0)
             error += 360;
 
         SmartDashboard.putNumber("[DriveTrain]currentAngle", currentAngle);

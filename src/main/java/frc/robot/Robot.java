@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     CanBridge.runTCP();
-    // DataLogManager.start("/home/lvuser");
-    // URCL.start(); // ← no argument, publishes to NT
+    DataLogManager.start("/home/lvuser");
+    URCL.start(); // ← no argument, publishes to NT
     // DataLogManager will automatically capture NT including URCL data
   }
 

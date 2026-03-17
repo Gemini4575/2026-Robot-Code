@@ -116,7 +116,10 @@ public class DrivetrainIO extends SubsystemBase {
   private final FileWriter logFileWriter;
 
   public double getAngle() {
-    return gyro.getRotation2d().getDegrees();
+    double angle = gyro.getRotation2d().getDegrees() % 360;
+    if (angle < 0)
+      angle += 360;
+    return angle;
   }
 
   public DrivetrainIO() {
