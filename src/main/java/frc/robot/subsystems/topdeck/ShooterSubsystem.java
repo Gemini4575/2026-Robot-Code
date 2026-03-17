@@ -21,6 +21,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -50,61 +51,21 @@ public class ShooterSubsystem extends SubsystemBase {
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
     private SparkMax shooterMotor = new SparkMax(SHOOTER_MOTOR_ID_1, MotorType.kBrushless);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.069689, 0.10839, 0.0077901); // kS, kV -
+
     private SparkMax shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID_2, MotorType.kBrushless);
+    private SimpleMotorFeedforward feedforward2 = new SimpleMotorFeedforward(0.087923, 0.10849, 0.0089868); // kS, kV -
+
     private SparkMax shooterMotor3 = new SparkMax(SHOOTER_MOTOR_ID_3, MotorType.kBrushless);
+    private SimpleMotorFeedforward feedforward3 = new SimpleMotorFeedforward(0.058578, 0.10867, 0.0085603); // kS, kV -
+                                                                                                            // // these!
+
     private SparkMax shooterMotor4 = new SparkMax(SHOOTER_MOTOR_ID_4, MotorType.kBrushless);
+    private SimpleMotorFeedforward feedforward4 = new SimpleMotorFeedforward(0.037203, 0.1083, 0.0090113); // kS, kV -
     // private final RelativeEncoder encoder;
     // private final RelativeEncoder encoder2;
     private PIDController pidController;
     private PIDController pidController2;
-
-    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                    null, // Default ramp rate (1 V/s)
-                    edu.wpi.first.units.Units.Volts.of(4), // Limit to 4V for safety
-                    null, // Default timeout
-                    null // Default state logger
-            ),
-            new SysIdRoutine.Mechanism(
-                    (voltage) -> {
-                        // Drive all 4 motors
-                        shooterMotor.setVoltage(voltage);
-                        shooterMotor2.setVoltage(voltage);
-                        shooterMotor3.setVoltage(voltage);
-                        shooterMotor4.setVoltage(voltage);
-                    },
-                    (log) -> {
-                        // Log all 4 motors separately so you get results for each
-                        log.motor("shooter-1")
-                                .voltage(edu.wpi.first.units.Units.Volts.of(
-                                        shooterMotor.getBusVoltage() * shooterMotor.getAppliedOutput()))
-                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
-                                        shooterMotor.getEncoder().getPosition()))
-                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
-                                        shooterMotor.getEncoder().getVelocity() / 60.0));
-                        log.motor("shooter-2")
-                                .voltage(edu.wpi.first.units.Units.Volts.of(
-                                        shooterMotor2.getBusVoltage() * shooterMotor2.getAppliedOutput()))
-                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
-                                        shooterMotor2.getEncoder().getPosition()))
-                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
-                                        shooterMotor2.getEncoder().getVelocity() / 60.0));
-                        log.motor("shooter-3")
-                                .voltage(edu.wpi.first.units.Units.Volts.of(
-                                        shooterMotor3.getBusVoltage() * shooterMotor3.getAppliedOutput()))
-                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
-                                        shooterMotor3.getEncoder().getPosition()))
-                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
-                                        shooterMotor3.getEncoder().getVelocity() / 60.0));
-                        log.motor("shooter-4")
-                                .voltage(edu.wpi.first.units.Units.Volts.of(
-                                        shooterMotor4.getBusVoltage() * shooterMotor4.getAppliedOutput()))
-                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
-                                        shooterMotor4.getEncoder().getPosition()))
-                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
-                                        shooterMotor4.getEncoder().getVelocity() / 60.0));
-                    },
-                    this));
 
     // PID Constants - tune these!
     private static final double kP = 0.0001;
@@ -120,6 +81,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void configureMotor() {
         SparkMaxConfig s1 = new SparkMaxConfig();
+
         s1.disableFollowerMode();
         s1.smartCurrentLimit(40, 40);
         s1.idleMode(IdleMode.kCoast);
@@ -135,14 +97,6 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void runShooter() {
         runShooterAtVelocity(targetVelocityEntry.getDouble(1));
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysIdRoutine.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysIdRoutine.dynamic(direction);
     }
 
     private void SysidTesting(Voltage voltage) {

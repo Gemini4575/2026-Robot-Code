@@ -275,17 +275,6 @@ public class RobotContainer {
     new JoystickButton(driver, BLUE_BUTTON)
         .onTrue(new Spin180(D));
 
-    /* for sysId */
-    new JoystickButton(testing, 1) // Button 1 = quasistatic forward
-        .whileTrue(S.sysIdQuasistatic(Direction.kForward));
-    new JoystickButton(testing, 2) // Button 2 = quasistatic reverse
-        .whileTrue(S.sysIdQuasistatic(Direction.kReverse));
-    new JoystickButton(testing, 3) // Button 3 = dynamic forward
-        .whileTrue(S.sysIdDynamic(Direction.kForward));
-    new JoystickButton(testing, 4) // Button 4 = dynamic reverse
-        .whileTrue(S.sysIdDynamic(Direction.kReverse));
-    /* end of sysId buttons */
-
     System.out.println("Ended configureBindings()");
   }
 
