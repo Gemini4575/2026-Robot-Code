@@ -69,7 +69,15 @@ public class ShooterSubsystem extends SubsystemBase {
                     (voltage) -> {
                         shooterMotor.setVoltage(voltage);
                     },
-                    null,
+                    (log) -> {
+                        log.motor("shooter")
+                                .voltage(edu.wpi.first.units.Units.Volts.of(
+                                        shooterMotor.getBusVoltage() * shooterMotor.getAppliedOutput()))
+                                .angularPosition(edu.wpi.first.units.Units.Rotations.of(
+                                        shooterMotor.getEncoder().getPosition()))
+                                .angularVelocity(edu.wpi.first.units.Units.RotationsPerSecond.of(
+                                        shooterMotor.getEncoder().getVelocity() / 60.0)); // RPM to RPS
+                    },
                     this));;
 
     // PID Constants - tune these!

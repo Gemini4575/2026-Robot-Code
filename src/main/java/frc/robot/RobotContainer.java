@@ -140,7 +140,6 @@ public class RobotContainer {
   // private final SendableChooser<Command> autoChooser;
 
   /* Subsystems */
-  @SuppressWarnings("unused")
   private final ShooterSubsystem S = new ShooterSubsystem();
   private final ClimberSubsystem C = new ClimberSubsystem();
   private final IntakeSubystem I = new IntakeSubystem();
