@@ -95,14 +95,14 @@ public class ShooterSubsystem extends SubsystemBase {
      * Spins the shooter to the target velocity
      */
     public void runShooter() {
-        runShooterAtVelocity(targetVelocityEntry.getDouble(1));
+        setRPM(targetVelocityEntry.getDouble(1));
     }
 
     private void setRPM(Double rpm) {
-        shooterMotor.setVoltage(feedforward.calculate(rpm));
-        shooterMotor2.setVoltage(feedforward2.calculate(rpm));
-        shooterMotor3.setVoltage(feedforward3.calculate(rpm));
-        shooterMotor4.setVoltage(feedforward4.calculate(rpm));
+        shooterMotor.setVoltage(feedforward.calculate(rpm / 60.0)); // Convert RPM to RPS for feedforward calculation
+        shooterMotor2.setVoltage(feedforward2.calculate(rpm / 60.0));
+        shooterMotor3.setVoltage(feedforward3.calculate(rpm / 60.0));
+        shooterMotor4.setVoltage(feedforward4.calculate(rpm / 60.0));
     }
 
     /**
@@ -111,7 +111,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param velocityRPM Target velocity in rotations per minute (RPM)
      */
     public void runShooterAtVelocity(double velocityRPM) {
-        setMotors(velocityRPM);
+        setRPM(velocityRPM);
         System.out.print("Shooting");
     }
 

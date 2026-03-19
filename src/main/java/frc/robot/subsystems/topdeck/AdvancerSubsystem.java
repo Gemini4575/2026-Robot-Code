@@ -35,7 +35,7 @@ public class AdvancerSubsystem extends SubsystemBase {
 
         AdvancerMotorConfig.inverted(true);
 
-        AdvancerMotorConfig.idleMode(IdleMode.kBrake);
+        AdvancerMotorConfig.idleMode(IdleMode.kCoast);
 
         AdvancerMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
         AdvancerMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
