@@ -18,70 +18,89 @@ import static frc.robot.Constants.IntakeConstants.*;
 public class IntakeSubystem extends SubsystemBase {
 
     private TalonFX intakeMotor;
-    private SparkMax slider1;
-    private SparkMax slider2;
+    private SparkMax rotationMotor;
 
     public IntakeSubystem() {
         intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
-        slider1 = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushless);
-        slider2 = new SparkMax(INTAKE_SLIDER2_ID, MotorType.kBrushless);
+        rotationMotor = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushless);
         configMotors();
     }
 
     private void configMotors() {
         TalonFXConfiguration intakeMotorConfig = new TalonFXConfiguration();
-        SparkBaseConfig sliderConfig = new SparkMaxConfig();
+        SparkBaseConfig RotatorConfig = new SparkMaxConfig();
 
         intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+        intakeMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        intakeMotorConfig.CurrentLimits.StatorCurrentLimit = 30.0;
         intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         intakeMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         intakeMotor.getConfigurator().apply(intakeMotorConfig);
 
-        sliderConfig.smartCurrentLimit(30, 30);
-        sliderConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
-        sliderConfig.inverted(false);
-        sliderConfig.disableFollowerMode();
-        slider1.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        sliderConfig.inverted(true);
-        slider2.configure(sliderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        RotatorConfig.smartCurrentLimit(30, 30);
+        RotatorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
+        RotatorConfig.inverted(true);
+        RotatorConfig.disableFollowerMode();
+        RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
+        RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
+        RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
+        RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
+        rotationMotor.getEncoder().setPosition(0);
+        rotationMotor.configure(RotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void Outake() {
-        intakeMotor.set(INTAKE_SPEED);
+        intakeMotor.set(-INTAKE_SPEED);
     }
 
     public void Intake() {
-        intakeMotor.set(-INTAKE_SPEED);
+        intakeMotor.set(INTAKE_SPEED);
     }
 
     public void stopIntake() {
         intakeMotor.set(0);
     }
 
-    public void extendIntake() {
-        slider1.set(1);
-        slider2.set(1);
+    public void stop() {
+        rotationMotor.stopMotor();
     }
 
-    public void retractIntake() {
-        slider1.set(-1);
-        slider2.set(-1);
+    private boolean IMoveDownToIntakeI() {
+        rotationMotor.set(-0.25);
+
+        return rotationMotor.getEncoder().getPosition() <= Intake_Down_SetPoint;
     }
 
-    public void stopSliders() {
-        slider1.set(0);
-        slider2.set(0);
+    private boolean IMoveUpToStoreI() {
+        rotationMotor.set(0.25);
+
+        return rotationMotor.getEncoder().getPosition() >= Intake_Up_SetPoint;
+    }
+
+    public boolean MoveUpToStore() {
+        if (IMoveDownToIntakeI()) {
+            stop();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean MoveDownToIntake() {
+        if (IMoveUpToStoreI()) {
+            stop();
+            return true;
+        }
+        return false;
     }
 
     public void testSliders(double JoystickValue) {
-        slider1.set(JoystickValue);
-        slider2.set(JoystickValue);
+        rotationMotor.set(JoystickValue);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Intake Motor Velocity RPS", intakeMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Intake Motor Position ", rotationMotor.getEncoder().getPosition());
     }
 }

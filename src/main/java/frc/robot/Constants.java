@@ -158,9 +158,9 @@ public final class Constants {
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
                                 new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
 
-                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(10),
-                                Units.inchesToMeters(8.5), Units.inchesToMeters(7.5),
-                                new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)));
+                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(10.5),
+                                Units.inchesToMeters(13.5), Units.inchesToMeters(16.5),
+                                new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)));
 
                 public static final Transform3d BackCam = new Transform3d(Units.inchesToMeters(0.75),
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
@@ -207,6 +207,8 @@ public final class Constants {
                 /** Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
                 public static final double INTAKE_SPEED = 1;
+                public static final double Intake_Down_SetPoint = 0;
+                public static final double Intake_Up_SetPoint = 20.9;
         }
 
         public static final class HoodConstants {
@@ -233,6 +235,7 @@ public final class Constants {
         public static final class ShooterRPMConstants {
                 public static final double DEPOT_SHOOT = 0.85;
                 public static final double OUTSIDE_TRENCH = 0.85;
+                public static final int MIDDLE_AUTO_SHOOT = 4000;
                 public static final double INSIDE_TRENCH = 1;
         }
 

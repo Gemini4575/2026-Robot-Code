@@ -68,7 +68,7 @@ public class Spin180 extends Command {
             return true;
         }
 
-        Rotate_Rot = 0.5;
+        Rotate_Rot = 0.2;
         // d.Rotate_Rot(Rotate_Rot);
         d.drive(0, 0, Rotate_Rot, false);
         return false;

@@ -110,9 +110,11 @@ public class ShooterSubsystem extends SubsystemBase {
      * 
      * @param velocityRPM Target velocity in rotations per minute (RPM)
      */
-    public void runShooterAtVelocity(double velocityRPM) {
+    public boolean runShooterAtVelocity(double velocityRPM) {
         setRPM(velocityRPM);
-        System.out.print("Shooting");
+        SmartDashboard.putNumber("Shooter Velocoty", getVelocity());
+        return (getVelocity() - 500) > velocityRPM && (getVelocity() + 500) < velocityRPM; // Check if within 500 RPM of
+        // target
     }
 
     private void setMotors(double setpoint) {

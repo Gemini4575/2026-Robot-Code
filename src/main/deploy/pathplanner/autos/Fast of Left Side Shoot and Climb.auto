@@ -27,15 +27,9 @@
                 }
               },
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "Shoot From Trench"
+                  "name": "Shoot From Auto Middle"
                 }
               },
               {
@@ -60,9 +54,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Stop"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Climb"
+                }
+              }
+            ]
           }
         }
       ]

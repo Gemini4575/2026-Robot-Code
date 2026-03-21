@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.advancer.Advance;
 import frc.robot.commands.auto.AutoCommandFactory;
+import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
@@ -41,7 +42,11 @@ import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
+import frc.robot.commands.intake.ExtendIntake;
+import frc.robot.commands.intake.ExtendIntakeAndIntake;
+import frc.robot.commands.intake.ExtendOrRectactIntake;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.MetricName;
@@ -172,7 +177,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, beamBreak).withTimeout(5));
     NamedCommands.registerCommand("Spin Up Shooter", new SpinUpShooter(S));
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
+    NamedCommands.registerCommand("Climb", new UpToClimb(C));
     NamedCommands.registerCommand("Stop", new Stop(D));
+    NamedCommands.registerCommand("Shoot From Auto Middle", new ShootFromAutoMiddle(S, A));
     NamedCommands.registerCommand("Spin 180", new Spin180(D));
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
         11.914,
@@ -189,7 +196,7 @@ public class RobotContainer {
     // PathplannerautoChoosers.addOption("dynamic reverse",
     // D.sysIdDynamic(Direction.kReverse));
     PathplannerautoChoosers.addOption("Climb",
-        new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).alongWith(new DownToClimb(C)))
+        new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).andThen(new Stop(D)).alongWith(new DownToClimb(C)))
             .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C)));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
@@ -263,17 +270,21 @@ public class RobotContainer {
     new JoystickButton(climber, RED_BUTTON)
         .onTrue(new UpToClimb(C));
 
-    I.setDefaultCommand(new Intake(I, () -> operator.getRawButton(LEFT_BUMPER),
-        () -> operator.getRawButton(RIGHT_BUMPER), () -> operator.getPOV() == 270, () -> operator.getPOV() == 90));
+    I.setDefaultCommand(
+        new ExtendOrRectactIntake(I, () -> operator.getPOV() == POV_DOWN, () -> operator.getPOV() == POV_UP,
+            () -> operator.getRawButton(BLUE_BUTTON)));
 
-    new JoystickButton(driver, GREEN_BUTTON)
+    new JoystickButton(testing, RED_BUTTON)
+        .onTrue(new RetractIntake(I));
+
+    new JoystickButton(operator, GREEN_BUTTON)
         .whileTrue(new Testing_Shoot(S, beamBreak));
 
-    new JoystickButton(driver, RED_BUTTON)
+    new JoystickButton(operator, RED_BUTTON)
         .whileTrue(new Advance(A));
 
-    new JoystickButton(driver, BLUE_BUTTON)
-        .onTrue(new Spin180(D));
+    // new JoystickButton(driver, BLUE_BUTTON)
+    // .onTrue(new Spin180(D));
 
     System.out.println("Ended configureBindings()");
   }
@@ -290,7 +301,7 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    // I.testSliders(operator.getAxisType(LEFT_X_AXIS));
+    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {
