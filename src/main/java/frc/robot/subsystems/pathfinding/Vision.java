@@ -89,7 +89,7 @@ public class Vision extends SubsystemBase {
         photonEstimator4.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         photonDataContainers = List.of(new PhotonDataContainer(tagCamera, photonEstimator),
-                new PhotonDataContainer(tagCamera4, photonEstimator2),
+                new PhotonDataContainer(tagCamera2, photonEstimator2),
                 new PhotonDataContainer(tagCamera3, photonEstimator3),
                 new PhotonDataContainer(tagCamera4, photonEstimator4));
 
@@ -156,6 +156,11 @@ public class Vision extends SubsystemBase {
                         });
             }
             if (visionEst.isPresent()) {
+                boolean hasHighAmbiguity = change.getTargets().stream()
+                        .anyMatch(t -> t.getPoseAmbiguity() > 0.2);
+                if (hasHighAmbiguity)
+                    continue;
+
                 var stdDev = updateEstimationStdDevs(visionEst, change.getTargets(),
                         photonDataContainer.getPoseEstimator());
                 estimates.add(new VisionEstimateContainer(visionEst.get(), stdDev));

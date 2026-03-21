@@ -158,9 +158,10 @@ public final class Constants {
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
                                 new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
 
-                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(10.5),
+            
+                                public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(-10.5),
                                 Units.inchesToMeters(13.5), Units.inchesToMeters(16.5),
-                                new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)));
+                                new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180)));
 
                 public static final Transform3d BackCam = new Transform3d(Units.inchesToMeters(0.75),
                                 -Units.inchesToMeters(15), Units.inchesToMeters(8.75),
@@ -168,8 +169,8 @@ public final class Constants {
                 // The standard deviations of our vision estimated poses, which affect
                 // correction rate
                 // (Fake values. Experiment and determine estimation noise on an actual robot.)
-                public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-                public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+                public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, Double.MAX_VALUE);
+                public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
         }
 
         public static final class ShooterConstants {
@@ -237,6 +238,14 @@ public final class Constants {
                 public static final double OUTSIDE_TRENCH = 0.85;
                 public static final int MIDDLE_AUTO_SHOOT = 4000;
                 public static final double INSIDE_TRENCH = 1;
+        }
+
+        public static class States {
+                public static Boolean SHOOTER_ON = false;
+                public static Boolean INTAKE_ON = false;
+                public static Boolean CLIMBER_DOWN = false;
+                public static Boolean ADVANCER_ON = false;
+                public static Boolean INTAKE_IN = true;
         }
 
 }

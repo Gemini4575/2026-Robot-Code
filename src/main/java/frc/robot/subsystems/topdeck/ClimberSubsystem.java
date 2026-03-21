@@ -12,16 +12,18 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.CimberConstants.*;
 
-public class ClimberSubsystem extends SubsystemBase{
+public class ClimberSubsystem extends SubsystemBase {
     private ShuffleboardTab climberTab = Shuffleboard.getTab("Climber");
     private GenericEntry climberPositionEntry = climberTab.add("CLimber Motor Position", 0)
-        .getEntry();
+            .getEntry();
     private GenericEntry climberSetPointEntry = climberTab.add("Climber Reached Set Point", false)
-    .getEntry();
+            .getEntry();
     private final SparkMax climberMotor;
+
     public ClimberSubsystem() {
         climberMotor = new SparkMax(CLIMBER_MOTOR_CANID, MotorType.kBrushless);
         climberMotor.getEncoder().setPosition(0);
@@ -42,54 +44,60 @@ public class ClimberSubsystem extends SubsystemBase{
         climberMotor.configure(ClimberMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void JoystickControl(double joy){
+    public void JoystickControl(double joy) {
         climberMotor.set(joy);
     }
 
-    private boolean IMoveDownToClimbI(){
+    private boolean IMoveDownToClimbI() {
         climberMotor.set(1);
 
         return climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
     }
 
-    private boolean IMoveUpToClimbI(){
+    private boolean IMoveUpToClimbI() {
         climberMotor.set(-1);
 
         return climberMotor.getEncoder().getPosition() <= Climber_Up_SetPoint;
     }
 
-    private boolean IMoveUpTo0I(){
+    private boolean IMoveUpTo0I() {
         climberMotor.set(-1);
 
         return climberMotor.getEncoder().getPosition() <= 1;
     }
 
-    public boolean MoveTo0(){
+    public boolean MoveTo0() {
         return IMoveUpTo0I();
     }
 
-    public boolean MoveDownToClimb(){
-        if(IMoveDownToClimbI()){
+    public boolean MoveDownToClimbCheck() {
+        return climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
+    }
+
+    public boolean MoveDownToClimb() {
+        if (IMoveDownToClimbI()) {
             stop();
+            Constants.States.CLIMBER_DOWN = true;
             return true;
         }
         return false;
     }
 
-    public boolean MoveUpToClimb(){
-        if(IMoveUpToClimbI()){
+    public boolean MoveUpToClimb() {
+        if (IMoveUpToClimbI()) {
             stop();
+            Constants.States.CLIMBER_DOWN = false;
             return true;
         }
         return false;
     }
 
-    public void stop(){
+    public void stop() {
         climberMotor.stopMotor();
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         climberPositionEntry.setDouble(climberMotor.getEncoder().getPosition());
         climberSetPointEntry.setBoolean(climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint);
     }

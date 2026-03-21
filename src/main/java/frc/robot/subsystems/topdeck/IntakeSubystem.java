@@ -13,6 +13,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import static frc.robot.Constants.IntakeConstants.*;
 
 public class IntakeSubystem extends SubsystemBase {
@@ -33,7 +35,7 @@ public class IntakeSubystem extends SubsystemBase {
         intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
         intakeMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        intakeMotorConfig.CurrentLimits.StatorCurrentLimit = 30.0;
+        intakeMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
         intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         intakeMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         intakeMotor.getConfigurator().apply(intakeMotorConfig);
@@ -50,15 +52,21 @@ public class IntakeSubystem extends SubsystemBase {
         rotationMotor.configure(RotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    public boolean intakeMoving() {
+        return rotationMotor.get() != 0;
+    }
+
     public void Outake() {
         intakeMotor.set(-INTAKE_SPEED);
     }
 
     public void Intake() {
+        Constants.States.INTAKE_ON = true;
         intakeMotor.set(INTAKE_SPEED);
     }
 
     public void stopIntake() {
+        Constants.States.INTAKE_ON = false;
         intakeMotor.set(0);
     }
 
@@ -81,6 +89,7 @@ public class IntakeSubystem extends SubsystemBase {
     public boolean MoveUpToStore() {
         if (IMoveDownToIntakeI()) {
             stop();
+            Constants.States.INTAKE_IN = true;
             return true;
         }
         return false;
@@ -89,6 +98,7 @@ public class IntakeSubystem extends SubsystemBase {
     public boolean MoveDownToIntake() {
         if (IMoveUpToStoreI()) {
             stop();
+            Constants.States.INTAKE_IN = false;
             return true;
         }
         return false;
@@ -100,6 +110,9 @@ public class IntakeSubystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (Constants.States.CLIMBER_DOWN) {
+            MoveUpToStore();
+        }
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Intake Motor Position ", rotationMotor.getEncoder().getPosition());
     }

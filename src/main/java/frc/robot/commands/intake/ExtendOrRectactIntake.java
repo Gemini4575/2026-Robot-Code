@@ -3,6 +3,7 @@ package frc.robot.commands.intake;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.topdeck.IntakeSubystem;
 
 public class ExtendOrRectactIntake extends Command {
@@ -34,7 +35,13 @@ public class ExtendOrRectactIntake extends Command {
         } else if (intake.getAsBoolean()) {
             i.Intake();
         } else {
+            if (Constants.States.INTAKE_IN && !i.intakeMoving()) {
+                i.MoveUpToStore();
+            } else if (!i.intakeMoving()) {
+                i.MoveDownToIntake();
+            }
             i.stopIntake();
         }
+
     }
 }

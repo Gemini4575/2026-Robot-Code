@@ -2,8 +2,10 @@ package frc.robot.subsystems.topdeck;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.ctre.phoenix6.StatusCode;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -50,17 +53,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
-    private SparkMax shooterMotor = new SparkMax(SHOOTER_MOTOR_ID_1, MotorType.kBrushless);
+    private SparkFlex shooterMotor = new SparkFlex(SHOOTER_MOTOR_ID_1, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.069689, 0.10839, 0.0077901); // kS, kV -
 
-    private SparkMax shooterMotor2 = new SparkMax(SHOOTER_MOTOR_ID_2, MotorType.kBrushless);
+    private SparkFlex shooterMotor2 = new SparkFlex(SHOOTER_MOTOR_ID_2, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward2 = new SimpleMotorFeedforward(0.087923, 0.10849, 0.0089868); // kS, kV -
 
-    private SparkMax shooterMotor3 = new SparkMax(SHOOTER_MOTOR_ID_3, MotorType.kBrushless);
+    private SparkFlex shooterMotor3 = new SparkFlex(SHOOTER_MOTOR_ID_3, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward3 = new SimpleMotorFeedforward(0.058578, 0.10867, 0.0085603); // kS, kV -
                                                                                                             // // these!
 
-    private SparkMax shooterMotor4 = new SparkMax(SHOOTER_MOTOR_ID_4, MotorType.kBrushless);
+    private SparkFlex shooterMotor4 = new SparkFlex(SHOOTER_MOTOR_ID_4, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward4 = new SimpleMotorFeedforward(0.037203, 0.1083, 0.0090113); // kS, kV -
     // private final RelativeEncoder encoder;
     // private final RelativeEncoder encoder2;
@@ -80,7 +83,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private void configureMotor() {
-        SparkMaxConfig s1 = new SparkMaxConfig();
+
+        SparkFlexConfig s1 = new SparkFlexConfig();
         s1.disableFollowerMode();
         s1.smartCurrentLimit(40, 40);
         s1.idleMode(IdleMode.kCoast);
@@ -99,6 +103,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private void setRPM(Double rpm) {
+        Constants.States.SHOOTER_ON = true;
         shooterMotor.setVoltage(feedforward.calculate(rpm / 60.0)); // Convert RPM to RPS for feedforward calculation
         shooterMotor2.setVoltage(feedforward2.calculate(rpm / 60.0));
         shooterMotor3.setVoltage(feedforward3.calculate(rpm / 60.0));
@@ -129,6 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * Stops the shooter motor
      */
     public void stopShooter() {
+        Constants.States.SHOOTER_ON = false;
         setMotors(0);
     }
 
