@@ -444,12 +444,12 @@ public class SwerveModule extends SubsystemBase {
 
         // Convert force (N) -> acceleration (m/s²) -> feedforward voltage -> percent
         // F = ma, so a = F/mass. Approximation: use kA from feedforward
-        double ffVolts = m_drivePIDController.calculate(currentSpeedPercentage, targetSpeedPercentage);
-        double ffPercent = ffVolts / 12.0;
-
         double pidOutput = m_drivePIDController.calculate(currentSpeedPercentage, targetSpeedPercentage);
 
-        // Clamp drive output to ±1.0
+        // feedforward from the SimpleMotorFeedforward, not PID
+        double ffVolts = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+        double ffPercent = ffVolts / 12.0;
+
         final double driveOutput = Math.max(-1.0, Math.min(1.0,
                 targetSpeedPercentage + pidOutput + ffPercent));
 

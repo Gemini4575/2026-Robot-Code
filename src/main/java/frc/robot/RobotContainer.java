@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -325,6 +326,8 @@ public class RobotContainer {
 
   private void updateVisionEst() {
     if (V == null)
+      return;
+    if (DriverStation.isAutonomous())
       return;
     V.getEstimatedVisionPoses().forEach(estimateContainer -> {
       D.addVisionMeasurement(estimateContainer.estimatedPose().estimatedPose.toPose2d(),
