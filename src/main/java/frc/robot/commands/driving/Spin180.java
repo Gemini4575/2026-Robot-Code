@@ -62,7 +62,7 @@ public class Spin180 extends Command {
         SmartDashboard.putNumber("[DriveTrain]targetDegrees", targetDegrees);
         SmartDashboard.putNumber("[DriveTrain]error", error);
 
-        if (Math.abs(error) < 5.0) {
+        if (Math.abs(error) < 1.0) {
             d.Rotate_Rot(0);
             first = true;
             return true;

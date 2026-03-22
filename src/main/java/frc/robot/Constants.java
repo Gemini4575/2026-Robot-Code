@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -159,7 +160,7 @@ public final class Constants {
                                 new Rotation3d(0, Math.PI / 4.0, Units.degreesToRadians(-90)));
 
                 public static final Transform3d FrontCam = new Transform3d(Units.inchesToMeters(-11.25),
-                                Units.inchesToMeters(12 + (7 / 8)), Units.inchesToMeters(20 + (15 / 16)),
+                                Units.inchesToMeters(-(12 + (7 / 8))), Units.inchesToMeters(20 + (15 / 16)),
                                 new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180)));
 
                 public static final Transform3d BackCam = new Transform3d(Units.inchesToMeters(0.75),
@@ -180,6 +181,35 @@ public final class Constants {
                 public static final int SHOOTER_MOTOR_ID_4 = 16;
                 public static final double TARGET_VELOCITY_RPM = 700;
                 public static final double MOTOR_MAX_RPM = 6300.0;
+                public static final double RPM_TOLERANCE = 500.0;
+
+                /**
+                 * Interpolation map: distance to hub (meters) → optimal shooter RPM.
+                 * Keys are Euclidean distances computed from observed robot (x, y) poses
+                 * (WPILib field coordinates, meters) to the red hub during testing.
+                 * Linear interpolation between points; clamps at range edges.
+                 *
+                 * Robot pos (m) | dist (m) | RPM | Accuracy
+                 * ----------------|----------|------|----------
+                 * (13.78, 3.75) | 1.890 | 4100 | 100.0% (8/8)
+                 * (14.57, 3.75) | 2.673 | 4500 | 66.7% (14/21)
+                 * (12.97, 1.22) | 3.022 | 4500 | 57.9% (only RPM tested — revisit)
+                 * (14.85, 3.55) | 2.978 | 4350 | 87.5% (28/32)
+                 * (15.10, 2.10) | 3.736 | 4700 | 72.7% (8/11)
+                 *
+                 * The table is alliance-agnostic — distance is the same regardless of
+                 * which hub the robot is shooting at. Use HoodConstants.HUB_X/Y_METERS
+                 * (flipped per alliance) to compute the distance at runtime.
+                 */
+                public static final InterpolatingDoubleTreeMap SHOOTER_RPM_MAP = new InterpolatingDoubleTreeMap();
+                static {
+                        // Sorted by distance ascending
+                        SHOOTER_RPM_MAP.put(1.890, 4100.0); // (13.78, 3.75) — 100.0% acc (8/8)
+                        SHOOTER_RPM_MAP.put(2.673, 4500.0); // (14.57, 3.75) — 66.7% acc (14/21)
+                        SHOOTER_RPM_MAP.put(2.978, 4350.0); // (14.85, 3.55) — 87.5% acc (28/32)
+                        SHOOTER_RPM_MAP.put(3.022, 4500.0); // (12.97, 1.22) — 57.9% acc (revisit)
+                        SHOOTER_RPM_MAP.put(3.736, 4700.0); // (15.10, 2.10) — 72.7% acc (8/11)
+                }
         }
 
         public static final class BeamBreakConstants {
@@ -214,8 +244,15 @@ public final class Constants {
         public static final class HoodConstants {
                 public static final int HOOD_MOTOR_ID = 9;
                 public static final boolean HOOD_INVERTED = false;
+
+                // Red alliance hub (right side of field)
                 public static final double HUB_X_METERS = 11.914;
                 public static final double HUB_Y_METERS = 4.051;
+
+                // Blue alliance hub — mirrored across field center (field width = 17.548 m)
+                public static final double BLUE_HUB_X_METERS = 17.548 - HUB_X_METERS; // 5.634
+                public static final double BLUE_HUB_Y_METERS = HUB_Y_METERS; // 4.051
+
                 public static final double HOOD_MIN_DISTANCE_METERS = 1.0;
                 public static final double HOOD_MAX_DISTANCE_METERS = 6.0;
                 public static final double HOOD_MIN_ROTATIONS = 0.0;

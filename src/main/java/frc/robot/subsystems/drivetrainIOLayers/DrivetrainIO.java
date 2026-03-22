@@ -267,6 +267,15 @@ public class DrivetrainIO extends SubsystemBase {
     // }
   }
 
+  public void XTheWheels() {
+    setModuleStates(new SwerveModuleState[] {
+        new SwerveModuleState(0, new Rotation2d(-45)),
+        new SwerveModuleState(0, new Rotation2d(45)),
+        new SwerveModuleState(0, new Rotation2d(-45)),
+        new SwerveModuleState(0, new Rotation2d(45)),
+    });
+  }
+
   public void driveRobotRelativeWithFF(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
     var discretizedSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(discretizedSpeeds);

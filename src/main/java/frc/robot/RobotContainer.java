@@ -43,6 +43,7 @@ import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
+import frc.robot.commands.driving.XTheWheels;
 import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
@@ -161,7 +162,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+    // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     note_entry.setString("RobotContainer initialized");
     try {
       V = new Vision();
@@ -180,6 +181,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Climb", new UpToClimb(C));
     NamedCommands.registerCommand("Stop", new Stop(D));
+    NamedCommands.registerCommand("X The Wheels", new XTheWheels(D));
     NamedCommands.registerCommand("Shoot From Auto Middle", new ShootFromAutoMiddle(S, A));
     NamedCommands.registerCommand("Spin 180", new Spin180(D));
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
@@ -234,13 +236,10 @@ public class RobotContainer {
     // new JoystickButton(driver, RED_BUTTON)
     // .onTrue(new Spin180(D).asProxy());
 
-    // new JoystickButton(driver, GREEN_BUTTON)
-    // .onTrue(new FaceTowardsCoordinates(
-    // D,
-    // 11.914 ,
-    // 4.051,
-    // () -> -driver.getRawAxis(LEFT_Y_AXIS),
-    // () -> driver.getRawAxis(LEFT_X_AXIS)));
+    new JoystickButton(testing, YELLOW_BUTTON)
+        .onTrue(new FaceTowardsCoordinates(D,
+            () -> -driver.getRawAxis(LEFT_Y_AXIS),
+            () -> driver.getRawAxis(LEFT_X_AXIS)));
 
     // new JoystickButton(driver, YELLOW_BUTTON).onTrue(new TimedTestDrive(D, 2000,
     // 0.5));
@@ -302,7 +301,7 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
+    I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {

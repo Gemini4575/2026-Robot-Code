@@ -35,11 +35,11 @@ public class ExtendOrRectactIntake extends Command {
         } else if (intake.getAsBoolean()) {
             i.Intake();
         } else {
-            if (Constants.States.INTAKE_IN && !i.intakeMoving()) {
-                i.MoveUpToStore();
-            } else if (!i.intakeMoving()) {
-                i.MoveDownToIntake();
-            }
+            // if (Constants.States.INTAKE_IN && !i.intakeMoving()) {
+            // i.MoveUpToStore();
+            // } else if (!i.intakeMoving()) {
+            // i.MoveDownToIntake();
+            // }
             i.stopIntake();
         }
 

@@ -24,6 +24,9 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -96,10 +99,28 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
-     * Spins the shooter to the target velocity
+     * Spins the shooter to the target velocity (reads RPM from Shuffleboard slider).
      */
     public void runShooter() {
         setRPM(targetVelocityEntry.getDouble(1));
+    }
+
+    /**
+     * Spins the shooter to the interpolated RPM for a given distance to the target.
+     * Drop-in replacement for {@link #runShooter()} when distance is known.
+     *
+     * Uses {@link Constants.ShooterConstants#SHOOTER_RPM_MAP} to linearly interpolate
+     * between empirically tested (distance, RPM) pairs. Clamps to the nearest endpoint
+     * outside the tested range [12.97, 15.10] ft.
+     *
+     * @param distanceFeet distance to the target in feet (e.g. from vision or odometry)
+     * @return true if the shooter is within RPM_TOLERANCE of the interpolated target
+     */
+    public boolean runShooterFromDistance(double distanceFeet) {
+        double targetRPM = SHOOTER_RPM_MAP.get(distanceFeet);
+        SmartDashboard.putNumber("Shooter/Interp Target RPM", targetRPM);
+        SmartDashboard.putNumber("Shooter/Distance Ft", distanceFeet);
+        return runShooterAtVelocity(targetRPM);
     }
 
     private void setRPM(Double rpm) {
@@ -117,9 +138,36 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public boolean runShooterAtVelocity(double velocityRPM) {
         setRPM(velocityRPM);
-        SmartDashboard.putNumber("Shooter Velocoty", getVelocity());
-        return (getVelocity() - 500) > velocityRPM && (getVelocity() + 500) < velocityRPM; // Check if within 500 RPM of
-        // target
+        SmartDashboard.putNumber("Shooter Velocity", getVelocity());
+        return Math.abs(getVelocity() - velocityRPM) < RPM_TOLERANCE; // true when within tolerance of target
+    }
+
+    /**
+     * Runs the shooter at the interpolated RPM for the robot's current field pose.
+     * Selects the hub position based on the current alliance (red/blue), computes
+     * the Euclidean distance to it, then looks up the optimal RPM from test data.
+     *
+     * @param robotPose current robot pose from odometry/vision (meters, WPILib coords)
+     * @return true if the shooter is within RPM_TOLERANCE of the interpolated target
+     */
+    public boolean runShooterAtDistance(Pose2d robotPose) {
+        boolean isRed = DriverStation.getAlliance()
+                .map(a -> a == Alliance.Red)
+                .orElse(true); // default to red if alliance unknown
+
+        double hubX = isRed
+                ? Constants.HoodConstants.HUB_X_METERS
+                : Constants.HoodConstants.BLUE_HUB_X_METERS;
+        double hubY = Constants.HoodConstants.HUB_Y_METERS; // same for both alliances
+
+        double distanceMeters = Math.hypot(hubX - robotPose.getX(), hubY - robotPose.getY());
+        double targetRPM = Constants.ShooterConstants.SHOOTER_RPM_MAP.get(distanceMeters);
+
+        SmartDashboard.putString("Shooter/Alliance", isRed ? "Red" : "Blue");
+        SmartDashboard.putNumber("Shooter/Distance to Hub (m)", distanceMeters);
+        SmartDashboard.putNumber("Shooter/Interpolated Target RPM", targetRPM);
+
+        return runShooterAtVelocity(targetRPM);
     }
 
     private void setMotors(double setpoint) {
