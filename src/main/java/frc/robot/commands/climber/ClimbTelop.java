@@ -7,12 +7,14 @@ import frc.robot.subsystems.topdeck.ClimberSubsystem;
 
 public class ClimbTelop extends Command {
     private ClimberSubsystem c;
-    private final BooleanSupplier climberButton;
+    private final BooleanSupplier climberDown;
+    private final BooleanSupplier climberUp;
 
-    public ClimbTelop(ClimberSubsystem c, BooleanSupplier climberButton) {
+    public ClimbTelop(ClimberSubsystem c, BooleanSupplier climberDown, BooleanSupplier climberUp) {
         this.c = c;
         addRequirements(c);
-        this.climberButton = climberButton;
+        this.climberDown = climberDown;
+        this.climberUp = climberUp;
     }
 
     @Override
@@ -21,12 +23,12 @@ public class ClimbTelop extends Command {
 
     @Override
     public void execute() {
-        if (climberButton.getAsBoolean()) {
-            if (c.MoveDownToClimbCheck()) {
-                c.MoveUpToClimb();
-            } else {
-                c.MoveDownToClimb();
-            }
+        if (climberDown.getAsBoolean()) {
+            c.MoveDownToClimb();
+        } else if (climberUp.getAsBoolean()) {
+            c.MoveUpToClimb();
+        } else {
+            c.MoveTo0();
         }
     }
 

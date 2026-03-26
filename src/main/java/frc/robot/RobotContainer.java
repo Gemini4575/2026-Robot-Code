@@ -30,6 +30,7 @@ import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
+import frc.robot.commands.climber.ClimbTelop;
 import frc.robot.commands.climber.ClimbTo0;
 import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.climber.UpToClimb;
@@ -150,7 +151,7 @@ public class RobotContainer {
   private final ShooterSubsystem S = new ShooterSubsystem();
   private final ClimberSubsystem C = new ClimberSubsystem();
   private final IntakeSubystem I = new IntakeSubystem();
-  private final BeamBreak beamBreak = new BeamBreak();
+  private final BeamBreak b = new BeamBreak();
   private final LimitSwitchSubsystem limitSwitches = new LimitSwitchSubsystem();
   private final AdvancerSubsystem A = new AdvancerSubsystem();
   // private final HoodSubsystem H = new HoodSubsystem();
@@ -175,8 +176,8 @@ public class RobotContainer {
     SmartDashboard.putData("[Robot]Vision Pose Estimate", visionPoseEstimate);
     SmartDashboard.putData("[Robot]Overall Pose Estimate", overallPoseEstimate);
     NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
-    NamedCommands.registerCommand("Shoot From Depot", new ShootFromDepot(S, A, beamBreak).withTimeout(5));
-    NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, beamBreak).withTimeout(5));
+    NamedCommands.registerCommand("Shoot From Depot", new ShootFromDepot(S, A, b).withTimeout(5));
+    NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, b).withTimeout(5));
     NamedCommands.registerCommand("Spin Up Shooter", new SpinUpShooter(S));
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Climb", new UpToClimb(C));
@@ -261,27 +262,23 @@ public class RobotContainer {
     // () -> 0)
     // ));
 
-    new JoystickButton(climber, GREEN_BUTTON)
-        .onTrue(new DownToClimb(C));
-
-    new JoystickButton(climber, BLUE_BUTTON)
-        .onTrue(new ClimbTo0(C));
-
-    new JoystickButton(climber, RED_BUTTON)
-        .onTrue(new UpToClimb(C));
+    C.setDefaultCommand(new ClimbTelop(C, () -> operator.getRawButton(14), () -> operator.getRawButton(8)));
 
     I.setDefaultCommand(
-        new ExtendOrRectactIntake(I, () -> operator.getPOV() == POV_DOWN, () -> operator.getPOV() == POV_UP,
-            () -> operator.getRawButton(BLUE_BUTTON)));
+        new ExtendOrRectactIntake(I, () -> operator.getRawButton(12), () -> operator.getRawButton(13),
+            () -> operator.getRawButton(20)));
 
     new JoystickButton(testing, RED_BUTTON)
         .onTrue(new RetractIntake(I));
 
-    new JoystickButton(operator, GREEN_BUTTON)
-        .whileTrue(new Testing_Shoot(S, beamBreak));
+    new JoystickButton(operator, 11)
+        .whileTrue(new Testing_Shoot(S, b, A, D::getPose));
 
     new JoystickButton(operator, RED_BUTTON)
         .whileTrue(new Advance(A));
+
+    new JoystickButton(operator, 10)
+        .whileTrue(new ShootFromDepot(S, A, b));
 
     // new JoystickButton(driver, BLUE_BUTTON)
     // .onTrue(new Spin180(D));
@@ -300,8 +297,8 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
+    // C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
+    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {
@@ -317,8 +314,8 @@ public class RobotContainer {
     MetricService.publishRobotLocation(poseEstimate);
     MetricService.periodic();
 
-    DIO_entry.setBoolean(beamBreak.getHopper());
-    DIO_entry1.setBoolean(beamBreak.getShooter());
+    DIO_entry.setBoolean(b.getHopper());
+    DIO_entry1.setBoolean(b.getShooter());
     DIO_entry2.setBoolean(limitSwitches.getClimber());
     DIO_entry3.setBoolean(limitSwitches.getLimit2());
   }

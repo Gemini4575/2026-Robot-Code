@@ -30,16 +30,12 @@ public class ExtendOrRectactIntake extends Command {
     public void execute() {
         if (extend.getAsBoolean()) {
             i.MoveDownToIntake();
+            i.Intake();
         } else if (retract.getAsBoolean()) {
             i.MoveUpToStore();
         } else if (intake.getAsBoolean()) {
             i.Intake();
         } else {
-            // if (Constants.States.INTAKE_IN && !i.intakeMoving()) {
-            // i.MoveUpToStore();
-            // } else if (!i.intakeMoving()) {
-            // i.MoveDownToIntake();
-            // }
             i.stopIntake();
         }
 

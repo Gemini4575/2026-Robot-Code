@@ -236,9 +236,9 @@ public final class Constants {
                 public static final int INTAKE_SLIDER1_ID = 5;
                 /** Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
-                public static final double INTAKE_SPEED = 1;
+                public static final double INTAKE_SPEED = 0.75;
                 public static final double Intake_Down_SetPoint = 0;
-                public static final double Intake_Up_SetPoint = 20.9;
+                public static final double Intake_Up_SetPoint = 20.0;
         }
 
         public static final class HoodConstants {
@@ -266,7 +266,7 @@ public final class Constants {
         public static final class CimberConstants {
                 public static final int CLIMBER_MOTOR_CANID = 8;
                 public static final double Climber_Down_SetPoint = 380;
-                public static final double Climber_Up_SetPoint = 20;
+                public static final double Climber_Up_SetPoint = 50;
         }
 
         public static final class ShooterRPMConstants {

@@ -35,8 +35,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
         ClimberMotorConfig.softLimit.forwardSoftLimitEnabled(true);
         ClimberMotorConfig.softLimit.forwardSoftLimit(Climber_Down_SetPoint);
-        // ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
-        // ClimberMotorConfig.softLimit.reverseSoftLimit(0);
+        ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
+        ClimberMotorConfig.softLimit.reverseSoftLimit(0);
 
         ClimberMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
         ClimberMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
@@ -67,7 +67,12 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public boolean MoveTo0() {
-        return IMoveUpTo0I();
+        if (IMoveUpTo0I()) {
+            stop();
+            Constants.States.CLIMBER_DOWN = false;
+            return true;
+        }
+        return false;
     }
 
     public boolean MoveDownToClimbCheck() {
@@ -86,7 +91,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public boolean MoveUpToClimb() {
         if (IMoveUpToClimbI()) {
             stop();
-            Constants.States.CLIMBER_DOWN = false;
             return true;
         }
         return false;

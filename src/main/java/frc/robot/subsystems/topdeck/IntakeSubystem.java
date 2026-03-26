@@ -44,10 +44,10 @@ public class IntakeSubystem extends SubsystemBase {
         RotatorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
         RotatorConfig.inverted(true);
         RotatorConfig.disableFollowerMode();
-        // RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
-        // RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
-        // RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
-        // RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
+        RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
+        RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
+        RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
+        RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
         rotationMotor.getEncoder().setPosition(0);
         rotationMotor.configure(RotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }

@@ -17,12 +17,14 @@ public class Shoot extends Command {
     private boolean shooterReady = false;
 
     /**
-     * Shoots a ball using interpolated RPM based on the robot's distance to the hub.
+     * Shoots a ball using interpolated RPM based on the robot's distance to the
+     * hub.
      *
      * @param shooterSubsystem  the shooter subsystem
      * @param advancerSubsystem the advancer subsystem
      * @param beamBreak         the beam break sensor
-     * @param poseSupplier      supplier for the robot's current field pose (e.g. drivetrain::getPose)
+     * @param poseSupplier      supplier for the robot's current field pose (e.g.
+     *                          drivetrain::getPose)
      */
     public Shoot(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem,
             BeamBreak beamBreak, Supplier<Pose2d> poseSupplier) {
@@ -40,7 +42,8 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
-        // Spin up to the interpolated RPM for current distance; returns true when on target
+        // Spin up to the interpolated RPM for current distance; returns true when on
+        // target
         shooterReady = shooter.runShooterAtDistance(poseSupplier.get());
 
         if (shooterReady) {
