@@ -75,13 +75,13 @@ public class IntakeSubystem extends SubsystemBase {
     }
 
     private boolean IMoveDownToIntakeI() {
-        rotationMotor.set(-0.5);
+        rotationMotor.set(-1);
 
         return rotationMotor.getEncoder().getPosition() <= Intake_Down_SetPoint;
     }
 
     private boolean IMoveUpToStoreI() {
-        rotationMotor.set(0.5);
+        rotationMotor.set(1);
 
         return rotationMotor.getEncoder().getPosition() >= Intake_Up_SetPoint;
     }
