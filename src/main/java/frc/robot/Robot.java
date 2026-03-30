@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+
 // import org.littletonrobotics.urcl.URCL;
 
 import au.grapplerobotics.CanBridge;
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     CanBridge.runTCP();
+    SignalLogger.stop();
     // DataLogManager.start("/home/lvuser");
     // System.out.println("!!!! LOG DIR: " + DataLogManager.getLogDir());
     // URCL.start();
