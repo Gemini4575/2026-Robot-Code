@@ -34,7 +34,7 @@ public class ExtendOrRectactIntake extends Command {
         } else if (retract.getAsBoolean()) {
             i.MoveUpToStore();
         } else if (intake.getAsBoolean()) {
-            i.Intake();
+            i.Outake();
         } else {
             i.stopIntake();
         }

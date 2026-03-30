@@ -44,7 +44,7 @@ public class Shoot extends Command {
     public void execute() {
         // Spin up to the interpolated RPM for current distance; returns true when on
         // target
-        shooterReady = shooter.runShooterAtDistance(poseSupplier.get());
+        shooterReady = shooter.runShooterAtVelocity(5000);
 
         if (shooterReady) {
             advancer.advance();

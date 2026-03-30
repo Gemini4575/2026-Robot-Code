@@ -13,7 +13,7 @@ public class UpToClimb extends Command {
 
     @Override
     public void initialize() {
-        climber.MoveDownToClimb();
+        climber.MoveUpToClimb();
     }
 
     @Override

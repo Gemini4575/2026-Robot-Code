@@ -45,6 +45,7 @@ import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.driving.XTheWheels;
+import frc.robot.commands.driving.XTheWheelsTimed;
 import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
@@ -182,7 +183,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Climb", new UpToClimb(C));
     NamedCommands.registerCommand("Stop", new Stop(D));
-    NamedCommands.registerCommand("X The Wheels", new XTheWheels(D));
+    NamedCommands.registerCommand("X The Wheels", new XTheWheelsTimed(D));
     NamedCommands.registerCommand("Shoot From Auto Middle", new ShootFromAutoMiddle(S, A));
     NamedCommands.registerCommand("Spin 180", new Spin180(D));
     NamedCommands.registerCommand("Face Hub", new FaceTowardsCoordinates(D,
@@ -201,7 +202,7 @@ public class RobotContainer {
     // D.sysIdDynamic(Direction.kReverse));
     PathplannerautoChoosers.addOption("Climb",
         new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).andThen(new Stop(D)).alongWith(new DownToClimb(C)))
-            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C)));
+            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C).alongWith(new DriveForSecondsSlow(D, 2))));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
@@ -280,6 +281,9 @@ public class RobotContainer {
     new JoystickButton(operator, 10)
         .whileTrue(new ShootFromDepot(S, A, b));
 
+    new JoystickButton(driver, GREEN_BUTTON)
+    .whileTrue(new XTheWheels(D));
+
     // new JoystickButton(driver, BLUE_BUTTON)
     // .onTrue(new Spin180(D));
 
@@ -298,7 +302,7 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     // C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
+    I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {
