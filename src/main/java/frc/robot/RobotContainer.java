@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.ShootIntake;
 import frc.robot.commands.advancer.Advance;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
@@ -202,7 +203,8 @@ public class RobotContainer {
     // D.sysIdDynamic(Direction.kReverse));
     PathplannerautoChoosers.addOption("Climb",
         new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).andThen(new Stop(D)).alongWith(new DownToClimb(C)))
-            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5)).andThen(new UpToClimb(C).alongWith(new DriveForSecondsSlow(D, 2))));
+            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5))
+            .andThen(new UpToClimb(C).alongWith(new DriveForSecondsSlow(D, 2))));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
@@ -282,7 +284,10 @@ public class RobotContainer {
         .whileTrue(new ShootFromDepot(S, A, b));
 
     new JoystickButton(driver, GREEN_BUTTON)
-    .whileTrue(new XTheWheels(D));
+        .whileTrue(new XTheWheels(D));
+
+    new JoystickButton(operator, 14)
+        .whileTrue(new ShootIntake(S, A, I));
 
     // new JoystickButton(driver, BLUE_BUTTON)
     // .onTrue(new Spin180(D));

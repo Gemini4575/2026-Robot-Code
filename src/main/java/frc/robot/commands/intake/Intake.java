@@ -7,10 +7,6 @@ import frc.robot.subsystems.topdeck.IntakeSubystem;
 
 public class Intake extends Command {
     private IntakeSubystem i;
-    private BooleanSupplier Intake;
-    private BooleanSupplier Outake;
-    private BooleanSupplier Extend;
-    private BooleanSupplier Retract;
 
     public Intake(IntakeSubystem i) {
         this.i = i;
