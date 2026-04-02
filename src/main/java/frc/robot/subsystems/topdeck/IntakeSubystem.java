@@ -33,9 +33,9 @@ public class IntakeSubystem extends SubsystemBase {
     // ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
     // private GenericEntry thing = tab.add("Target Velocity RPM", 1)
-    //         .withWidget(BuiltInWidgets.kComboBoxChooser)
-    //         .
-    //         .getEntry();
+    // .withWidget(BuiltInWidgets.kComboBoxChooser)
+    // .
+    // .getEntry();
 
     public IntakeSubystem() {
         intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
@@ -59,10 +59,10 @@ public class IntakeSubystem extends SubsystemBase {
         RotatorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
         RotatorConfig.inverted(false);
         RotatorConfig.disableFollowerMode();
-        RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
-        RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
-        RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
-        RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
+        // RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
+        // RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
+        // RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
+        // RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
         rotationMotor.getEncoder().setPosition(0);
         rotationMotor.configure(RotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
