@@ -181,7 +181,7 @@ public final class Constants {
                 public static final int SHOOTER_MOTOR_ID_4 = 16;
                 public static final double TARGET_VELOCITY_RPM = 700;
                 public static final double MOTOR_MAX_RPM = 6300.0;
-                public static final double RPM_TOLERANCE = 500.0;
+                public static final double RPM_TOLERANCE = 100.0;
 
                 /**
                  * Interpolation map: distance to hub (meters) → optimal shooter RPM.
@@ -226,7 +226,7 @@ public final class Constants {
 
                 public static final double ADVANCER_SPEED = -1.0;
                 public static final double ADVANCER_ROLLER_SPEED = -0.5;
-                public static final int ADVANCER_MOTOR_ID = 3;
+                public static final int ADVANCER_MOTOR_ID = 1;
                 public static final int ROLLER_MOTOR_ID = 9;
         }
 
@@ -236,9 +236,9 @@ public final class Constants {
                 public static final int INTAKE_SLIDER1_ID = 5;
                 /** Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
-                public static final double INTAKE_SPEED = 0.75;
-                public static final double Intake_Down_SetPoint = 0;
-                public static final double Intake_Up_SetPoint = 28.5;
+                public static final double INTAKE_SPEED = 1.0;
+                public static final double Intake_Down_SetPoint = 2;
+                public static final double Intake_Up_SetPoint = 27.0;
         }
 
         public static final class HoodConstants {

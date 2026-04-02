@@ -1,5 +1,8 @@
 package frc.robot.subsystems.topdeck;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -22,27 +25,21 @@ public class AdvancerSubsystem extends SubsystemBase {
             .add("Max Speed Advancer", 1.0)
             .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
             .getEntry();
-    private final SparkMax AdavancerMotor;
+    private final TalonFX AdavancerMotor;
     private final SparkMax RollerMotor;
 
     public AdvancerSubsystem() {
         RollerMotor = new SparkMax(ROLLER_MOTOR_ID, MotorType.kBrushless);
-        AdavancerMotor = new SparkMax(ADVANCER_MOTOR_ID, MotorType.kBrushless);
-        SparkBaseConfig AdvancerMotorConfig = new SparkMaxConfig();
+        AdavancerMotor = new TalonFX(ADVANCER_MOTOR_ID);
+        TalonFXConfiguration AdvancerMotorConfig = new TalonFXConfiguration();
 
-        AdvancerMotorConfig.smartCurrentLimit(40, 40);
-        AdvancerMotorConfig.disableFollowerMode();
+        AdvancerMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        AdvancerMotorConfig.CurrentLimits.StatorCurrentLimit = 40;
 
-        AdvancerMotorConfig.inverted(true);
+                AdvancerMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        AdvancerMotorConfig.idleMode(IdleMode.kCoast);
 
-        AdvancerMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
-        AdvancerMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
-
-        AdavancerMotor.configure(AdvancerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        AdvancerMotorConfig.follow(ADVANCER_MOTOR_ID);
-        RollerMotor.configure(AdvancerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        AdavancerMotor.getConfigurator().apply(AdvancerMotorConfig);
 
     }
 

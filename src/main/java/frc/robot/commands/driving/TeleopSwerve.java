@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 
 public class TeleopSwerve extends Command {
-    private final static double deadBand = 0.00;
+    private final static double deadBand = 0.04;
 
     private final DrivetrainIO m_drivetrain;
     private final DoubleSupplier m_xSpeedSupplier;

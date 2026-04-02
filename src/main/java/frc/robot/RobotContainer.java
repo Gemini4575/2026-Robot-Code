@@ -280,13 +280,13 @@ public class RobotContainer {
     new JoystickButton(operator, RED_BUTTON)
         .whileTrue(new Advance(A));
 
-    new JoystickButton(operator, 10)
-        .whileTrue(new ShootFromDepot(S, A, b));
+    // new JoystickButton(operator, 10)
+    //     .whileTrue(new ShootFromDepot(S, A, b));
 
     new JoystickButton(driver, GREEN_BUTTON)
         .whileTrue(new XTheWheels(D));
 
-    new JoystickButton(operator, 14)
+    new JoystickButton(operator, 10)
         .whileTrue(new ShootIntake(S, A, I));
 
     // new JoystickButton(driver, BLUE_BUTTON)
@@ -307,7 +307,7 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     // C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
+    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {

@@ -32,7 +32,7 @@ public class Testing_Shoot extends Command {
 
     @Override
     public void execute() {
-        if (shooter.runShooterAtVelocity(5000)) {
+        if (shooter.runShooter()) {
             advancer.advance();
             firstRun = false;
         } else {

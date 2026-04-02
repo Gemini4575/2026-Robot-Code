@@ -45,7 +45,6 @@ public class ShooterSubsystem extends SubsystemBase {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     GenericEntry targetVelocityEntry = tab
             .add("Target Velocity RPM", TARGET_VELOCITY_RPM)
-            .withWidget(BuiltInWidgets.kNumberSlider)
             .getEntry();
     GenericEntry motor1VelocityEntry = tab
             .add("Motor 1 Velocity", 1)
@@ -101,8 +100,9 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * Spins the shooter to the target velocity (reads RPM from Shuffleboard slider).
      */
-    public void runShooter() {
-        setRPM(targetVelocityEntry.getDouble(1));
+    public boolean runShooter() {
+        var velocity = targetVelocityEntry.getDouble(5000);
+        return runShooterAtVelocity(velocity);
     }
 
     /**
