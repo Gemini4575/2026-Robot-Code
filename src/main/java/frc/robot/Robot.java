@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     CanBridge.runTCP();
+    SignalLogger.enableAutoLogging(false);
     SignalLogger.stop();
     // DataLogManager.start("/home/lvuser");
     // System.out.println("!!!! LOG DIR: " + DataLogManager.getLogDir());
