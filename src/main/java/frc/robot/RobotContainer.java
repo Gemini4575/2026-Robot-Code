@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.ShootIntake;
+// import frc.robot.commands.ShootIntake;
 import frc.robot.commands.advancer.Advance;
 import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
@@ -52,6 +52,7 @@ import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RetractIntake;
+import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.MetricName;
@@ -205,6 +206,7 @@ public class RobotContainer {
         new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).andThen(new Stop(D)).alongWith(new DownToClimb(C)))
             .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5))
             .andThen(new UpToClimb(C).alongWith(new DriveForSecondsSlow(D, 2))));
+    PathplannerautoChoosers.addOption("Shoot", new Testing_Shoot(S, b, A, D::getPose).withTimeout(5));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
     PathfindingCommand.warmupCommand().schedule();
@@ -274,6 +276,9 @@ public class RobotContainer {
     new JoystickButton(testing, RED_BUTTON)
         .onTrue(new RetractIntake(I));
 
+    new JoystickButton(operator, 18)
+    .whileTrue(new ReverseShoot(S, A));
+
     new JoystickButton(operator, 11)
         .whileTrue(new Testing_Shoot(S, b, A, D::getPose));
 
@@ -286,8 +291,8 @@ public class RobotContainer {
     new JoystickButton(driver, GREEN_BUTTON)
         .whileTrue(new XTheWheels(D));
 
-    new JoystickButton(operator, 10)
-        .whileTrue(new ShootIntake(S, A, I));
+    // new JoystickButton(operator, 10)
+    //     .whileTrue(new ShootIntake(S, A, I));
 
     // new JoystickButton(driver, BLUE_BUTTON)
     // .onTrue(new Spin180(D));
@@ -297,12 +302,12 @@ public class RobotContainer {
 
   public void resetGyroForAuto() {
     Command selected = PathplannerautoChoosers.getSelected();
-    if (selected instanceof PathPlannerAuto) {
-      Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();
-      if (startingPose != null) {
-        D.resetGyroToAngle(startingPose.getRotation().getDegrees());
-      }
-    }
+    // if (selected instanceof PathPlannerAuto) {
+    //   Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();
+    //   if (startingPose != null) {
+    //     D.resetGyroToAngle(startingPose.getRotation().getDegrees());
+    //   }
+    
   }
 
   public void teleopPeriodic() {

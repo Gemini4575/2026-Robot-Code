@@ -179,9 +179,9 @@ public final class Constants {
                 public static final int SHOOTER_MOTOR_ID_2 = 14;
                 public static final int SHOOTER_MOTOR_ID_3 = 15;
                 public static final int SHOOTER_MOTOR_ID_4 = 16;
-                public static final double TARGET_VELOCITY_RPM = 700;
+                public static final double TARGET_VELOCITY_RPM = 2700;
                 public static final double MOTOR_MAX_RPM = 6300.0;
-                public static final double RPM_TOLERANCE = 100.0;
+                public static final double RPM_TOLERANCE = 50.0;
 
                 /**
                  * Interpolation map: distance to hub (meters) → optimal shooter RPM.
@@ -272,7 +272,7 @@ public final class Constants {
         public static final class ShooterRPMConstants {
                 public static final double DEPOT_SHOOT = 0.85;
                 public static final double OUTSIDE_TRENCH = 0.85;
-                public static final int MIDDLE_AUTO_SHOOT = 4000;
+                public static final int HUB_SHOOT = 2800;
                 public static final double INSIDE_TRENCH = 1;
         }
 

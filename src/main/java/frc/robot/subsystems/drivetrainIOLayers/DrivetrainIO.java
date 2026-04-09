@@ -89,7 +89,7 @@ public class DrivetrainIO extends SubsystemBase {
           null,
           this));
 
-  private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k100Hz);
+  private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k50Hz);
 
   private double xSpeed_cur;
   private double ySpeed_cur;
