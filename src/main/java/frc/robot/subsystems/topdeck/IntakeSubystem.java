@@ -1,6 +1,7 @@
 package frc.robot.subsystems.topdeck;
 
-import static frc.robot.Constants.IntakeConstants.INTAKE_MOTOR_ID;
+import static frc.robot.Constants.IntakeConstants.TOP_INTAKE_MOTOR_ID;
+import static frc.robot.Constants.IntakeConstants.BOTTOM_INTAKE_MOTOR_ID;
 import static frc.robot.Constants.IntakeConstants.INTAKE_SLIDER1_ID;
 import static frc.robot.Constants.IntakeConstants.INTAKE_SPEED;
 import static frc.robot.Constants.IntakeConstants.Intake_Down_SetPoint;
@@ -27,7 +28,8 @@ import frc.robot.Constants;
 
 public class IntakeSubystem extends SubsystemBase {
 
-    private TalonFX intakeMotor;
+    private TalonFX topintakeMotor;
+    private TalonFX bottomintakeMotor2;
     private SparkMax rotationMotor;
 
     // ShuffleboardTab tab = Shuffleboard.getTab("Intake");
@@ -38,7 +40,8 @@ public class IntakeSubystem extends SubsystemBase {
     // .getEntry();
 
     public IntakeSubystem() {
-        intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
+        topintakeMotor = new TalonFX(TOP_INTAKE_MOTOR_ID);
+        bottomintakeMotor2 = new TalonFX(BOTTOM_INTAKE_MOTOR_ID);
         rotationMotor = new SparkMax(INTAKE_SLIDER1_ID, MotorType.kBrushless);
         configMotors();
     }
@@ -53,16 +56,18 @@ public class IntakeSubystem extends SubsystemBase {
         intakeMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
         intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         intakeMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        intakeMotor.getConfigurator().apply(intakeMotorConfig);
+        topintakeMotor.getConfigurator().apply(intakeMotorConfig);
+        intakeMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        bottomintakeMotor2.getConfigurator().apply(intakeMotorConfig);
 
         RotatorConfig.smartCurrentLimit(30, 30);
         RotatorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
         RotatorConfig.inverted(false);
         RotatorConfig.disableFollowerMode();
-        // RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
-        // RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
-        // RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
-        // RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
+        RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
+        RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);
+        RotatorConfig.softLimit.reverseSoftLimitEnabled(true);
+        RotatorConfig.softLimit.reverseSoftLimit(Intake_Down_SetPoint);
         rotationMotor.getEncoder().setPosition(0);
         rotationMotor.configure(RotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -72,17 +77,20 @@ public class IntakeSubystem extends SubsystemBase {
     }
 
     public void Outake() {
-        intakeMotor.set(-INTAKE_SPEED);
+        topintakeMotor.set(-INTAKE_SPEED);
+        bottomintakeMotor2.set(-INTAKE_SPEED);
     }
 
     public void Intake() {
         Constants.States.INTAKE_ON = true;
-        intakeMotor.set(INTAKE_SPEED);
+        topintakeMotor.set(INTAKE_SPEED);
+        bottomintakeMotor2.set(INTAKE_SPEED);
     }
 
     public void stopIntake() {
         Constants.States.INTAKE_ON = false;
-        intakeMotor.set(0);
+        topintakeMotor.set(0);
+        bottomintakeMotor2.set(0);
     }
 
     public void stop() {

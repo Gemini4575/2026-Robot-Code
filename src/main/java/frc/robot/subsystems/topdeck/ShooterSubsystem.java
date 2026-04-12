@@ -54,6 +54,12 @@ public class ShooterSubsystem extends SubsystemBase {
     GenericEntry motor2VelocityEntry = tab
             .add("Motor 2 Velocity", 0)
             .getEntry();
+    GenericEntry motor3VelocityEntry = tab
+            .add("Motor 3 Velocity", 0)
+            .getEntry();
+    GenericEntry motor4VelocityEntry = tab
+            .add("Motor 4 Velocity", 0)
+            .getEntry();
 
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
@@ -100,7 +106,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
-     * Spins the shooter to the target velocity (reads RPM from Shuffleboard slider).
+     * Spins the shooter to the target velocity (reads RPM from Shuffleboard
+     * slider).
      */
     public boolean runShooter() {
         var velocity = targetVelocityEntry.getDouble(5000);
@@ -108,74 +115,79 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean isHubActive() {
-  Optional<Alliance> alliance = DriverStation.getAlliance();
-  // If we have no alliance, we cannot be enabled, therefore no hub.
-  if (alliance.isEmpty()) {
-    return false;
-  }
-  // Hub is always enabled in autonomous.
-  if (DriverStation.isAutonomousEnabled()) {
-    return true;
-  }
-  // At this point, if we're not teleop enabled, there is no hub.
-  if (!DriverStation.isTeleopEnabled()) {
-    return false;
-  }
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        // If we have no alliance, we cannot be enabled, therefore no hub.
+        if (alliance.isEmpty()) {
+            return false;
+        }
+        // Hub is always enabled in autonomous.
+        if (DriverStation.isAutonomousEnabled()) {
+            return true;
+        }
+        // At this point, if we're not teleop enabled, there is no hub.
+        if (!DriverStation.isTeleopEnabled()) {
+            return false;
+        }
 
-  // We're teleop enabled, compute.
-  double matchTime = DriverStation.getMatchTime();
-  String gameData = DriverStation.getGameSpecificMessage();
-  // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
-  if (gameData.isEmpty()) {
-    return true;
-  }
-  boolean redInactiveFirst = false;
-  switch (gameData.charAt(0)) {
-    case 'R' -> redInactiveFirst = true;
-    case 'B' -> redInactiveFirst = false;
-    default -> {
-      // If we have invalid game data, assume hub is active.
-      return true;
+        // We're teleop enabled, compute.
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+        // If we have no game data, we cannot compute, assume hub is active, as its
+        // likely early in teleop.
+        if (gameData.isEmpty()) {
+            return true;
+        }
+        boolean redInactiveFirst = false;
+        switch (gameData.charAt(0)) {
+            case 'R' -> redInactiveFirst = true;
+            case 'B' -> redInactiveFirst = false;
+            default -> {
+                // If we have invalid game data, assume hub is active.
+                return true;
+            }
+        }
+
+        // Shift was is active for blue if red won auto, or red if blue won auto.
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> !redInactiveFirst;
+            case Blue -> redInactiveFirst;
+        };
+
+        if (matchTime > 130) {
+            // Transition shift, hub is active.
+            return true;
+        } else if (matchTime > 105) {
+            // Shift 1
+            return shift1Active;
+        } else if (matchTime > 80) {
+            // Shift 2
+            return !shift1Active;
+        } else if (matchTime > 55) {
+            // Shift 3
+            return shift1Active;
+        } else if (matchTime > 30) {
+            // Shift 4
+            return !shift1Active;
+        } else {
+            // End game, hub always active.
+            return true;
+        }
     }
-  }
-
-  // Shift was is active for blue if red won auto, or red if blue won auto.
-  boolean shift1Active = switch (alliance.get()) {
-    case Red -> !redInactiveFirst;
-    case Blue -> redInactiveFirst;
-  };
-
-  if (matchTime > 130) {
-    // Transition shift, hub is active.
-    return true;
-  } else if (matchTime > 105) {
-    // Shift 1
-    return shift1Active;
-  } else if (matchTime > 80) {
-    // Shift 2
-    return !shift1Active;
-  } else if (matchTime > 55) {
-    // Shift 3
-    return shift1Active;
-  } else if (matchTime > 30) {
-    // Shift 4
-    return !shift1Active;
-  } else {
-    // End game, hub always active.
-    return true;
-  }
-}
 
     /**
      * Spins the shooter to the interpolated RPM for a given distance to the target.
      * Drop-in replacement for {@link #runShooter()} when distance is known.
      *
-     * Uses {@link Constants.ShooterConstants#SHOOTER_RPM_MAP} to linearly interpolate
-     * between empirically tested (distance, RPM) pairs. Clamps to the nearest endpoint
+     * Uses {@link Constants.ShooterConstants#SHOOTER_RPM_MAP} to linearly
+     * interpolate
+     * between empirically tested (distance, RPM) pairs. Clamps to the nearest
+     * endpoint
      * outside the tested range [12.97, 15.10] ft.
      *
-     * @param distanceFeet distance to the target in feet (e.g. from vision or odometry)
-     * @return true if the shooter is within RPM_TOLERANCE of the interpolated target
+     * @param distanceFeet distance to the target in feet (e.g. from vision or
+     *                     odometry)
+     * @return true if the shooter is within RPM_TOLERANCE of the interpolated
+     *         target
      */
     public boolean runShooterFromDistance(double distanceFeet) {
         double targetRPM = SHOOTER_RPM_MAP.get(distanceFeet);
@@ -207,8 +219,10 @@ public class ShooterSubsystem extends SubsystemBase {
      * Selects the hub position based on the current alliance (red/blue), computes
      * the Euclidean distance to it, then looks up the optimal RPM from test data.
      *
-     * @param robotPose current robot pose from odometry/vision (meters, WPILib coords)
-     * @return true if the shooter is within RPM_TOLERANCE of the interpolated target
+     * @param robotPose current robot pose from odometry/vision (meters, WPILib
+     *                  coords)
+     * @return true if the shooter is within RPM_TOLERANCE of the interpolated
+     *         target
      */
     public boolean runShooterAtDistance(Pose2d robotPose) {
         boolean isRed = DriverStation.getAlliance()
@@ -256,15 +270,15 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getVelocity() {
         return (shooterMotor.getEncoder().getVelocity() + shooterMotor2.getEncoder().getVelocity()
-+ shooterMotor3.getEncoder().getVelocity() + shooterMotor4.getEncoder().getVelocity())
-/ Math.max(1, Math.signum (Math.floor (shooterMotor.getEncoder().getVelocity()/1000.0)) +
-Math.signum (Math.floor (shooterMotor2.getEncoder().getVelocity()/1000.0)) +
-Math.signum (Math.floor (shooterMotor3.getEncoder().getVelocity()/1000.0)) +
-Math.signum (Math.floor (shooterMotor4.getEncoder().getVelocity()/1000.0)));
-// return (shooterMotor.getRotorVelocity().getValueAsDouble());
+                + shooterMotor3.getEncoder().getVelocity() + shooterMotor4.getEncoder().getVelocity())
+                / Math.max(1, Math.signum(Math.floor(shooterMotor.getEncoder().getVelocity() / 1000.0)) +
+                        Math.signum(Math.floor(shooterMotor2.getEncoder().getVelocity() / 1000.0)) +
+                        Math.signum(Math.floor(shooterMotor3.getEncoder().getVelocity() / 1000.0)) +
+                        Math.signum(Math.floor(shooterMotor4.getEncoder().getVelocity() / 1000.0)));
+        // return (shooterMotor.getRotorVelocity().getValueAsDouble());
     }
 
-    public void reverse(){
+    public void reverse() {
         setMotors(-0.5);
     }
 
@@ -280,7 +294,7 @@ Math.signum (Math.floor (shooterMotor4.getEncoder().getVelocity()/1000.0)));
 
     @Override
     public void periodic() {
-        if(isHubActive())
+        // if(isHubActive())
         // shooterMotorFollower.setControl(new Follower(SHOOTER_MOTOR_ID_RIGHT,
         // MotorAlignmentValue.Opposed));
 
@@ -292,6 +306,9 @@ Math.signum (Math.floor (shooterMotor4.getEncoder().getVelocity()/1000.0)));
         SmartDashboard.putNumber("Motor Position", shooterMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Motor Velocity", shooterMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("Motor VOLTAGE", shooterMotor.getAppliedOutput());
+
+        // FWF - commented this because we're changing the advancer to a neo
+        // motor1VelocityEntry.
 
     }
 }

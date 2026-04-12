@@ -270,14 +270,14 @@ public class RobotContainer {
     C.setDefaultCommand(new ClimbTelop(C, () -> operator.getRawButton(14), () -> operator.getRawButton(8)));
 
     I.setDefaultCommand(
-        new ExtendOrRectactIntake(I, () -> operator.getRawButton(12), () -> operator.getRawButton(13),
+        new ExtendOrRectactIntake(I, A, () -> operator.getRawButton(12), () -> operator.getRawButton(13),
             () -> operator.getRawButton(20)));
 
     new JoystickButton(testing, RED_BUTTON)
         .onTrue(new RetractIntake(I));
 
     new JoystickButton(operator, 18)
-    .whileTrue(new ReverseShoot(S, A));
+        .whileTrue(new ReverseShoot(S, A));
 
     new JoystickButton(operator, 11)
         .whileTrue(new Testing_Shoot(S, b, A, D::getPose));
@@ -292,7 +292,7 @@ public class RobotContainer {
         .whileTrue(new XTheWheels(D));
 
     // new JoystickButton(operator, 10)
-    //     .whileTrue(new ShootIntake(S, A, I));
+    // .whileTrue(new ShootIntake(S, A, I));
 
     // new JoystickButton(driver, BLUE_BUTTON)
     // .onTrue(new Spin180(D));
@@ -303,16 +303,16 @@ public class RobotContainer {
   public void resetGyroForAuto() {
     Command selected = PathplannerautoChoosers.getSelected();
     // if (selected instanceof PathPlannerAuto) {
-    //   Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();
-    //   if (startingPose != null) {
-    //     D.resetGyroToAngle(startingPose.getRotation().getDegrees());
-    //   }
-    
+    // Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();
+    // if (startingPose != null) {
+    // D.resetGyroToAngle(startingPose.getRotation().getDegrees());
+    // }
+
   }
 
   public void teleopPeriodic() {
     // C.JoystickControl(climber.getRawAxis(LEFT_Y_AXIS));
-    I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
+    // I.testSliders(operator.getRawAxis(LEFT_X_AXIS));
   }
 
   public void autonomousExit() {

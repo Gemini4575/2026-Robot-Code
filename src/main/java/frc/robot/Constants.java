@@ -179,9 +179,9 @@ public final class Constants {
                 public static final int SHOOTER_MOTOR_ID_2 = 14;
                 public static final int SHOOTER_MOTOR_ID_3 = 15;
                 public static final int SHOOTER_MOTOR_ID_4 = 16;
-                public static final double TARGET_VELOCITY_RPM = 2700;
+                public static final double TARGET_VELOCITY_RPM = 2900;
                 public static final double MOTOR_MAX_RPM = 6300.0;
-                public static final double RPM_TOLERANCE = 50.0;
+                public static final double RPM_TOLERANCE = 50200000000.0;
 
                 /**
                  * Interpolation map: distance to hub (meters) → optimal shooter RPM.
@@ -225,20 +225,23 @@ public final class Constants {
         public static final class AdvancerConstants {
 
                 public static final double ADVANCER_SPEED = -1.0;
+                public static final double NEO_ADVANCER_SPEED = 1.0;
                 public static final double ADVANCER_ROLLER_SPEED = -0.5;
                 public static final int ADVANCER_MOTOR_ID = 1;
                 public static final int ROLLER_MOTOR_ID = 9;
+                public static final int NEO_ADVANCER_MOTOR_ID = 8; // was climber
         }
 
         public static final class IntakeConstants {
-                public static final int INTAKE_MOTOR_ID = 3;
+                public static final int TOP_INTAKE_MOTOR_ID = 3;
+                public static final int BOTTOM_INTAKE_MOTOR_ID = 4;
                 /** Left */
                 public static final int INTAKE_SLIDER1_ID = 5;
                 /** Right */
                 public static final int INTAKE_SLIDER2_ID = 6;
-                public static final double INTAKE_SPEED = 1.0;
+                public static final double INTAKE_SPEED = -1.0;
                 public static final double Intake_Down_SetPoint = 2;
-                public static final double Intake_Up_SetPoint = 30.0;
+                public static final double Intake_Up_SetPoint = 24.5;
         }
 
         public static final class HoodConstants {
@@ -264,7 +267,7 @@ public final class Constants {
         }
 
         public static final class CimberConstants {
-                public static final int CLIMBER_MOTOR_CANID = 8;
+                public static final int CLIMBER_MOTOR_CANID = 62;
                 public static final double Climber_Down_SetPoint = 380;
                 public static final double Climber_Up_SetPoint = 50;
         }

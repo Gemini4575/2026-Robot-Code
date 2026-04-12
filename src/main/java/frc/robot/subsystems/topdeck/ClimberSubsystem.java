@@ -22,87 +22,91 @@ public class ClimberSubsystem extends SubsystemBase {
             .getEntry();
     private GenericEntry climberSetPointEntry = climberTab.add("Climber Reached Set Point", false)
             .getEntry();
-    private final SparkMax climberMotor;
+    // private final SparkMax climberMotor;
 
     public ClimberSubsystem() {
-        climberMotor = new SparkMax(CLIMBER_MOTOR_CANID, MotorType.kBrushless);
-        climberMotor.getEncoder().setPosition(0);
-        SparkBaseConfig ClimberMotorConfig = new SparkMaxConfig();
-        ClimberMotorConfig.smartCurrentLimit(40, 40);
-        ClimberMotorConfig.disableFollowerMode();
+        // climberMotor = new SparkMax(CLIMBER_MOTOR_CANID, MotorType.kBrushless);
+        // climberMotor = new SparkMax(CLIMBER_MOTOR_CANID, MotorType.kBrushless);
+        // climberMotor.getEncoder().setPosition(0);
+        // SparkBaseConfig ClimberMotorConfig = new SparkMaxConfig();
+        // ClimberMotorConfig.smartCurrentLimit(40, 40);
+        // ClimberMotorConfig.disableFollowerMode();
 
-        ClimberMotorConfig.idleMode(IdleMode.kBrake);
+        // ClimberMotorConfig.idleMode(IdleMode.kBrake);
 
-        ClimberMotorConfig.softLimit.forwardSoftLimitEnabled(true);
-        ClimberMotorConfig.softLimit.forwardSoftLimit(Climber_Down_SetPoint);
-        ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
-        ClimberMotorConfig.softLimit.reverseSoftLimit(0);
+        // ClimberMotorConfig.softLimit.forwardSoftLimitEnabled(true);
+        // ClimberMotorConfig.softLimit.forwardSoftLimit(Climber_Down_SetPoint);
+        // ClimberMotorConfig.softLimit.reverseSoftLimitEnabled(true);
+        // ClimberMotorConfig.softLimit.reverseSoftLimit(0);
 
-        ClimberMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
-        ClimberMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
+        // ClimberMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
+        // ClimberMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
 
-        climberMotor.configure(ClimberMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // climberMotor.configure(ClimberMotorConfig, ResetMode.kResetSafeParameters,
+        // PersistMode.kPersistParameters);
     }
 
     public void JoystickControl(double joy) {
-        climberMotor.set(joy);
+        // climberMotor.set(joy);
     }
 
     private boolean IMoveDownToClimbI() {
-        climberMotor.set(1);
+        // climberMotor.set(1);
 
-        return climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
+        return true; // climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
     }
 
     private boolean IMoveUpToClimbI() {
-        climberMotor.set(-1);
+        // climberMotor.set(-1);
 
-        return climberMotor.getEncoder().getPosition() <= Climber_Up_SetPoint;
+        return true;// climberMotor.getEncoder().getPosition() <= Climber_Up_SetPoint;
     }
 
     private boolean IMoveUpTo0I() {
-        climberMotor.set(-1);
+        // climberMotor.set(-1);
 
-        return climberMotor.getEncoder().getPosition() <= 1;
+        return true; // climberMotor.getEncoder().getPosition() <= 1;
     }
 
     public boolean MoveTo0() {
-        if (IMoveUpTo0I()) {
-            stop();
-            Constants.States.CLIMBER_DOWN = false;
-            return true;
-        }
+        // if (IMoveUpTo0I()) {
+        // stop();
+        // Constants.States.CLIMBER_DOWN = false;
+        // return true;
+        // }
         return false;
     }
 
     public boolean MoveDownToClimbCheck() {
-        return climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
+        // return climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint;
+        return true;
     }
 
     public boolean MoveDownToClimb() {
-        if (IMoveDownToClimbI()) {
-            stop();
-            Constants.States.CLIMBER_DOWN = true;
-            return true;
-        }
+        // if (IMoveDownToClimbI()) {
+        // stop();
+        // Constants.States.CLIMBER_DOWN = true;
+        // return true;
+        // }
         return false;
     }
 
     public boolean MoveUpToClimb() {
-        if (IMoveUpToClimbI()) {
-            stop();
-            return true;
-        }
+        // if (IMoveUpToClimbI()) {
+        // stop();
+        // return true;
+        // }
         return false;
     }
 
     public void stop() {
-        climberMotor.stopMotor();
+        // climberMotor.stopMotor();
     }
 
     @Override
     public void periodic() {
-        climberPositionEntry.setDouble(climberMotor.getEncoder().getPosition());
-        climberSetPointEntry.setBoolean(climberMotor.getEncoder().getPosition() >= Climber_Down_SetPoint);
+        // climberPositionEntry.setDouble(climberMotor.getEncoder().getPosition());
+        // climberSetPointEntry.setBoolean(climberMotor.getEncoder().getPosition() >=
+        // Climber_Down_SetPoint);
     }
 }

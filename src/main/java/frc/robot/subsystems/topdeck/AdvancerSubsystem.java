@@ -29,12 +29,23 @@ public class AdvancerSubsystem extends SubsystemBase {
             .getEntry();
     private final TalonFX AdavancerMotor;
     private final SparkFlex RollerMotor;
+    private final SparkMax NeoAdvancerMotor;
 
     public AdvancerSubsystem() {
         RollerMotor = new SparkFlex(ROLLER_MOTOR_ID, MotorType.kBrushless);
+        NeoAdvancerMotor = new SparkMax(NEO_ADVANCER_MOTOR_ID, MotorType.kBrushless);
         AdavancerMotor = new TalonFX(ADVANCER_MOTOR_ID);
         TalonFXConfiguration AdvancerMotorConfig = new TalonFXConfiguration();
         SparkFlexConfig rollerMotorConfig = new SparkFlexConfig();
+        SparkMaxConfig AdvancerMotorConfigSpark = new SparkMaxConfig();
+
+        AdvancerMotorConfigSpark.smartCurrentLimit(30, 30);
+        AdvancerMotorConfigSpark.softLimit.forwardSoftLimitEnabled(false);
+        AdvancerMotorConfigSpark.softLimit.reverseSoftLimitEnabled(false);
+        AdvancerMotorConfigSpark.idleMode(IdleMode.kBrake);
+
+        NeoAdvancerMotor.configure(AdvancerMotorConfigSpark, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         rollerMotorConfig.disableFollowerMode();
         rollerMotorConfig.smartCurrentLimit(30, 30);
@@ -51,16 +62,24 @@ public class AdvancerSubsystem extends SubsystemBase {
 
     public void reverse() {
         AdavancerMotor.set(ADVANCER_SPEED);
+        NeoAdvancerMotor.set(NEO_ADVANCER_SPEED);
         RollerMotor.set(ADVANCER_ROLLER_SPEED);
+    }
+
+    public void advancerOnlyReverse() {
+        // AdavancerMotor.set(ADVANCER_SPEED);
+        // NeoAdvancerMotor.set(NEO_ADVANCER_SPEED);
     }
 
     public void stopAdvancer() {
         AdavancerMotor.set(0);
+        NeoAdvancerMotor.set(0);
         RollerMotor.set(0);
     }
 
     public void advance() {
         AdavancerMotor.set(-ADVANCER_SPEED);
+        NeoAdvancerMotor.set(-NEO_ADVANCER_SPEED);
         RollerMotor.set(-ADVANCER_ROLLER_SPEED);
     }
 }
