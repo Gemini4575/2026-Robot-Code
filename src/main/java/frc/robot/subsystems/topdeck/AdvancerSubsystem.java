@@ -38,14 +38,22 @@ public class AdvancerSubsystem extends SubsystemBase {
         TalonFXConfiguration AdvancerMotorConfig = new TalonFXConfiguration();
         SparkFlexConfig rollerMotorConfig = new SparkFlexConfig();
         SparkMaxConfig AdvancerMotorConfigSpark = new SparkMaxConfig();
+        SparkMaxConfig NeoAdvancerMotorConfigSpark = new SparkMaxConfig(); // STUFF CASSIE ADDED
 
         AdvancerMotorConfigSpark.smartCurrentLimit(30, 30);
         AdvancerMotorConfigSpark.softLimit.forwardSoftLimitEnabled(false);
         AdvancerMotorConfigSpark.softLimit.reverseSoftLimitEnabled(false);
         AdvancerMotorConfigSpark.idleMode(IdleMode.kBrake);
 
-        NeoAdvancerMotor.configure(AdvancerMotorConfigSpark, ResetMode.kResetSafeParameters,
+        NeoAdvancerMotor.configure(AdvancerMotorConfigSpark, ResetMode.kNoResetSafeParameters, // STUFF CASSIE REMOVED
                 PersistMode.kPersistParameters);
+
+        // NeoAdvancerMotorConfigSpark.smartCurrentLimit(30, 30); // STUFF CASSIE ADDED
+        // NeoAdvancerMotorConfigSpark.softLimit.forwardSoftLimitEnabled(false); //
+        // STUFF CASSIE ADDED
+        // NeoAdvancerMotorConfigSpark.softLimit.reverseSoftLimitEnabled(false); //
+        // STUFF CASSIE ADDED
+        // NeoAdvancerMotorConfigSpark.idleMode(IdleMode.kBrake); // STUFF CASSIE ADDED
 
         rollerMotorConfig.disableFollowerMode();
         rollerMotorConfig.smartCurrentLimit(30, 30);

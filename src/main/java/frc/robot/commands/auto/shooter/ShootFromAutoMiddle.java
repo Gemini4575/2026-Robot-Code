@@ -21,7 +21,7 @@ public class ShootFromAutoMiddle extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
-        shooter.runShooterAtVelocity(Constants.ShooterRPMConstants.HUB_SHOOT);
+        shooter.runShooterAtVelocity(Constants.ShooterRPMConstants.HUB_SHOT);
     }
 
     boolean firstRun = false;

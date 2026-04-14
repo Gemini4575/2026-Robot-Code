@@ -7,15 +7,15 @@ import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 import frc.robot.subsystems.topdeck.BeamBreak;
 import frc.robot.subsystems.topdeck.ShooterSubsystem;
 
-public class ShootFromTrench extends Command{
+public class ShootFromTrench extends Command {
     private final ShooterSubsystem shooter;
     private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
     private final Timer timer = new Timer();
     private final Timer other = new Timer();
-    
 
-    public ShootFromTrench(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem, BeamBreak beamBreakSubsystem) {
+    public ShootFromTrench(ShooterSubsystem shooterSubsystem, AdvancerSubsystem advancerSubsystem,
+            BeamBreak beamBreakSubsystem) {
         this.shooter = shooterSubsystem;
         this.advancer = advancerSubsystem;
         this.beamBreak = beamBreakSubsystem;
@@ -26,7 +26,7 @@ public class ShootFromTrench extends Command{
 
     @Override
     public void initialize() {
-        shooter.runShooterAtVelocity(ShooterRPMConstants.INSIDE_TRENCH);
+        shooter.runShooterAtVelocity(4000);
         timer.reset();
         timer.start();
         other.reset();
@@ -35,18 +35,19 @@ public class ShootFromTrench extends Command{
 
     @Override
     public void execute() {
-        shooter.runShooterAtVelocity(ShooterRPMConstants.INSIDE_TRENCH);
+        shooter.runShooterAtVelocity(4000);
         if (other.advanceIfElapsed(3)) {
             advancer.advance();
-        }else {
+        } else {
             advancer.stopAdvancer();
         }
     }
 
     @Override
     public boolean isFinished() {
-          return beamBreak.getHopper() && timer.hasElapsed(10);
+        return beamBreak.getHopper() && timer.hasElapsed(10);
     }
+
     @Override
     public void end(boolean interrupted) {
         shooter.stopShooter();

@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.commands.shooter.TelopLadderShoot;
+import frc.robot.commands.shooter.TelopTrenchShoot;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,11 +38,15 @@ import frc.robot.commands.climber.ClimbTo0;
 import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.climber.UpToClimb;
 import frc.robot.commands.driving.AlineWheels;
-import frc.robot.commands.driving.DriveForSeconds;
+import frc.robot.commands.driving.DriveForSecondsBackwards;
+import frc.robot.commands.driving.DriveForSecondsForwards;
+import frc.robot.commands.driving.DriveForSecondsLeft;
+import frc.robot.commands.driving.DriveForSecondsRight;
 import frc.robot.commands.driving.DriveForSecondsSlow;
 import frc.robot.commands.driving.DriveToLocation;
 import frc.robot.commands.driving.FaceTowardsCoordinates;
 import frc.robot.commands.driving.ResetLocationCommand;
+import frc.robot.commands.driving.RotateSomeAmount;
 import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.TeleopSwerve;
@@ -52,7 +58,10 @@ import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RetractIntake;
+import frc.robot.commands.shooter.AutoHubShoot;
 import frc.robot.commands.shooter.ReverseShoot;
+import frc.robot.commands.shooter.TelopAlleniceWallShot;
+import frc.robot.commands.shooter.AutoShootMiddle;
 import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.MetricName;
@@ -181,6 +190,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Aline Wheels", new AlineWheels(D));
     NamedCommands.registerCommand("Shoot From Depot", new ShootFromDepot(S, A, b).withTimeout(5));
     NamedCommands.registerCommand("Shoot From Trench", new ShootFromTrench(S, A, b).withTimeout(5));
+    NamedCommands.registerCommand("Shoot From Hub", new AutoHubShoot(S, A));
+    NamedCommands.registerCommand("Drop Intake", new ExtendIntake(I));
     NamedCommands.registerCommand("Spin Up Shooter", new SpinUpShooter(S));
     NamedCommands.registerCommand("Down To Climb", new DownToClimb(C));
     NamedCommands.registerCommand("Climb", new UpToClimb(C));
@@ -202,10 +213,15 @@ public class RobotContainer {
     // D.sysIdDynamic(Direction.kForward));
     // PathplannerautoChoosers.addOption("dynamic reverse",
     // D.sysIdDynamic(Direction.kReverse));
-    PathplannerautoChoosers.addOption("Climb",
-        new AlineWheels(D).andThen(new DriveForSeconds(D, 1.25).andThen(new Stop(D)).alongWith(new DownToClimb(C)))
-            .andThen(new DriveForSeconds(D, 1.25)).andThen(new DriveForSecondsSlow(D, 1.5))
-            .andThen(new UpToClimb(C).alongWith(new DriveForSecondsSlow(D, 2))));
+    PathplannerautoChoosers.addOption("Go To the depot and shoot",
+        new AlineWheels(D)
+            .andThen(new DriveForSecondsRight(D, 2.05))
+            .andThen(new DriveForSecondsBackwards(D, 1.25))
+            .andThen(new Spin180(D))
+            .andThen(new DriveForSecondsForwards(D, 3).alongWith(new ExtendIntakeAndIntake(I).withTimeout(3.5)))
+            .andThen(new DriveForSecondsBackwards(D, 1).alongWith(new ExtendIntakeAndIntake(I).withTimeout(2)))
+            .andThen(new RotateSomeAmount(D, () -> 160))
+            .andThen(new AutoShootMiddle(S, A).alongWith(new Stop(D))));
     PathplannerautoChoosers.addOption("Shoot", new Testing_Shoot(S, b, A, D::getPose).withTimeout(5));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
@@ -270,20 +286,29 @@ public class RobotContainer {
     C.setDefaultCommand(new ClimbTelop(C, () -> operator.getRawButton(14), () -> operator.getRawButton(8)));
 
     I.setDefaultCommand(
-        new ExtendOrRectactIntake(I, A, () -> operator.getRawButton(12), () -> operator.getRawButton(13),
+        new ExtendOrRectactIntake(I, () -> operator.getRawButton(12), () -> operator.getRawButton(13),
             () -> operator.getRawButton(20)));
 
-    new JoystickButton(testing, RED_BUTTON)
-        .onTrue(new RetractIntake(I));
+    // new JoystickButton(testing, RED_BUTTON)
+    // .onTrue(new RetractIntake(I));
 
     new JoystickButton(operator, 18)
         .whileTrue(new ReverseShoot(S, A));
 
+    new JoystickButton(operator, 19)
+        .whileTrue(new TelopLadderShoot(S, A));
+
     new JoystickButton(operator, 11)
         .whileTrue(new Testing_Shoot(S, b, A, D::getPose));
 
-    new JoystickButton(operator, RED_BUTTON)
-        .whileTrue(new Advance(A));
+    new JoystickButton(operator, 17)
+        .whileTrue(new TelopTrenchShoot(S, A));
+
+    new JoystickButton(operator, 10)
+        .whileTrue(new TelopAlleniceWallShot(S, A));
+
+    // new JoystickButton(operator, RED_BUTTON)
+    // .whileTrue(new Advance(A));
 
     // new JoystickButton(operator, 10)
     // .whileTrue(new ShootFromDepot(S, A, b));

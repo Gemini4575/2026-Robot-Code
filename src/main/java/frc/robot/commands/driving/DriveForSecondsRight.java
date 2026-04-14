@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 
-public class DriveForSeconds extends Command {
+public class DriveForSecondsRight extends Command {
     DrivetrainIO d;
     boolean isFinished;
     Timer timer;
     double seconds;
 
-    public DriveForSeconds(DrivetrainIO d, double seconds) {
+    public DriveForSecondsRight(DrivetrainIO d, double seconds) {
         this.d = d;
         this.seconds = seconds;
         addRequirements(d);
@@ -25,7 +25,7 @@ public class DriveForSeconds extends Command {
 
     @Override
     public void execute() {
-        d.drive(0.2, 0.0, 0.0, false);
+        d.drive(0.0, 0.2, 0.0, false);
         if (timer.advanceIfElapsed(seconds)) {
             d.drive(0, 0, 0, false);
             isFinished = true;

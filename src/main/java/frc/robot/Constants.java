@@ -179,7 +179,7 @@ public final class Constants {
                 public static final int SHOOTER_MOTOR_ID_2 = 14;
                 public static final int SHOOTER_MOTOR_ID_3 = 15;
                 public static final int SHOOTER_MOTOR_ID_4 = 16;
-                public static final double TARGET_VELOCITY_RPM = 2900;
+                public static final double TARGET_VELOCITY_RPM = 3050;
                 public static final double MOTOR_MAX_RPM = 6300.0;
                 public static final double RPM_TOLERANCE = 50200000000.0;
 
@@ -273,10 +273,10 @@ public final class Constants {
         }
 
         public static final class ShooterRPMConstants {
-                public static final double DEPOT_SHOOT = 0.85;
-                public static final double OUTSIDE_TRENCH = 0.85;
-                public static final int HUB_SHOOT = 2800;
-                public static final double INSIDE_TRENCH = 1;
+                public static final int HUB_SHOT = 3050;
+                public static final int LADDER_SHOT = 4200;
+                public static final int TRENCH_SHOT = 4000;
+                public static final int ALLIANCE_WALL_SHOT = 5895;
         }
 
         public static class States {

@@ -1,5 +1,7 @@
 package frc.robot.commands.driving;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -7,8 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 
-public class Spin180 extends Command {
+public class RotateSomeAmount extends Command {
     DrivetrainIO d;
+    DoubleSupplier targetAngle;
     boolean isFinished;
 
     private ProfiledPIDController rotation = new ProfiledPIDController(
@@ -17,8 +20,9 @@ public class Spin180 extends Command {
             0,
             new TrapezoidProfile.Constraints(2, 2));
 
-    public Spin180(DrivetrainIO d) {
+    public RotateSomeAmount(DrivetrainIO d, DoubleSupplier targetAngle) {
         this.d = d;
+        this.targetAngle = targetAngle;
     }
 
     @Override
@@ -62,22 +66,21 @@ public class Spin180 extends Command {
         SmartDashboard.putNumber("[DriveTrain]targetDegrees", targetDegrees);
         SmartDashboard.putNumber("[DriveTrain]error", error);
 
-        if (Math.abs(error) < 3.0) {
+        if (Math.abs(error) < 5.0) {
             d.Rotate_Rot(0);
             first = true;
             return true;
         }
 
-        Rotate_Rot = 0.2;
+        Rotate_Rot = 0.3;
         // d.Rotate_Rot(Rotate_Rot);
         d.drive(0, 0, Rotate_Rot, false);
         return false;
     }
 
-    @SuppressWarnings("static-access")
     @Override
     public void execute() {
-        isFinished = rotate(new Rotation2d().fromDegrees(180));
+        isFinished = rotate(new Rotation2d().fromDegrees(targetAngle.getAsDouble()));
     }
 
     @Override
@@ -90,5 +93,6 @@ public class Spin180 extends Command {
         if (ds) {
             end();
         }
+        d.drive(0, 0, 0, false);
     }
 }
