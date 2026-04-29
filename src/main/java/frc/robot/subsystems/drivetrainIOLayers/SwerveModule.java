@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import frc.lib.util.TunablePIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -67,6 +68,7 @@ public class SwerveModule extends SubsystemBase {
     private static final double TURN_KS = 0.1; // volts, tune this
 
     private PIDController turningPidController = new PIDController(2.9, 0.1, 0);
+
     // new ProfiledPIDController(
     // 3.1, // Proportional gain
     // 0.0, // Integral gain
@@ -84,7 +86,8 @@ public class SwerveModule extends SubsystemBase {
     // SwerveConstants.MaxMetersPersecond,
     // SwerveConstants.kMaxAceceration));
 
-    private final PIDController m_drivePIDController;
+    // private final PIDController m_drivePIDController;
+    private TunablePIDController m_drivePIDController;
 
     private SparkMax driveMotor;
     private SparkMax angleMotor;
@@ -157,7 +160,8 @@ public class SwerveModule extends SubsystemBase {
 
         captureConfig();
 
-        m_drivePIDController = new PIDController(s.pidP, s.pidI, 0);
+        // m_drivePIDController = new PIDController(s.pidP, s.pidI, 0);
+        m_drivePIDController = new TunablePIDController("swerve_" + s.moduleNumber, 2.9, 0.1, 0);
 
         m_driveFeedforward = new SimpleMotorFeedforward(0.19341, 2.9015, 0.35496); // kS, kV, kA
 
