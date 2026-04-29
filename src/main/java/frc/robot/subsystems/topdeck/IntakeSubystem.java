@@ -62,7 +62,7 @@ public class IntakeSubystem extends SubsystemBase {
 
         RotatorConfig.smartCurrentLimit(30, 30);
         RotatorConfig.idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake);
-        RotatorConfig.inverted(false);
+        RotatorConfig.inverted(true);
         RotatorConfig.disableFollowerMode();
         RotatorConfig.softLimit.forwardSoftLimitEnabled(true);
         RotatorConfig.softLimit.forwardSoftLimit(Intake_Up_SetPoint);

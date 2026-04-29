@@ -34,6 +34,7 @@ import frc.robot.service.MetricService;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.util.DriveFeedforwards;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -229,8 +230,8 @@ public class SwerveModule extends SubsystemBase {
                 * ((SwerveConstants.kWheelRadius * 2) * Math.PI);
     }
 
-    private double getCurrentSpeedAsPercentage() {
-        return m_driveEncoder.getVelocity() / MOTOR_MAX_RPM;
+    private double getCurrentSpeed() {
+        return m_driveEncoder.getVelocity();
     }
 
     /**
@@ -256,12 +257,12 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void SetDesiredState(SwerveModuleState desiredState) {
-        double currentSpeedPercentage = getCurrentSpeedAsPercentage();
+        double currentSpeed = getCurrentSpeed();
         double currentAngle = encoderValue();
         MetricService.publish(MetricName.currentAngle(moduleNumber), currentAngle);
-        MetricService.publish(MetricName.actualVelocity(moduleNumber), currentSpeedPercentage);
+        MetricService.publish(MetricName.actualVelocity(moduleNumber), currentSpeed);
 
-        SmartDashboard.putNumber("Speed " + moduleNumber, currentSpeedPercentage);
+        SmartDashboard.putNumber("Speed " + moduleNumber, currentSpeed);
         SmartDashboard.putNumber("[Swerve]Pre Optimize angle target degrees " + moduleNumber,
                 desiredState.angle.getDegrees());
         SmartDashboard.putNumber("[Swerve]turn encoder" + moduleNumber, currentAngle);
@@ -304,24 +305,26 @@ public class SwerveModule extends SubsystemBase {
         double targetSpeedMetersPerSecond = state.speedMetersPerSecond
                 * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
 
-        double targetSpeedPercentage = targetSpeedMetersPerSecond / SwerveConstants.MaxMetersPersecond;
+        // double targetSpeedPercentage = targetSpeedMetersPerSecond /
+        // SwerveConstants.MaxMetersPersecond;
 
-        final double driveOutput = (currentSpeedPercentage
+        final double driveOutput = (currentSpeed
                 + m_drivePIDController.calculate(
-                        currentSpeedPercentage,
+                        currentSpeed,
                         state.speedMetersPerSecond))
                 * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
 
         // No FlipSpeed needed - inversion is handled in motor configuration
-        driveMotor.set(driveOutput);
+        driveMotor.setVoltage(m_driveFeedforward
+                .calculate((state.speedMetersPerSecond) / (SwerveConstants.kWheelRadius * 2 * Math.PI)));
 
         angleMotor.set((turnOutput / Math.PI));
 
         MetricService.publish(MetricName.commandedSpeed(moduleNumber), driveOutput);
         MetricService.publish(MetricName.commandedTurn(moduleNumber), (turnOutput / Math.PI));
 
-        // SmartDashboard.putNumber("[Swerve]m_driveMotor set " + moduleNumber,
-        // driveOutput);
+        SmartDashboard.putNumber("[Swerve]m_driveMotor set " + moduleNumber,
+                driveOutput);
         // SmartDashboard.putNumber("[Swerve]m_turningMotor set " + moduleNumber,
         // turnOutput / SwerveConstants.kModuleMaxAngularVelocity);
 
@@ -329,8 +332,8 @@ public class SwerveModule extends SubsystemBase {
         // getConvertedVelocity());
         // SmartDashboard.putNumber("[Swerve]m_driveMotor velocity" + moduleNumber,
         // currentSpeedPercentage);
-        // SmartDashboard.putNumber("[Swerve]m_driveMotor get" + moduleNumber,
-        // driveMotor.get());
+        SmartDashboard.putNumber("[Swerve]m_driveMotor get" + moduleNumber,
+                driveMotor.getBusVoltage());
         // SmartDashboard.putNumber("[Swerve]m_turningMotor actual" + moduleNumber,
         // angleMotor.get());
 
@@ -346,7 +349,7 @@ public class SwerveModule extends SubsystemBase {
 
     private void keepWheelsStrait() {
         SwerveModuleState desiredState = new SwerveModuleState(0.0, Rotation2d.fromDegrees(0.0));
-        double currentSpeedPercentage = getCurrentSpeedAsPercentage();
+        double currentSpeedPercentage = getCurrentSpeed();
         double currentAngle = encoderValue();
         MetricService.publish(MetricName.currentAngle(moduleNumber), currentAngle);
         MetricService.publish(MetricName.actualVelocity(moduleNumber), currentSpeedPercentage);
@@ -433,7 +436,8 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void SetDesiredStateWithFF(SwerveModuleState desiredState, double forceNewtons) {
-        double currentSpeedPercentage = getCurrentSpeedAsPercentage();
+        double currentSpeedPercentage = m_driveEncoder.getVelocity() / MOTOR_MAX_RPM;
+
         double currentAngle = encoderValue();
 
         @SuppressWarnings("deprecation")

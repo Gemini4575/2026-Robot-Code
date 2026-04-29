@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -49,6 +50,7 @@ import frc.robot.commands.driving.ResetLocationCommand;
 import frc.robot.commands.driving.RotateSomeAmount;
 import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
+import frc.robot.commands.driving.StopForever;
 import frc.robot.commands.driving.TeleopSwerve;
 import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.driving.XTheWheels;
@@ -58,6 +60,7 @@ import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RetractIntake;
+import frc.robot.commands.shooter.AutoAllienceWallShoot;
 import frc.robot.commands.shooter.AutoHubShoot;
 import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.shooter.TelopAlleniceWallShot;
@@ -213,6 +216,18 @@ public class RobotContainer {
     // D.sysIdDynamic(Direction.kForward));
     // PathplannerautoChoosers.addOption("dynamic reverse",
     // D.sysIdDynamic(Direction.kReverse));
+
+    PathplannerautoChoosers.addOption("Go To outpost and shoot",
+        new AlineWheels(D)
+            .andThen(new DriveForSecondsForwards(D, 3.75).alongWith(new ExtendIntake(I)))
+            .andThen(new WaitCommand(5).alongWith(new StopForever(D).withTimeout(5)))
+            .andThen(new DriveForSecondsBackwards(D, 4 / 2))
+            .andThen(new DriveForSecondsLeft(D, 0.5))
+            .andThen(new RotateSomeAmount(D, () -> 240))
+            .andThen(new TelopAlleniceWallShot(S, A).alongWith(new StopForever(D))));
+    // .andThen(new DriveForSecondsBackwards(D, 4.15 / 2))
+    // .andThen(new DriveForSecondsLeft(D, 4.0))
+    // .andThen(new Testing_Shoot(S, b, A, D::getPose).withTimeout(10)));
     PathplannerautoChoosers.addOption("Go To the depot and shoot",
         new AlineWheels(D)
             .andThen(new DriveForSecondsRight(D, 2.05))
@@ -221,7 +236,7 @@ public class RobotContainer {
             .andThen(new DriveForSecondsForwards(D, 3).alongWith(new ExtendIntakeAndIntake(I).withTimeout(3.5)))
             .andThen(new DriveForSecondsBackwards(D, 1).alongWith(new ExtendIntakeAndIntake(I).withTimeout(2)))
             .andThen(new RotateSomeAmount(D, () -> 160))
-            .andThen(new AutoShootMiddle(S, A).alongWith(new Stop(D))));
+            .andThen(new AutoAllienceWallShoot(S, A).alongWith(new Stop(D))));
     PathplannerautoChoosers.addOption("Shoot", new Testing_Shoot(S, b, A, D::getPose).withTimeout(5));
     // autoChooser = new AutoCommandFactory(D, lc).generateAutoOptions();
     SmartDashboard.putData("[Robot]Auto Chosers", PathplannerautoChoosers);
