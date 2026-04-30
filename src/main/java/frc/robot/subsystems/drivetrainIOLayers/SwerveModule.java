@@ -37,6 +37,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 public class SwerveModule extends SubsystemBase {
@@ -146,15 +148,12 @@ public class SwerveModule extends SubsystemBase {
         driveMotorConfig.idleMode(IdleMode.kBrake);
         angleMotorConfig.apply(driveMotorConfig);
 
-        driveMotorKrakenConfig.idleMode(IdleMode.kBrake);
+        driveMotorKrakenConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         angleMotorConfig.inverted(true);
 
         driveMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
         driveMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
-
-        driveMotorKrakenConfig.signals.primaryEncoderPositionAlwaysOn(true);
-        driveMotorKrakenConfig.signals.primaryEncoderPositionPeriodMs(5);
 
         driveMotorKraken.getConfigurator().apply(driveMotorKrakenConfig);
 
