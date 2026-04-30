@@ -247,14 +247,17 @@ public class SwerveModule extends SubsystemBase {
         return new SwerveModuleState(
                 s, new Rotation2d(encoderValue()));
     }
+    // This method converts the drive encoder velocity to meters per second,
+    // accounting for the gearbox ratio and wheel circumference.
 
     public double getConvertedVelocity() {
-        return (m_driveEncoder.getVelocity() / (60.0 * SwerveConstants.gearboxRatio))
+        return (m_driveEncoder.getVelocity() + driveMotorKraken.getVelocity().getValueAsDouble() / 60.0)
+                / (60.0 * SwerveConstants.gearboxRatio)
                 * ((SwerveConstants.kWheelRadius * 2) * Math.PI);
     }
 
     private double getCurrentSpeed() {
-        return m_driveEncoder.getVelocity();
+        return m_driveEncoder.getVelocity() + driveMotorKraken.getVelocity().getValueAsDouble() / 60.0;
     }
 
     /**
@@ -265,7 +268,8 @@ public class SwerveModule extends SubsystemBase {
     public SwerveModulePosition getPosition() {
         // encode is % rotations
         var retVal = DISTANCE_CORRECTION_FACTOR
-                * ((m_driveEncoder.getPosition() / SwerveConstants.gearboxRatio) * (SwerveConstants.kWheelRadius * 2)
+                * (((m_driveEncoder.getPosition() + driveMotorKraken.getPosition().getValueAsDouble() / 60.0)
+                        / SwerveConstants.gearboxRatio) * (SwerveConstants.kWheelRadius * 2)
                         * Math.PI); // distance
 
         // in
