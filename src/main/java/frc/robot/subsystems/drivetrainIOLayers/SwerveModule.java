@@ -33,7 +33,9 @@ import frc.robot.model.MetricName;
 import frc.robot.service.MetricService;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
@@ -92,6 +94,8 @@ public class SwerveModule extends SubsystemBase {
     private SparkMax driveMotor;
     private SparkMax angleMotor;
 
+    private TalonFX driveMotorKraken;
+
     private CANcoder Encoder;
     private RelativeEncoder m_driveEncoder;
 
@@ -119,6 +123,13 @@ public class SwerveModule extends SubsystemBase {
         angleMotor = new SparkMax(s.angleMotorID, MotorType.kBrushless);
         SparkBaseConfig driveMotorConfig = new SparkMaxConfig();
         SparkBaseConfig angleMotorConfig = new SparkMaxConfig();
+
+        driveMotorKraken = new TalonFX(s.driveMotorID);
+        TalonFXConfiguration driveMotorKrakenConfig = new TalonFXConfiguration();
+        driveMotorKrakenConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        driveMotorKrakenConfig.CurrentLimits.SupplyCurrentLimit = 40;
+        driveMotorKrakenConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveMotorKrakenConfig.CurrentLimits.StatorCurrentLimit = 40;
         driveMotorConfig.smartCurrentLimit(40, 40);
         driveMotorConfig.disableFollowerMode();
 
@@ -126,17 +137,26 @@ public class SwerveModule extends SubsystemBase {
         // Modules 0 and 3 are NOT inverted, modules 1 and 2 ARE inverted
         if (s.moduleNumber == 0 || s.moduleNumber == 3) {
             driveMotorConfig.inverted(false);
+            driveMotorKrakenConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         } else {
             driveMotorConfig.inverted(true);
+            driveMotorKrakenConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         }
 
         driveMotorConfig.idleMode(IdleMode.kBrake);
         angleMotorConfig.apply(driveMotorConfig);
 
+        driveMotorKrakenConfig.idleMode(IdleMode.kBrake);
+
         angleMotorConfig.inverted(true);
 
         driveMotorConfig.signals.primaryEncoderPositionAlwaysOn(true);
         driveMotorConfig.signals.primaryEncoderPositionPeriodMs(5);
+
+        driveMotorKrakenConfig.signals.primaryEncoderPositionAlwaysOn(true);
+        driveMotorKrakenConfig.signals.primaryEncoderPositionPeriodMs(5);
+
+        driveMotorKraken.getConfigurator().apply(driveMotorKrakenConfig);
 
         driveMotor.configure(driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         angleMotor.configure(angleMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -320,6 +340,9 @@ public class SwerveModule extends SubsystemBase {
 
         // No FlipSpeed needed - inversion is handled in motor configuration
         driveMotor.setVoltage(m_driveFeedforward
+                .calculate((state.speedMetersPerSecond) / (SwerveConstants.kWheelRadius * 2 * Math.PI)));
+
+        driveMotorKraken.setVoltage(m_driveFeedforward
                 .calculate((state.speedMetersPerSecond) / (SwerveConstants.kWheelRadius * 2 * Math.PI)));
 
         angleMotor.set((turnOutput / Math.PI));
