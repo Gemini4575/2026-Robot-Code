@@ -5,10 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -22,20 +20,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-// import frc.robot.commands.ShootIntake;
-import frc.robot.commands.advancer.Advance;
-import frc.robot.commands.auto.AutoCommandFactory;
 import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
 import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
 import frc.robot.commands.climber.ClimbTelop;
-import frc.robot.commands.climber.ClimbTo0;
 import frc.robot.commands.climber.DownToClimb;
 import frc.robot.commands.climber.UpToClimb;
 import frc.robot.commands.driving.AlineWheels;
@@ -43,40 +35,30 @@ import frc.robot.commands.driving.DriveForSecondsBackwards;
 import frc.robot.commands.driving.DriveForSecondsForwards;
 import frc.robot.commands.driving.DriveForSecondsLeft;
 import frc.robot.commands.driving.DriveForSecondsRight;
-import frc.robot.commands.driving.DriveForSecondsSlow;
-import frc.robot.commands.driving.DriveToLocation;
 import frc.robot.commands.driving.FaceTowardsCoordinates;
-import frc.robot.commands.driving.ResetLocationCommand;
 import frc.robot.commands.driving.RotateSomeAmount;
 import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
 import frc.robot.commands.driving.StopForever;
 import frc.robot.commands.driving.TeleopSwerve;
-import frc.robot.commands.driving.TimedTestDrive;
 import frc.robot.commands.driving.XTheWheels;
 import frc.robot.commands.driving.XTheWheelsTimed;
 import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
-import frc.robot.commands.intake.Intake;
-import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.shooter.AutoAllienceWallShoot;
 import frc.robot.commands.shooter.AutoHubShoot;
 import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.shooter.TelopAlleniceWallShot;
-import frc.robot.commands.shooter.AutoShootMiddle;
 import frc.robot.commands.shooter.Testing_Shoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.MetricName;
-import frc.robot.model.PathContainer;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.service.MetricService;
 import frc.robot.subsystems.pathfinding.Vision;
 import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 import frc.robot.subsystems.topdeck.BeamBreak;
 import frc.robot.subsystems.topdeck.ClimberSubsystem;
-import frc.robot.subsystems.topdeck.ClimberSubsystem;
-// import frc.robot.subsystems.topdeck.HoodSubsystem;
 import frc.robot.subsystems.topdeck.IntakeSubystem;
 import frc.robot.subsystems.topdeck.LimitSwitchSubsystem;
 import frc.robot.subsystems.topdeck.ShooterSubsystem;
@@ -86,14 +68,14 @@ import static frc.robot.Constants.HoodConstants.*;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+/*
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+*/
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -176,7 +158,8 @@ public class RobotContainer {
 
   // private final LaserCan lc;
 
-  public RobotContainer() {
+  @SuppressWarnings("removal")
+public RobotContainer() {
 
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     note_entry.setString("RobotContainer initialized");
@@ -245,7 +228,8 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private LaserCan initLaserCAN() {
+  // * Supposedly for LiDAR but we don't have one so who knows if it works
+  /* private LaserCan initLaserCAN() {
     LaserCan lc = new LaserCan(1);
     try {
       lc.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -255,7 +239,7 @@ public class RobotContainer {
       System.out.println("Laser CanConfiguration failed! " + e);
     }
     return lc;
-  }
+  }*/
 
   private void configureBindings() {
     /* Debug */
@@ -386,12 +370,15 @@ public class RobotContainer {
     });
   }
 
+  // * Pretty self explanitory but it gets the distance to the hub in meters
+  /*
   private double getDistanceToHubMeters() {
     Pose2d pose = D.getPose();
     double deltaX = HUB_X_METERS - pose.getX();
     double deltaY = HUB_Y_METERS - pose.getY();
     return Math.hypot(deltaX, deltaY);
   }
+  */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

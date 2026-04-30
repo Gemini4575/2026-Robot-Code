@@ -2,7 +2,7 @@ package frc.robot.subsystems.drivetrainIOLayers;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+// ! import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.util.CoordinateConverter;
+// ! import frc.lib.util.CoordinateConverter;
 import frc.robot.Constants.SwerveConstants.Mod1;
 import frc.robot.Constants.SwerveConstants.Mod2;
 import frc.robot.Constants.SwerveConstants.Mod3;
@@ -40,7 +40,7 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+// ! import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -95,7 +95,7 @@ public class DrivetrainIO extends SubsystemBase {
   private double ySpeed_cur;
   private double rot_cur;
 
-  private double targetHeading;
+  // ! private double targetHeading;
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(m_backLeftLocation,
       m_backRightLocation,
       m_frontRightLocation, m_frontLeftLocation);
