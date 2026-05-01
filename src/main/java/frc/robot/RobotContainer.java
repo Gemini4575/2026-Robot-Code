@@ -157,7 +157,6 @@ public class RobotContainer {
 
   // private final LaserCan lc;
 
-  @SuppressWarnings("removal")
 public RobotContainer() {
 
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());

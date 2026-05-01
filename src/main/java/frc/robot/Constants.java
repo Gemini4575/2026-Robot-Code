@@ -151,7 +151,6 @@ public final class Constants {
         }
 
         public static final class Vision {
-                @SuppressWarnings("removal")
                 public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2026RebuiltWelded
                                 .loadAprilTagLayoutField();
 

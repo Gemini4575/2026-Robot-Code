@@ -20,7 +20,6 @@ public class PathFindToPose extends Command {
         addRequirements(driveSubsystem);
     }
 
-    @SuppressWarnings("removal")
     @Override
     public void initialize() {
         System.out.println("Initializing PathFindToPose command");
