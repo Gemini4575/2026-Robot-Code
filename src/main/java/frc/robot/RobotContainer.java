@@ -64,7 +64,6 @@ import frc.robot.subsystems.topdeck.LimitSwitchSubsystem;
 import frc.robot.subsystems.topdeck.ShooterSubsystem;
 
 import static frc.robot.Constants.JoystickConstants.*;
-import static frc.robot.Constants.HoodConstants.*;
 
 import java.util.Map;
 
@@ -131,7 +130,7 @@ public class RobotContainer {
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   private final Joystick testing = new Joystick(3);
-  private final Joystick climber = new Joystick(2);
+  // * private final Joystick climber = new Joystick(2);
 
   /* Driver Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, BACK_BUTTON);
@@ -325,6 +324,7 @@ public RobotContainer() {
   }
 
   public void resetGyroForAuto() {
+    @SuppressWarnings("unused")
     Command selected = PathplannerautoChoosers.getSelected();
     // if (selected instanceof PathPlannerAuto) {
     // Pose2d startingPose = ((PathPlannerAuto) selected).getStartingPose();

@@ -37,6 +37,7 @@ public class MotorBase {
             super.set(0);
         }
         
+        @SuppressWarnings("removal")
         public void setInverted() {
             sc.inverted(true);
             super.configure(sc, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

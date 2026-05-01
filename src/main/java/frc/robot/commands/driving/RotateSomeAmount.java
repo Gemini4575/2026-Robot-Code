@@ -80,7 +80,7 @@ public class RotateSomeAmount extends Command {
 
     @Override
     public void execute() {
-        isFinished = rotate(new Rotation2d().fromDegrees(targetAngle.getAsDouble()));
+        isFinished = rotate(Rotation2d.fromDegrees(targetAngle.getAsDouble()));
     }
 
     @Override

@@ -64,6 +64,7 @@ public class Vision extends SubsystemBase {
     private PhotonCameraSim cameraSim;
     private VisionSystemSim visionSim;
 
+    @SuppressWarnings("removal")
     public Vision() {
         super();
         var tagCamera = new PhotonCamera("Left Cam");
@@ -144,6 +145,7 @@ public class Vision extends SubsystemBase {
     public List<VisionEstimateContainer> getEstimatedGlobalPose(PhotonDataContainer photonDataContainer) {
         List<VisionEstimateContainer> estimates = new ArrayList<>();
         for (var change : photonDataContainer.getCamera().getAllUnreadResults()) {
+            @SuppressWarnings("removal")
             Optional<EstimatedRobotPose> visionEst = photonDataContainer.getPoseEstimator().update(change);
 
             if (Robot.isSimulation()) {

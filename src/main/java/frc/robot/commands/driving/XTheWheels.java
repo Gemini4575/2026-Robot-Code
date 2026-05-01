@@ -1,12 +1,10 @@
 package frc.robot.commands.driving;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 
 public class XTheWheels extends Command {
     private DrivetrainIO d;
-    private Timer timer;
 
     public XTheWheels(DrivetrainIO d) {
         this.d = d;

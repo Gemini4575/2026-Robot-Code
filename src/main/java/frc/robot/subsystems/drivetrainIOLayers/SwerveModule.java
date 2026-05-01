@@ -19,7 +19,6 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.lib.util.TunablePIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
@@ -39,7 +38,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.util.DriveFeedforwards;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -68,8 +66,6 @@ public class SwerveModule extends SubsystemBase {
     private static final double DISTANCE_CORRECTION_FACTOR = 0.97;
 
     private SimpleMotorFeedforward m_driveFeedforward;
-
-    private static final double TURN_KS = 0.1; // volts, tune this
 
     private PIDController turningPidController = new PIDController(2.9, 0.1, 0);
 
@@ -305,6 +301,7 @@ public class SwerveModule extends SubsystemBase {
 
         double currentDivergence = Math.abs(Rotation2d.fromRadians(state.angle.getRadians())
                 .minus(Rotation2d.fromRadians(currentAngle)).getRadians());
+
         if (currentDivergence > ANGLE_DIVERGENCE_TOLERANCE && angleDivergenceStartTime == -1) {
             angleDivergenceStartTime = System.currentTimeMillis();
         } else if (currentDivergence <= ANGLE_DIVERGENCE_TOLERANCE) {
@@ -329,16 +326,11 @@ public class SwerveModule extends SubsystemBase {
 
         final double turnOutput = turningPidController.calculate(currentAngle, state.angle.getRadians());
 
-        double targetSpeedMetersPerSecond = state.speedMetersPerSecond
-                * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
-
         // double targetSpeedPercentage = targetSpeedMetersPerSecond /
         // SwerveConstants.MaxMetersPersecond;
 
         final double driveOutput = (currentSpeed
-                + m_drivePIDController.calculate(
-                        currentSpeed,
-                        state.speedMetersPerSecond))
+                + m_drivePIDController.calculate(currentSpeed, state.speedMetersPerSecond))
                 * state.angle.minus(Rotation2d.fromRadians(currentAngle)).getCos();
 
         // No FlipSpeed needed - inversion is handled in motor configuration

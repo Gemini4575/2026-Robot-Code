@@ -3,40 +3,22 @@ package frc.robot.subsystems.topdeck;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 //import com.ctre.phoenix6.controls.DutyCycleOut;
 //import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 //import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.ShooterConstants.*;
@@ -61,8 +43,6 @@ public class ShooterSubsystem extends SubsystemBase {
             .add("Motor 4 Velocity", 0)
             .getEntry();
 
-    private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
-
     private SparkFlex shooterMotor = new SparkFlex(SHOOTER_MOTOR_ID_1, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.069689, 0.10839, 0.0077901); // kS, kV -
 
@@ -71,23 +51,20 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private SparkFlex shooterMotor3 = new SparkFlex(SHOOTER_MOTOR_ID_3, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward3 = new SimpleMotorFeedforward(0.058578, 0.10867, 0.0085603); // kS, kV -
-                                                                                                            // // these!
 
     private SparkFlex shooterMotor4 = new SparkFlex(SHOOTER_MOTOR_ID_4, MotorType.kBrushless);
     private SimpleMotorFeedforward feedforward4 = new SimpleMotorFeedforward(0.037203, 0.1083, 0.0090113); // kS, kV -
     // private final RelativeEncoder encoder;
     // private final RelativeEncoder encoder2;
-    private PIDController pidController;
-    private PIDController pidController2;
 
     // PID Constants - tune these!
+    /*
     private static final double kP = 0.0001;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
+    */
 
     public ShooterSubsystem() {
-        pidController = new PIDController(kP, kI, kD);
-        pidController2 = new PIDController(kP, kI, kD);
 
         configureMotor();
     }

@@ -12,7 +12,6 @@ public class Shoot extends Command {
     private final ShooterSubsystem shooter;
     private final AdvancerSubsystem advancer;
     private final BeamBreak beamBreak;
-    private final Supplier<Pose2d> poseSupplier;
 
     private boolean shooterReady = false;
 
@@ -31,7 +30,6 @@ public class Shoot extends Command {
         this.shooter = shooterSubsystem;
         this.advancer = advancerSubsystem;
         this.beamBreak = beamBreak;
-        this.poseSupplier = poseSupplier;
         addRequirements(shooterSubsystem, advancerSubsystem, beamBreak);
     }
 

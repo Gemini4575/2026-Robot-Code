@@ -16,6 +16,7 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.CimberConstants.*;
 
+@SuppressWarnings("unused")
 public class ClimberSubsystem extends SubsystemBase {
     private ShuffleboardTab climberTab = Shuffleboard.getTab("Climber");
     private GenericEntry climberPositionEntry = climberTab.add("CLimber Motor Position", 0)

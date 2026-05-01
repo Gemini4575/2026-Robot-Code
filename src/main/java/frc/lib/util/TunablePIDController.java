@@ -1,7 +1,6 @@
 package frc.lib.util;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -38,7 +37,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TunablePIDController {
 
     private final PIDController m_pid;
-    private final String m_key;
 
     // Cached values so we only call setPID when something actually changed
     private double m_lastP;
@@ -63,7 +61,6 @@ public class TunablePIDController {
      * @param kD           Initial derivative gain
      */
     public TunablePIDController(String dashboardKey, double kP, double kI, double kD) {
-        m_key = dashboardKey;
         m_pid = new PIDController(kP, kI, kD);
 
         m_keyP = dashboardKey + "/P";
