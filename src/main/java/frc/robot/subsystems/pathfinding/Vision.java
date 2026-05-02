@@ -68,54 +68,42 @@ public class Vision extends SubsystemBase {
         super();
         var tagCamera = new PhotonCamera("Left Cam");
         var tagCamera2 = new PhotonCamera("Right Cam");
-
         var tagCamera3 = new PhotonCamera("Back Cam");
         var tagCamera4 = new PhotonCamera("Front Cam");
 
-        var photonEstimator = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, LeftCam);
+        var photonEstimator = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, LeftCam);
+        var photonEstimator2 = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, RightCam);
+        var photonEstimator3 = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, BackCam);
+        var photonEstimator4 = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, FrontCam);
+
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-
-        var photonEstimator2 = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, RightCam);
         photonEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-
-        var photonEstimator3 = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, BackCam);
         photonEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-
-        var photonEstimator4 = new PhotonPoseEstimator(kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, FrontCam);
         photonEstimator4.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-        photonDataContainers = List.of(new PhotonDataContainer(tagCamera, photonEstimator),
-                new PhotonDataContainer(tagCamera2, photonEstimator2),
-                new PhotonDataContainer(tagCamera3, photonEstimator3),
-                new PhotonDataContainer(tagCamera4, photonEstimator4));
+        photonDataContainers = List.of(new PhotonDataContainer(tagCamera, photonEstimator), new PhotonDataContainer(tagCamera2, photonEstimator2), new PhotonDataContainer(tagCamera3, photonEstimator3), new PhotonDataContainer(tagCamera4, photonEstimator4));
 
         // ----- Simulation
         if (Robot.isSimulation()) {
-            // Create the vision system simulation which handles cameras and targets on
-            // the
-            // field.
+            // ? Create the vision system simulation which handles cameras and targets on the field.
             visionSim = new VisionSystemSim("main");
-            // Add all the AprilTags inside the tag layout as visible targets to this
-            // simulated field.
+
+            // ? Add all the AprilTags inside the tag layout as visible targets to this simulated field.
             visionSim.addAprilTags(kTagLayout);
-            // Create simulated camera properties. These can be set to mimic your actual
-            // camera.
+
+            // ? Create simulated camera properties. These can be set to mimic your actual camera.
             var cameraProp = new SimCameraProperties();
+
             cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
             cameraProp.setCalibError(0.35, 0.10);
             cameraProp.setFPS(15);
             cameraProp.setAvgLatencyMs(50);
             cameraProp.setLatencyStdDevMs(15);
-            // Create a PhotonCameraSim which will update the linked PhotonCamera's
-            // values
-            // with visible
-            // targets.
+            
+            // ? Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible targets.
             cameraSim = new PhotonCameraSim(tagCamera, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
+
+            // ? Add the simulated camera to view the targets on this simulated field.
             visionSim.addCamera(cameraSim, LeftCam);
 
             cameraSim.enableDrawWireframe(true);
@@ -148,16 +136,13 @@ public class Vision extends SubsystemBase {
 
             if (Robot.isSimulation()) {
                 visionEst.ifPresentOrElse(
-                        est -> getSimDebugField()
-                                .getObject("VisionEstimation")
-                                .setPose(est.estimatedPose.toPose2d()),
+                        est -> getSimDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()),
                         () -> {
                             getSimDebugField().getObject("VisionEstimation").setPoses();
                         });
             }
             if (visionEst.isPresent()) {
-                boolean hasHighAmbiguity = change.getTargets().stream()
-                        .anyMatch(t -> t.getPoseAmbiguity() > 0.2);
+                boolean hasHighAmbiguity = change.getTargets().stream().anyMatch(t -> t.getPoseAmbiguity() > 0.2);
                 if (hasHighAmbiguity)
                     continue;
 
@@ -202,11 +187,7 @@ public class Vision extends SubsystemBase {
                 if (tagPose.isEmpty())
                     continue;
                 numTags++;
-                avgDist += tagPose
-                        .get()
-                        .toPose2d()
-                        .getTranslation()
-                        .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                avgDist += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
             }
 
             if (numTags == 0) {
