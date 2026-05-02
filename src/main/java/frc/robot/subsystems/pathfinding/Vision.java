@@ -64,7 +64,6 @@ public class Vision extends SubsystemBase {
     private PhotonCameraSim cameraSim;
     private VisionSystemSim visionSim;
 
-    @SuppressWarnings("removal")
     public Vision() {
         super();
         var tagCamera = new PhotonCamera("Left Cam");
