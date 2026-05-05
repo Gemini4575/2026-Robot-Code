@@ -4,87 +4,80 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.commands.shooter.TelopTrenchShoot;
+import frc.robot.commands.shooter.TelopLadderShoot;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.commands.shooter.TelopLadderShoot;
-import frc.robot.commands.shooter.TelopTrenchShoot;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.shooter.ShootFromAutoMiddle;
-import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.ShootFromTrench;
+import frc.robot.commands.auto.shooter.ShootFromDepot;
 import frc.robot.commands.auto.shooter.SpinUpShooter;
-import frc.robot.commands.climber.ClimbTelop;
 import frc.robot.commands.climber.DownToClimb;
+import frc.robot.commands.climber.ClimbTelop;
 import frc.robot.commands.climber.UpToClimb;
-import frc.robot.commands.driving.AlineWheels;
 import frc.robot.commands.driving.DriveForSecondsBackwards;
 import frc.robot.commands.driving.DriveForSecondsForwards;
-import frc.robot.commands.driving.DriveForSecondsLeft;
-import frc.robot.commands.driving.DriveForSecondsRight;
 import frc.robot.commands.driving.FaceTowardsCoordinates;
+import frc.robot.commands.driving.DriveForSecondsRight;
+import frc.robot.commands.driving.DriveForSecondsLeft;
 import frc.robot.commands.driving.RotateSomeAmount;
+import frc.robot.commands.driving.XTheWheelsTimed;
+import frc.robot.commands.driving.TeleopSwerve;
+import frc.robot.commands.driving.StopForever;
+import frc.robot.commands.driving.AlineWheels;
+import frc.robot.commands.driving.XTheWheels;
 import frc.robot.commands.driving.Spin180;
 import frc.robot.commands.driving.Stop;
-import frc.robot.commands.driving.StopForever;
-import frc.robot.commands.driving.TeleopSwerve;
-import frc.robot.commands.driving.XTheWheels;
-import frc.robot.commands.driving.XTheWheelsTimed;
-import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.intake.ExtendIntakeAndIntake;
 import frc.robot.commands.intake.ExtendOrRectactIntake;
+import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.shooter.AutoAllienceWallShoot;
-import frc.robot.commands.shooter.AutoHubShoot;
-import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.shooter.TelopAlleniceWallShot;
 import frc.robot.commands.shooter.Testing_Shoot;
+import frc.robot.commands.shooter.AutoHubShoot;
+import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.smartDashBoard.SendNote;
 import frc.robot.model.MetricName;
-import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.service.MetricService;
+import frc.robot.subsystems.drivetrainIOLayers.DrivetrainIO;
 import frc.robot.subsystems.pathfinding.Vision;
-import frc.robot.subsystems.topdeck.AdvancerSubsystem;
-import frc.robot.subsystems.topdeck.BeamBreak;
-import frc.robot.subsystems.topdeck.ClimberSubsystem;
-import frc.robot.subsystems.topdeck.IntakeSubystem;
 import frc.robot.subsystems.topdeck.LimitSwitchSubsystem;
+import frc.robot.subsystems.topdeck.AdvancerSubsystem;
+import frc.robot.subsystems.topdeck.ClimberSubsystem;
 import frc.robot.subsystems.topdeck.ShooterSubsystem;
+import frc.robot.subsystems.topdeck.IntakeSubystem;
+import frc.robot.subsystems.topdeck.BeamBreak;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.auto.AutoBuilder;
+import java.util.Map;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
-import java.util.Map;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathfindingCommand;
-
 /*
-import au.grapplerobotics.ConfigurationFailedException;
-import au.grapplerobotics.LaserCan;
-*/
-
-/**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in
  * the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
+
 public class RobotContainer {
 
   ShuffleboardTab DIO_tab = Shuffleboard.getTab("DIO");
